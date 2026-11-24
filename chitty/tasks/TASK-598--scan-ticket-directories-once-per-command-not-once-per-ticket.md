@@ -49,7 +49,7 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch) pass, and fail before the change. The other new tests are regression tests, which must pass and need not fail without the change: `test_writes_clear_the_index`, `test_duplicate_lists_active_then_archived`, both `test_invalid_*_entry_raises_for_any_lookup`, `test_lookup_matches_the_files_on_disk` and `test_ref_files_with_unparseable_names_are_skipped`
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch) pass, and fail before the change. Regression tests: `test_writes_clear_the_index`, `test_duplicate_lists_active_then_archived`, both `test_invalid_*_entry_raises_for_any_lookup`, `test_lookup_matches_the_files_on_disk`, `test_ref_files_with_unparseable_names_are_skipped`
 - [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets meanwhile, so for each command run before, after, before in quick succession; a triple counts only when the two "before" outputs are identical, and then "after" must equal both. Try at most three triples per command. If none has identical "before" outputs, record the three diffs and set the ticket to `blocked`, not `review`. Record the `diff` results and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
@@ -239,3 +239,4 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T09:27:41Z sunny-hazel-gannet: changed owner, dependencies, notes
 - 2026-11-24T09:27:41Z sunny-hazel-gannet planning → todo
 - 2026-11-24T22:32:05Z sunny-hazel-gannet: changed acceptance criteria, notes
+- 2026-11-24T22:33:21Z sunny-hazel-gannet: changed acceptance criteria
