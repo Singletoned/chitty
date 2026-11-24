@@ -1,6 +1,6 @@
 ---
 title: Keep a failed ticket write from leaving the file changed, and allow dependencies on tickets from `main`
-status: backlog
+status: review
 labels:
   - bug
 priority: medium
@@ -24,3 +24,4 @@ Checked 2026-11-24 on `main` at `80f6f701`: both halves are fixed. In a linked `
 - 2026-11-24T08:38:00Z kind-navy-toad: changed notes
 - 2026-11-24T08:38:18Z kind-navy-toad: replaced notes
 - 2026-11-24T08:43:41Z kind-navy-toad: replaced notes
+- 2026-11-24T09:07:23Z kind-navy-toad backlog → review
