@@ -30,10 +30,9 @@ Tests: add to class `TestRunContinue` in `tests/test_run_continue.py`, using its
 
 In the two `doing` rows the run's last output line is `<id>: doing → doing` and the fake was invoked exactly once (`len(self.invocations_seen()) == 1`). In every case `git status --porcelain` in the worktree is unchanged by the runner: `?? left.py`, ` M tracked.py`, or empty, as left. The first two rows fail today (the ticket stays `review`); the third and fourth pass today and guard wrong versions W1 (returning on any status, not only `review`, caught by the `blocked` row) and W2 (returning whenever the session ends, dirty or clean, caught by the clean row). Run the test once against W1 and W2 as uncommitted edits, without committing them, and record the results in a note.
 
-## Acceptance Criteria
+## Notes
 
-- [ ] The four cases in `tests/test_run_continue.py` pass; the two dirty `review` cases fail on `main`, and the test fails against W1 and W2; a note records the runs
-- [ ] `make check` passes
+Dropped 2026-11-24 with the person: not needed. Since `80ce143` (2026-11-09 21:08, released in 0.1.47) `chitty edit -s review` refuses while the worktree has uncommitted changes (`Repo.edit` in `src/chitty/store.py`, `require_clean`), so a worker cannot reach `review` with uncommitted files. Every occurrence of `Review failed (work): the worktree has uncommitted changes` in chitty, echonomicon, chladnify and mullion (12, including `TASK-167`) is from 2026-11-06 to 2026-11-09, the last at 20:43 on 2026-11-09, before that release; none since. The planned test only reproduced it because its fake agent writes the ticket file by hand instead of through `chitty edit`. Criteria removed because nothing will be built.
 
 ## History
 
@@ -50,3 +49,4 @@ In the two `doing` rows the run's last output line is `<id>: doing → doing` an
 - 2026-11-24T08:46:33Z kind-navy-toad planning → cold-read
 - 2026-11-24T08:49:32Z kind-navy-toad: changed description
 - 2026-11-24T08:49:32Z kind-navy-toad cold-read → todo
+- 2026-11-24T09:07:51Z kind-navy-toad: changed acceptance criteria, notes
