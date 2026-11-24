@@ -4,6 +4,7 @@ status: planning
 priority: high
 depends_on:
   - TASK-599
+  - TASK-655
 parent: TASK-599
 created: 2026-11-24
 ---
@@ -32,3 +33,4 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 ## History
 
 - 2026-11-24T08:45:27Z sunny-hazel-gannet → planning
+- 2026-11-24T09:27:45Z sunny-hazel-gannet: changed dependencies
