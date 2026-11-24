@@ -12,7 +12,10 @@ In shelfpath, TASK-6 was set to blocked by actor mellow-dormouse with the note "
 
 Suggestion origin: shelfpath
 
+Triage 2026-11-24, from TASK-669 (shelfpath): run locks were again left behind after workers exited (PIDs 33747, 6519 and 28502 dead). Related: TASK-234 (guide: leave a ticket alone while another run holds its lock).
+
 ## History
 
 - 2026-11-24T22:21:45Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:58Z zesty-coral-newt: changed notes
