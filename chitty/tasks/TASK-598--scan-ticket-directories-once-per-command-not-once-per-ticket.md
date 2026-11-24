@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -165,7 +165,7 @@ Planner, 2026-11-24: criterion 1 now marks the guard tests as regression tests (
 
 ## Summary
 
-Implemented working-tree and ref indexes. Scan count and behavior tests pass; prior notes record W1-W5 wrong-version test runs, output comparisons, timings and make check. Review check timed out in this session; full make check passed previously (1173 tests, 602 subtests).
+-
 
 ## History
 
@@ -241,3 +241,5 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T22:32:05Z sunny-hazel-gannet: changed acceptance criteria, notes
 - 2026-11-24T22:33:21Z sunny-hazel-gannet: changed acceptance criteria
 - 2026-11-24T23:29:30Z golden-quartz-falcon todo → doing
+- 2026-11-24T23:34:50Z golden-quartz-falcon: changed summary
+- 2026-11-24T23:34:50Z golden-quartz-falcon doing → review
