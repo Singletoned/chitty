@@ -1,6 +1,8 @@
 ---
 title: Flag an agent_command that still uses the retired Pi extension
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ In the circuitry repo, `chitty.toml` still has `agent_command = "env -u VIRTUAL_
 
 Suggestion origin: circuitry
 
+Duplicate of TASK-675 (warn about an `agent_command` that still uses the retired Pi extension); its evidence and two extra asks are recorded there.
+
 ## History
 
 - 2026-11-24T22:21:22Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:23Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:25Z zesty-coral-newt: changed labels, notes
