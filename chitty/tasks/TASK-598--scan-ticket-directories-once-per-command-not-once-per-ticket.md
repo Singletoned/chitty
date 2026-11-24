@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: planning
+status: cold-read
 priority: high
 depends_on:
   - TASK-639
@@ -48,8 +48,8 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
-- [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. The other tests guard unchanged behaviour, so instead of failing before the change each must fail against one of the wrong versions listed in the 2026-11-24 planner note, applied one at a time to the finished code. Record all runs in a note
+- [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets while this runs, so run each command as before, after, before: the result counts only when the two "before" outputs are identical; otherwise repeat. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
 ## Plan
@@ -119,6 +119,16 @@ Review failed (design): The earlier review failed because the required unchanged
 2: fail - Before/after outputs for list and backlog matched (1651 and 11534 bytes); `--all` outputs differed at TASK-311 (blocked versus running), likely a concurrent ref or process state change, so byte identity was not verified. Repeat with stable state. Three real times: before 5.359, 6.362, 6.761 seconds; after 4.502, 4.467, 5.430 seconds.
 3: pass - `make check` reported 1173 passed, 602 subtests passed.
 
+Planner, 2026-11-24: the last review failed because the guard tests pass before the change, as they must. Criterion 1 now asks for each guard test to fail against a plausible wrong version of the finished code instead. Run on 2026-11-24 from a copy of `src` at `90385907`, with `tests/test_list_performance.py`:
+
+- W1, `_invalidate` stops clearing `_working_index`: `test_writes_clear_the_index` fails.
+- W2, `_working_ticket_index` walks only active files (`for archived in (False,)`): `test_duplicate_lists_active_then_archived` and `test_invalid_archived_entry_raises_for_any_lookup` fail (also the scan-count tests, the property and the invalidation test).
+- W3, `_working_ticket_index` catches the error from `self._files(...)` and skips that directory: `test_invalid_active_entry_raises_for_any_lookup` and `test_invalid_archived_entry_raises_for_any_lookup` fail.
+- W4, each index entry sorted by file name instead of walk order: `test_lookup_matches_the_files_on_disk` (the property) fails.
+- W5, `_ref_ticket_index` re-raises `ids.IdError` instead of skipping the name: `test_ref_files_with_unparseable_names_are_skipped` fails.
+
+Each wrong version failed exactly the tests named, and no other wrong version was needed. Criterion 2 now repeats the "before" run, because the last `--all` comparison differed at `TASK-311` when another runner changed it mid-run.
+
 ## Summary
 
 Implemented per-command working-tree and ref ticket indexes. Regression tests pass, including scan counts, errors/order, refs, invalidation and property context. Before/after outputs matched; make check passes (1169 tests, 602 subtests). Both required scan-count tests fail on baseline (28 vs 172; 16 vs 88) and pass with implementation (4 scans each).
@@ -179,3 +189,5 @@ Implemented per-command working-tree and ref ticket indexes. Regression tests pa
 - 2026-11-23T23:11:28Z mellow-jade-kestrel doing → review
 - 2026-11-23T23:19:30Z intrepid-yellow-ibis: changed owner, acceptance criteria, notes
 - 2026-11-23T23:19:30Z intrepid-yellow-ibis review → planning
+- 2026-11-24T08:40:20Z sunny-hazel-gannet: changed acceptance criteria, notes
+- 2026-11-24T08:40:20Z sunny-hazel-gannet planning → cold-read
