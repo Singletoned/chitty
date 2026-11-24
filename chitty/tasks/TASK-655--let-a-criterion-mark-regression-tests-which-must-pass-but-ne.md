@@ -1,6 +1,6 @@
 ---
 title: Let a criterion mark regression tests, which must pass but need not fail without the change
-status: review
+status: done
 labels:
   - untestable
 priority: high
@@ -33,6 +33,14 @@ After this lands, `chitty init` in the main checkout refreshes the managed block
 - [ ] `src/chitty/roles/plan.md` has the new sub-bullet first under "When the code a ticket tests already exists", naming the `Regression tests:` form; `src/chitty/roles/work.md` says "For a requested test of a bug fix"; `pipeline-and-feedback.md` has the dated decision sentence
 - [ ] `make check` passes
 
+## Notes
+
+Reviewed: by the person; landed on main by fast-forward.
+1: pass - `src/chitty/roles/review.md` bullet "For each test a criterion needs, other than a regression test it marks" exempts regression tests from the fail-without check and the `tests` failure (commit `19bb3b18`)
+2: pass - `src/chitty/guide-runner.md` and `docs/plan/pipeline-and-feedback.md` review-note list carry "except a test the criterion marks as a regression test, which only has to pass"
+3: pass - `src/chitty/roles/plan.md` first sub-bullet names `Regression tests:`; `src/chitty/roles/work.md` says "For a requested test of a bug fix"; `pipeline-and-feedback.md` has the dated 2026-11-24 sentence
+4: pass - `make check`: 1168 passed after rebasing onto `main`
+
 ## Summary
 
 Done on branch `task-655` (commit `ebc571ab`): every change listed in the description, wrapped to 80 columns; `tests/fixtures/guide-runner-expected.md` regenerated from `managed_guide("runner")`. `make check` passes. After landing, `chitty init` in the main checkout refreshes the `AGENTS.md` managed block.
@@ -48,3 +56,5 @@ Done on branch `task-655` (commit `ebc571ab`): every change listed in the descri
 - 2026-11-24T22:56:01Z mellow-teal-jay: changed summary
 - 2026-11-24T23:16:38Z human todo → doing
 - 2026-11-24T23:16:49Z human doing → review
+- 2026-11-24T23:27:03Z mellow-teal-jay: changed notes
+- 2026-11-24T23:27:03Z mellow-teal-jay review → done
