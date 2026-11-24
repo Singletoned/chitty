@@ -1,6 +1,8 @@
 ---
 title: Workers leave uncommitted work and move tickets to planning against their own note
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ Seen in echonomicon on 2026-11-23/24 with work_model openai-codex/gpt-6-luna und
 
 Suggestion origin: echonomicon
 
+Duplicate: merged into TASK-686 (sound tickets returned to planning), TASK-676 (leftover uncommitted edits) and TASK-585 (stall detection); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:33Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:34Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:38Z zesty-coral-newt: changed labels, notes
