@@ -1,6 +1,8 @@
 ---
 title: Let planners close a ticket already delivered on main without branch surgery
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -18,7 +20,10 @@ Suggestions: (1) a supported "close as already done or superseded" path from `pl
 
 Suggestion origin: echonomicon
 
+Duplicate: the closing path is covered by TASK-599 (`dropped` status) and TASK-662 (archive refused outside the main checkout); the identical-copies failure is TASK-667. Evidence recorded on TASK-599 and TASK-667.
+
 ## History
 
 - 2026-11-24T22:21:44Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:56Z zesty-coral-newt: changed labels, notes
