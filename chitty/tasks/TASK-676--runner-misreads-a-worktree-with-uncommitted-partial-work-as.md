@@ -14,7 +14,10 @@ Suggestions: (1) when a worker session ends, the runner should commit or explici
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-24: merged the leftover-edits parts of TASK-670 and TASK-687, which report the same TASK-195 and TASK-197 cases: (1) commit leftover changes as a WIP commit on the ticket branch, or report them loudly, before changing status; (2) the pre-check should tell failures caused by uncommitted worktree changes from failures on `main`. Related: TASK-491 (refuse moving a ticket out of `doing` while its worktree is dirty) and TASK-496 (tell environment failures from ticket failures).
+
 ## History
 
 - 2026-11-24T22:21:39Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:39Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:33Z zesty-coral-newt: changed notes
