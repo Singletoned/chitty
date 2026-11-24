@@ -1,6 +1,6 @@
 ---
 title: Failed chitty edit still leaves the ticket written but uncommitted
-status: backlog
+status: review
 labels:
   - bug
   - escape
@@ -19,3 +19,4 @@ Checked 2026-11-24 on `main` at `80f6f701`: does not reproduce. In an autocommit
 
 - 2026-11-17T20:00:43Z kind-umber-toad → backlog
 - 2026-11-24T08:37:57Z kind-navy-toad: changed notes
+- 2026-11-24T09:07:18Z kind-navy-toad backlog → review
