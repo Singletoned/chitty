@@ -35,7 +35,7 @@ Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording.
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin) each leave the ticket with Notes equal to that text, as `chitty show --json` reports it. A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
+- [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin), each on a fresh ticket, give equal Notes in `chitty show --json`, and those Notes split into the same words as the text (`notes.split() == text.split()`; Chitty strips trailing whitespace, so exact equality does not hold). A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
 - [ ] A new test in `tests/test_cli.py` shows `chitty note 1 Text --file <path>` exits with status 2 and output containing `give TEXT or --file, not both`, and `chitty note 1` exits with status 2 and output containing `give TEXT or --file`; both leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
 
 ## Notes
@@ -50,3 +50,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:50:14Z zesty-coral-newt backlog → planning
 - 2026-11-24T22:50:18Z zesty-coral-newt planning → cold-read
 - 2026-11-24T22:51:22Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T22:51:51Z zesty-coral-newt: changed acceptance criteria
