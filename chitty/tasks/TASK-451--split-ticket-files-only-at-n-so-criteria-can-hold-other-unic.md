@@ -35,11 +35,11 @@ Tests go in a new file, `tests/test_criteria_line_breaks.py`:
 - Frontmatter example, with `subTest` for each of `\x85`, `\u2028` and `\u2029` as `c`: `parse(task.with_field("title", f"a{c}b").render()).frontmatter.title == f"a{c}b"`, where `task = parse(SAMPLE)`. For `\x85`, the rendered title line is also `title: "a\u0085b"`, with the six characters backslash, `u`, `0`, `0`, `8`, `5` between the quotes, not the raw character. All three fail on `main`, where the file cannot be read back.
 - CLI test, in a class that inherits `CliTestCase` from `tests/test_cli.py`: `run_cli("add", "T", "--ac", "one")`, then `run_cli("edit", "TASK-1", "--set-ac", "1", "a\u2028b")` exits 0, and `show TASK-1 --json` gives criterion text `a\u2028b`.
 
-Write each kind of example as its own test method, using `subTest` for each character, so a run shows which kinds pass. Run every test against `main` before the change and record the results in a note. Expected on `main`: the property, the parse example, the renumbering-caller example, the frontmatter example, the CLI test and the `a{c}b`, `a{c}` and `a\n` examples fail; the `a\nb` and `a\rb` refusals and the `[x] a` example pass, because they pin behaviour this ticket keeps. After the change, all pass.
+Put the `a\nb` and `a\rb` refusals and the `[x] a` example in a class `TestUnchangedBehaviour`, and every other new test in a class `TestBreaksAccepted`. Write each kind of example as its own test method, using `subTest` for each character, so a run shows which kinds pass. Run every test against `main` before the change and record the results in a note. Expected on `main`: the property, the parse example, the renumbering-caller example, the frontmatter example, the CLI test and the `a{c}b`, `a{c}` and `a\n` examples fail; the `a\nb` and `a\rb` refusals and the `[x] a` example pass, because they pin behaviour this ticket keeps. After the change, all pass.
 
 ## Acceptance Criteria
 
-- [ ] The property, the break-character examples, the parse example and the CLI test in `tests/test_criteria_line_breaks.py` pass, and `test_new_criterion_rejects_all_line_breaks` is narrowed to `\n` and `\r`. A note records a run against `main` matching the expected results in the description: every new test fails there except the `a\nb` and `a\rb` refusals and the `[x] a` example, which pin unchanged behaviour
+- [ ] The tests in `tests/test_criteria_line_breaks.py` pass. A note records a run of that file against `main`: every test in `TestBreaksAccepted` fails there, and every test in `TestUnchangedBehaviour` passes there, because those pin behaviour this ticket keeps; `test_new_criterion_rejects_all_line_breaks` is narrowed to `\n` and `\r`
 - [ ] `tests/test_property_criterion_text.py` and the other existing tests still pass; `make check` passes
 - [ ] The renumbering-caller example (`with_criterion_text` with `a\u2028b` and `a\x1db`) passes and fails against `main`; `tests/test_property_renumbering.py` passes
 - [ ] The frontmatter example passes (a title `a\x85b` reads back unchanged, written as `"a\u0085b"`) and fails against `main`
@@ -52,32 +52,7 @@ Implement the agreed ticket: first run the specified new regression cases agains
 
 Suggestion origin: chitty
 
-Planning issues found while inspecting the ticket and implementation:
-
-- The description says `_criterion_text` rejects only newline and stores `a\x1d\tb`, but `src/chitty/model.py` already checks all `splitlines()` breaks using sentinels before stripping. Thus that example already raises `TaskError`, and criterion 1's stated main-branch failure example is wrong. Correct the root cause and choose an actual failing example (such as the required accepted `a\x1d`, currently rejected).
-- Criterion 2 requires the specified message for any text with a checkbox prefix or an internal break, but an input such as `[x] a\nb` satisfies both conditions and the two required messages differ. Specify which error takes precedence and how the property asserts it.
-- `_criterion_text` is also called by `Task.with_criterion_text`, not only `with_criteria`; existing `tests/test_property_criterion_text.py` exercises that method. Clarify whether the changed validation is intended there too, including its effect on existing callers.
-
-Inspected `with_criteria`, `_criterion_text`, parser locations, existing property tests and the CLI fixture. The remaining implementation and regression verification were not run because the conflicting message requirement needs a planning decision first; the CLI criterion is independently specified.
-
-Review failed (design): The previous planning note remains unresolved; this branch contains only ticket edits and no implementation or test file. Correct the existing validation claim and regression example, and decide error precedence for inputs matching both rejection rules before work resumes. The previous note also identifies the shared `with_criterion_text` caller; clarify its intended coverage and effects. No Decided note or focused test exists.
-1: fail - The prior planning note remains unresolved: `_criterion_text` checks splitlines before stripping, contrary to the description and claimed `a\x1d\tb` baseline failure. The required property test and implementation are absent, so regression and round-trip verification were not possible. Specify a genuine baseline failure.
-2: fail - The prior planning note remains unresolved: `[x] a\nb` requires two different messages under the current wording. Specify precedence and the property assertion; the required test is absent.
-3: fail - The independently specified CLI test is absent from `tests/test_property_criteria_text.py`; no change exists to verify against main. Add the specified regression test and implementation after planning.
-
-Planner, 2026-11-23: rewritten. The earlier notes are resolved: the splitlines check that already exists is now described correctly; the checkbox rejection is dropped, so there is no question of which error takes precedence; and `with_criterion_text` shares `_criterion_text`, so it gets the same rule, which existing tests cover. TASK-638 has been folded into this ticket.
-
-Planner, 2026-11-23, after the first cold read: `\r` is still refused, because otherwise a criterion could make its ticket file unreadable. Code points are written as escapes, not raw characters. Frontmatter is out of scope. The test file is renamed, so it is not confused with `tests/test_property_criterion_text.py`. The `with_criteria` docstring is to be updated.
-
-Planner, 2026-11-23, after the second cold read: corrected what `parse` does today with an unindented break, added an example pinning the checkbox-text decision, and named the renumbering caller. Nothing serious was found.
-
-Planning blocker: criterion 1 requires all new tests except the newline and carriage-return refusals to fail against main, but the description explicitly requires `[x] a` to remain accepted as today. The current `_criterion_text` and parser already round-trip that text unticked; verified locally with `parse` and `with_criteria`, yielding `Criterion(checked=False, text='[x] a', ...)`. The required checkbox example therefore cannot both pass after the change and fail before it. Correct criterion 1 to exclude this existing-behaviour example from the baseline-failure requirement (and specify baseline expectations per example if tests are grouped).
-
-Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterion and renumbering property tests, and the CLI fixture. The remaining requested tests and `make check` were not run: the new test file does not exist and implementation is stopped pending correction. The newline/carriage-return validation and shared caller can be independently located, but the complete baseline and post-change verification cannot be established until the contradiction is resolved.
-
-Planning blocker: Acceptance criterion 1 still says every new test except three specified cases fails against `main`. However, the required `[x] a` test is explicitly expected to pass on main and the ticket says that behavior remains unchanged. The test must pass after the fix but cannot satisfy the stated baseline-failure requirement. Please amend criterion 1 to explicitly exclude `[x] a` (and any other unchanged behavior) from the required baseline failures. No implementation or tests were started because this conflicts with the requested regression verification.
-
-The ticket remains blocked by the acceptance-criterion contradiction documented below: criterion 1 requires every new test except the newline/carriage-return refusals to fail against main, while the required `[x] a` example is explicitly unchanged and passes on main. Please amend criterion 1 to exclude `[x] a` (and other unchanged behavior) from baseline-failure requirements. No implementation or test changes were made; the worktree is clean. The implementation plan was recorded, but this contradiction prevents the required baseline verification from guiding completion.
+Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, and the notes that raised them were removed to stop them being re-raised (they are in Git history). In particular, `[x] a` and the `\n`/`\r` refusals are expected to pass on `main`: they are in `TestUnchangedBehaviour`, and criterion 1 asks only `TestBreaksAccepted` to fail there. Two cold reads on 2026-11-24 found nothing serious, and a trial patch of the planned change, run against the whole suite, broke only `test_new_criterion_rejects_all_line_breaks`.
 
 ## History
 
@@ -126,3 +101,4 @@ The ticket remains blocked by the acceptance-criterion contradiction documented 
 - 2026-11-24T09:21:07Z kind-teal-urchin: wrote the plan
 - 2026-11-24T09:21:21Z kind-teal-urchin: changed owner, notes
 - 2026-11-24T09:21:21Z kind-teal-urchin doing → planning
+- 2026-11-24T09:27:09Z sunny-hazel-gannet: replaced notes; changed owner, description, acceptance criteria
