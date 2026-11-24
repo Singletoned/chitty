@@ -12,7 +12,10 @@ On 2026-11-23, five registered repositories (chladnify, circuitry, mullion, shel
 
 Suggestion origin: chitty
 
+Triage 2026-11-24, merged from TASK-659 (circuitry): with the old command, 10 circuitry runs since 2026-11-14 09:18 (CIRCUIT-96/97/105/106/107) exited in 1.5-3.6 s, wrote no Pi session, and were recorded only as "<ID> was unchanged" (see `~/.local/share/chitty/usage/circuitry.jsonl`). Two further asks from TASK-659, to split off when planning: (1) when an agent exits within seconds with no commits, the runner error should give exit status, runtime and the last stderr lines (compare TASK-466 and TASK-445); (2) in circuitry, `chitty init` keeps printing "re-run `chitty init` to refresh repository setup" straight after an upgrade commit.
+
 ## History
 
 - 2026-11-24T22:21:38Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:39Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:23Z zesty-coral-newt: changed notes
