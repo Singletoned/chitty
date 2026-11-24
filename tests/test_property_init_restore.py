@@ -12,7 +12,7 @@ from hypothesis import strategies as st
 
 from chitty import config
 from chitty.cli import cli
-from chitty.store import _default_project, managed_block
+from chitty.store import ChittyError, _default_project, managed_block
 from tests import examples
 from tests.support import RepoTestCase
 
@@ -95,9 +95,21 @@ class TestInitRestore(RepoTestCase):
     @example(
         case=("fresh", "hook"), agents_removed=False, ignore_removed=False, extra_present=False
     )
+    @example(
+        case=("stale", "hook"), agents_removed=False, ignore_removed=False, extra_present=False
+    )
+    @example(
+        case=("refresh", "hook"), agents_removed=False, ignore_removed=False, extra_present=False
+    )
     @given(
         case=st.sampled_from(
-            (("stale", "registration"), ("fresh", "registration"), ("fresh", "hook"))
+            (
+                ("stale", "registration"),
+                ("fresh", "registration"),
+                ("fresh", "hook"),
+                ("stale", "hook"),
+                ("refresh", "hook"),
+            )
         ),
         agents_removed=st.booleans(),
         ignore_removed=st.booleans(),
@@ -113,7 +125,7 @@ class TestInitRestore(RepoTestCase):
                 kind, failure = case
                 name = (
                     self.stale(root, agents_removed, ignore_removed, extra_present)
-                    if kind == "stale"
+                    if kind in ("stale", "refresh")
                     else _default_project(root.name)
                 )
                 if failure == "registration":
@@ -127,12 +139,20 @@ class TestInitRestore(RepoTestCase):
                     hook.write_text("#!/bin/sh\necho HOOKSTDERR >&2\nexit 1\n")
                     hook.chmod(0o755)
                 before = snapshot(root)
-                args = ["add", "T", "-d", "x"] if kind == "stale" else ["init", "--autocommit"]
-                result = CliRunner().invoke(cli, args)
-                self.assertNotEqual(result.exit_code, 0, result.output)
-                self.assertIn(
-                    "is registered to" if failure == "registration" else "HOOKSTDERR", result.output
-                )
+                if kind == "refresh":
+                    from chitty.store import Repo
+
+                    with self.assertRaises(ChittyError) as error:
+                        Repo.open(root).refresh_setup()
+                    self.assertIn("HOOKSTDERR", str(error.exception))
+                else:
+                    args = ["add", "T", "-d", "x"] if kind == "stale" else ["init", "--autocommit"]
+                    result = CliRunner().invoke(cli, args)
+                    self.assertNotEqual(result.exit_code, 0, result.output)
+                    self.assertIn(
+                        "is registered to" if failure == "registration" else "HOOKSTDERR",
+                        result.output,
+                    )
                 self.assertEqual(snapshot(root), before)
         finally:
             os.chdir(old)

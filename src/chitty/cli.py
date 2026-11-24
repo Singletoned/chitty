@@ -277,7 +277,11 @@ def _check_stdin_files(**files: TextIO | None) -> None:
 )
 def init(enable_autocommit: bool) -> None:
     """Create or upgrade Chitty configuration and agent instructions."""
-    paths = init_repo(Path.cwd(), enable_autocommit)
+    paths = init_repo(
+        Path.cwd(),
+        enable_autocommit,
+        "chitty: initialize and enable autocommit" if enable_autocommit else None,
+    )
     if not paths:
         click.echo("already up to date")
     for path in paths:

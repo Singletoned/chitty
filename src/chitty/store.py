@@ -826,12 +826,7 @@ class Repo:
             raise ChittyError("repository setup is stale; run `chitty init` before writing")
         try:
             with locks.main_checkout_lock(self.root):
-                paths = init_repo(self.root, False)
-                files = [
-                    path for path in paths if path.is_file() and path.is_relative_to(self.root)
-                ]
-                if files:
-                    git.commit(self.root, files, "chitty: upgrade repository setup")
+                init_repo(self.root, False, "chitty: upgrade repository setup")
         except ManagedGuideError as error:
             print(
                 f"warning: {error}; skipping repository setup upgrade until the marker lines "
@@ -855,12 +850,13 @@ class Repo:
                     "repository setup files have uncommitted changes; commit or stash these first: "
                     + ", ".join(dirty)
                 )
-            paths = init_repo(self.root, False)
+            paths = init_repo(
+                self.root,
+                False,
+                "chitty: upgrade repository setup" if git.is_repository(self.root) else None,
+            )
             for path in paths:
                 print(path, file=sys.stderr)
-            files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
-            if files and git.is_repository(self.root):
-                git.commit(self.root, files, "chitty: upgrade repository setup")
         self.config = load_repo_config(self.root)
 
     def _check_setup_version(self) -> None:
@@ -2053,7 +2049,9 @@ def _managed_agents(existing: str, agents: Path, workflow: str) -> str:
     return (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + rendered
 
 
-def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
+def init_repo(
+    directory: Path, enable_autocommit: bool, commit_message: str | None
+) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
     if git.is_linked_worktree(directory):
         main = git.main_checkout(directory)
@@ -2173,8 +2171,8 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         committed = [
             path for path in written if path.is_relative_to(directory) and not path.is_dir()
         ]
-        if enable_autocommit and committed:
-            git.commit(directory, committed, "chitty: initialize and enable autocommit")
+        if commit_message is not None and committed:
+            git.commit(directory, committed, commit_message)
         return written
     except BaseException:
         for path, state in originals.items():

@@ -117,6 +117,38 @@ class TestSetupVersion(CliTestCase):
 
 
 class TestInit(CliTestCase):
+    def test_init_without_autocommit_does_not_commit(self):
+        import subprocess
+
+        subprocess.run(["git", "init"], cwd=self.root, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.root, check=True)
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"], cwd=self.root, check=True
+        )
+        subprocess.run(
+            ["git", "commit", "--allow-empty", "-m", "base"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        before = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=self.root, check=True, capture_output=True, text=True
+        ).stdout.strip()
+        result = self.run_cli("init")
+        self.assertEqual(result.exit_code, 0, result.output)
+        after = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=self.root, check=True, capture_output=True, text=True
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+        self.assertEqual(after, before)
+        self.assertNotEqual(status, "")
+
     def test_stale_setup_allows_reads_but_blocks_writes_without_autocommit(self):
         config = self.root / "chitty.toml"
         config.write_text(
