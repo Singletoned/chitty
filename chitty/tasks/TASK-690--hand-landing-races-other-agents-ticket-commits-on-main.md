@@ -1,6 +1,8 @@
 ---
 title: Hand landing races other agents' ticket commits on main
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ Landing a passed review by hand (rebase onto main, make check, ff-only main) fai
 
 Suggestion origin: chitty
 
+Duplicate of TASK-489 (do not rerun the landing check when `main` moved only by ticket-file commits); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:52Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:53Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:02Z zesty-coral-newt: changed labels, notes
