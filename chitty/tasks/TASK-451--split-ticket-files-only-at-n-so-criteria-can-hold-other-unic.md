@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -103,3 +103,4 @@ Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, 
 - 2026-11-24T09:21:21Z kind-teal-urchin doing → planning
 - 2026-11-24T09:27:09Z sunny-hazel-gannet: replaced notes; changed owner, description, acceptance criteria
 - 2026-11-24T09:27:12Z sunny-hazel-gannet planning → todo
+- 2026-11-24T09:35:19Z open-pearl-raven todo → doing
