@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: planning
+status: cold-read
 labels:
   - bug
 created: 2026-11-24
@@ -14,7 +14,7 @@ When `chitty edit <ID> -s review --summary-file F` is refused because the config
 
 ### Change
 
-In `Repo.edit` in `src/chitty/store.py`, the block guarded by `if (entering_review or passing_review) and (self.root / ".git").exists() and not edit.skip_current_version:` (around lines 1013-1059) can refuse in several ways: `_require_current_version` (before and after the check), `require_clean()` (before and after the check), check timed out, check command not found, and check failed. Every `ChittyError` raised from that block, for entering `review` and for `review` → `done` alike, gets the sentence `Nothing from this edit was saved.` appended after a space. Do it in one place: wrap the block's body in `try`/`except ChittyError as error:` and raise a new `ChittyError` with the extended message, `from error`. Messages keep their existing text, for example `check failed with status 3; output in `+"`"+`.chitty/check.log`+"`"+`.`
+In `Repo.edit` in `src/chitty/store.py`, the block guarded by `if (entering_review or passing_review) and (self.root / ".git").exists() and not edit.skip_current_version:` (around lines 1013-1059) can refuse in several ways: `_require_current_version` (before and after the check), `require_clean()` (before and after the check), check timed out, check command not found, and check failed. Every `ChittyError` raised from that block, for entering `review` and for `review` → `done` alike, gets the sentence `Nothing from this edit was saved.` appended after a space. Do it in one place: wrap the block's body in `try`/`except ChittyError as error:` and raise a new `ChittyError` with the extended message, `from error`. Messages keep their existing text, for example the check-failed message still ends with its path to `.chitty/check.log` before the new sentence.
 
 Only for a failed check (non-zero status), when `self.config.setup` is set, add one more sentence after that: ``If this worktree was never set up, run `<setup>` first.``
 
@@ -48,3 +48,5 @@ Suggestion origin: chitty
 - 2026-11-24T23:00:13Z zesty-coral-newt planning → cold-read
 - 2026-11-24T23:02:00Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:02:00Z zesty-coral-newt cold-read → planning
+- 2026-11-24T23:02:18Z zesty-coral-newt: changed description
+- 2026-11-24T23:02:18Z zesty-coral-newt planning → cold-read
