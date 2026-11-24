@@ -1,6 +1,6 @@
 ---
 title: Move the setup upgrade commit into `init_repo` so a failed commit is restored
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -36,9 +36,9 @@ Probed while planning with this recipe: the extended property fails on `main` in
 
 ## Acceptance Criteria
 
-- [ ] The extended `test_failure_restores_setup` passes; its `("stale", "hook")` and `("refresh", "hook")` members fail on `main`, and the test fails against W1; a note records both runs
-- [ ] The new `TestInit` test passes, and fails against W2; a note records the run
-- [ ] `make check` passes
+- [x] The extended `test_failure_restores_setup` passes; its `("stale", "hook")` and `("refresh", "hook")` members fail on `main`, and the test fails against W1; a note records both runs
+- [x] The new `TestInit` test passes, and fails against W2; a note records the run
+- [x] `make check` passes
 
 ## Plan
 
@@ -49,6 +49,11 @@ Move setup commits into init_repo; extend restoration and init tests; verify reg
 Implementation is partially changed, but required regression tests and main/W1/W2 evidence remain outstanding. The ticket is clear and no external obstacle exists; status remains doing.
 
 make check passed: 1168 tests and 620 subtests. Requested failure-on-main/W1/W2 evidence was not performed.
+
+Reviewed: regression and mutation checks completed in copied source trees under tmp/review464; implementation fits the specified transaction boundary.
+1: pass - make check passed the extended property. PYTHONPATH=tmp/review464/main/src:$PWD .venv/bin/pytest -q tests/test_property_init_restore.py::TestInitRestore::test_failure_restores_setup failed with a changed snapshot for stale/hook and one other explicit example; W1 (refresh commit message replaced with None) failed with ChittyError not raised for refresh/hook. Both runs printed 1 failed.
+2: pass - make check passed TestInit.test_init_without_autocommit_does_not_commit. With PYTHONPATH pointing to tmp/review464/w2/src, the same test failed: HEAD before and after differed (1 failed). W2 unconditionally passes the commit message.
+3: pass - make check: 1168 passed, 620 subtests passed, 1 warning.
 
 ## Summary
 
@@ -70,3 +75,5 @@ Implemented atomic setup commits and regression coverage. make check passed: 116
 - 2026-11-24T08:51:21Z lively-hazel-kestrel: changed notes
 - 2026-11-24T08:55:47Z lively-hazel-kestrel: changed summary
 - 2026-11-24T08:55:47Z lively-hazel-kestrel doing → review
+- 2026-11-24T09:03:42Z able-bronze-jay: changed notes; ticked acceptance criteria
+- 2026-11-24T09:03:42Z able-bronze-jay review → done
