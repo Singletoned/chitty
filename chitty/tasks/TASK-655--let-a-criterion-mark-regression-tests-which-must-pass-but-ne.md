@@ -1,0 +1,33 @@
+---
+title: Let a criterion mark regression tests, which must pass but need not fail without the change
+status: planning
+labels:
+  - untestable
+priority: high
+owner: untestable
+created: 2026-11-24
+---
+
+## Description
+
+The review rules give no way to pass a test that pins behaviour the change must keep. `src/chitty/roles/review.md` (the bullet starting "For each test a criterion needs") and the last sentence of the review-note paragraph in `src/chitty/guide-runner.md` (which reaches every repository's `AGENTS.md` managed block) say a test criterion passes only with evidence that the test fails without the change. A test that pins existing behaviour, such as a refactor's check that an error message is unchanged, passes on the merge base by design, so it can never pass review. Seen on 2026-11-23 and 2026-11-24: `TASK-598`'s finished work failed review three times on this alone. `TASK-653` and `TASK-654` have tests of the same kind.
+
+Decided with the person, 2026-11-24: a criterion may mark tests as regression tests. A regression test must pass after the change; it is not expected to fail without it. Every other test a criterion names must still fail without the change. This replaces this ticket's earlier proposal (accepting a named wrong version as the evidence).
+
+"Regression test" is used today, in `src/chitty/roles/work.md`, for a bug fix's test that must fail without the fix. That use changes to "a test for a bug fix", so the term has one meaning.
+
+Change, adding no more than three lines in total across the guides:
+
+- `src/chitty/roles/review.md`: in that bullet, replace "If the test passes without the change, the criterion fails with cause `tests`." with "If it passes without the change, the criterion fails with cause `tests`, unless the criterion marks it as a regression test, which only has to pass."
+- `src/chitty/guide-runner.md`: replace "A test criterion passes only with evidence that the test fails without the change." with "A test criterion passes only with evidence that the test fails without the change, except a test the criterion marks as a regression test, which only has to pass."
+- `src/chitty/roles/plan.md`: as the first sub-bullet of the bullet starting "When the code a ticket tests already exists", add "Mark a test of behaviour the change must keep as a regression test in its criterion: it must pass, and need not fail without the change." Leave the wrong-version sub-bullets, which check that the other tests are strong enough.
+- `src/chitty/roles/work.md`: replace "For a requested regression test" with "For a requested test of a bug fix".
+- `docs/plan/pipeline-and-feedback.md`: after the sentence ending "Committed hand-written wrong versions add clutter and drift.", add "A criterion may mark tests that pin kept behaviour as regression tests, which must pass but need not fail without the change (2026-11-24, after `TASK-598` failed review three times because such tests pass on the merge base)."
+
+After this lands, `chitty init` in the main checkout refreshes the managed block (`TASK-212`); do not edit `AGENTS.md` on a ticket branch.
+
+## History
+
+- 2026-11-24T09:27:29Z sunny-hazel-gannet → todo
+- 2026-11-24T22:31:46Z sunny-hazel-gannet: changed title, description
+- 2026-11-24T22:31:46Z sunny-hazel-gannet todo → planning
