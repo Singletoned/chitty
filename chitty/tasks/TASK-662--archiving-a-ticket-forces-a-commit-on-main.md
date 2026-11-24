@@ -1,6 +1,8 @@
 ---
 title: Archiving a ticket forces a commit on main
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -16,3 +18,4 @@ Suggestion origin: shelfpath
 
 - 2026-11-24T22:21:25Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:26Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:38Z zesty-coral-newt: changed labels
