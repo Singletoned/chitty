@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -67,3 +67,4 @@ Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfac
 - 2026-11-24T07:52:43Z kind-navy-toad planning → cold-read
 - 2026-11-24T07:54:33Z kind-navy-toad: changed description
 - 2026-11-24T07:54:33Z kind-navy-toad cold-read → todo
+- 2026-11-24T08:33:54Z intrepid-umber-quail todo → doing
