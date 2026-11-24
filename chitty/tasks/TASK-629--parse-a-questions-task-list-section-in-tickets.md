@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: planning
+status: todo
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -88,6 +88,8 @@ Requeued 2026-11-23: the 20:00 run that stalled used `gpt-6.1-terra` from a loop
 
 Cannot start implementation: this session's execution budget is insufficient to complete the specified regression-first workflow and checks. This is not a ticket defect; budget is not a valid planning/blocking reason. Please reassign or resume implementation in a capable session; no ticket requirement or design decision needs changing.
 
+Planner, 2026-11-24: requeued. The last return was about session budget, not the ticket; its text was cold-read before it went to `todo` on 2026-11-23 and is unchanged since. Owner cleared so the runner can pick it up.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -133,3 +135,5 @@ Cannot start implementation: this session's execution budget is insufficient to 
 - 2026-11-23T21:33:26Z zesty-hazel-dormouse: wrote the plan
 - 2026-11-23T21:33:52Z zesty-hazel-dormouse: changed owner, notes
 - 2026-11-23T21:33:52Z zesty-hazel-dormouse doing → planning
+- 2026-11-24T08:46:26Z sunny-hazel-gannet: changed owner, notes
+- 2026-11-24T08:46:26Z sunny-hazel-gannet planning → todo
