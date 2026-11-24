@@ -33,6 +33,10 @@ Saving any part of a refused edit; running `setup` automatically; refusals outsi
 - [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
 - [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
+## Plan
+
+Inspect the review-check implementation and fixtures, add regression cases for each specified refusal, then wrap the guarded refusal block so ChittyError messages state no edit was saved and add setup guidance only for failed checks when setup is configured. Run focused tests and make check, then commit implementation and tests.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -54,3 +58,4 @@ Suggestion origin: chitty
 - 2026-11-24T23:05:38Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:05:38Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:22:19Z calm-white-raven todo → doing
+- 2026-11-24T23:25:25Z calm-white-raven: wrote the plan
