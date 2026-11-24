@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: doing
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -90,6 +90,8 @@ Cannot start implementation: this session's execution budget is insufficient to 
 
 Planner, 2026-11-24: requeued. The last return was about session budget, not the ticket; its text was cold-read before it went to `todo` on 2026-11-23 and is unchanged since. Owner cleared so the runner can pick it up.
 
+Ticket is implementable and no defect or external obstacle has been identified; implementation remains unfinished.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -139,3 +141,5 @@ Planner, 2026-11-24: requeued. The last return was about session budget, not the
 - 2026-11-24T08:46:26Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:22:57Z sunny-khaki-crane todo → doing
 - 2026-11-24T09:25:19Z sunny-khaki-crane: wrote the plan
+- 2026-11-24T09:25:59Z sunny-khaki-crane: changed owner, notes
+- 2026-11-24T09:25:59Z sunny-khaki-crane doing → planning
