@@ -20,8 +20,11 @@ Options to decide while planning: run at `--level class` (tests in a class then 
 
 Planner, 2026-11-22: TASK-597 switches the runner to `pytest`, which reports a failing `setUpClass` as an error (checked with `pytest -n 2`). When TASK-597 lands with its criterion 3 passing, mark this done.
 
+Checked 2026-11-24: resolved by `TASK-597` (done), since `make check` and `make test` now run `pytest -n auto`. A throwaway module whose `setUpClass` raises and one whose `setUpModule` raises, each with one passing test: `pytest -q -n 2` reports `ERROR ... RuntimeError: boom` for both and `2 errors`. No code change needed; close it (it cannot go straight to `done` without `review`).
+
 ## History
 
 - 2026-11-22T18:44:25Z plucky-umber-wren → backlog
 - 2026-11-22T20:16:13Z plucky-umber-wren: changed dependencies
 - 2026-11-22T20:16:15Z plucky-umber-wren: changed notes
+- 2026-11-24T08:37:02Z kind-navy-toad: changed notes
