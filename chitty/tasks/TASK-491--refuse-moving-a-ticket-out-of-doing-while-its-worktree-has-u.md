@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: doing
+status: planning
 labels:
   - bug
 created: 2026-11-21
@@ -47,6 +47,8 @@ Read the existing clean-worktree guard and CLI test fixtures. Add the specified 
 
 Suggestion origin: chitty
 
+Planning blocker discovered during verification: the requested runner-edit guard describes only `skip_current_version`, but an existing `chitty run` integration test invokes an agent-side CLI status update from the ticket worktree with ordinary CLI options and uncommitted runner-created files. `tests/test_next.py::TestNext::test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` fails after the change because the CLI edit cannot express the internal bypass. The design must decide how runner-owned edits are distinguished from worker CLI edits without adding an unsafe user-visible bypass. Please specify the mechanism and corresponding fixture/assertions; current implementation was committed as `5eb3db64`, but acceptance tests and make check are not complete.
+
 ## History
 
 - 2026-11-21T07:57:53Z nimble-umber-gannet → backlog
@@ -58,3 +60,5 @@ Suggestion origin: chitty
 - 2026-11-24T12:25:59Z kind-navy-toad cold-read → todo
 - 2026-11-24T12:30:33Z nimble-zinc-vole todo → doing
 - 2026-11-24T12:33:00Z nimble-zinc-vole: wrote the plan
+- 2026-11-24T12:46:04Z nimble-zinc-vole: changed owner, notes
+- 2026-11-24T12:46:04Z nimble-zinc-vole doing → planning
