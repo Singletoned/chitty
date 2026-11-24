@@ -12,7 +12,10 @@ On 2026-11-23, `chitty list -s review -l untestable` on `main` failed with "Erro
 
 Suggestion origin: chitty
 
+Triage 2026-11-24, from TASK-681 (echonomicon): the same failure hit TASK-164. After the planner copied the archived file to `main`, every `chitty list` failed with "ticket `TASK-164` changed on both `task-164` and `main`" although both files were byte-identical. It cleared only after saving the branch head under `refs/superseded/task-164` and resetting the branch to `main`.
+
 ## History
 
 - 2026-11-24T22:21:30Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:31Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:53Z zesty-coral-newt: changed notes
