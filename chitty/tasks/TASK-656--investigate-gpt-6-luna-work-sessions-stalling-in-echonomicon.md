@@ -1,6 +1,8 @@
 ---
 title: Investigate gpt-6-luna work sessions stalling in echonomicon (luna replaced terra, which also had problems)
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -26,7 +28,10 @@ The planner (a Claude Code session) had to discard leftovers and return tickets 
 
 Suggestion origin: echonomicon
 
+Duplicate: merged into TASK-686 (sound tickets returned to planning), TASK-676 (leftover uncommitted edits) and TASK-585 (stall detection); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:20Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:21Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:44Z zesty-coral-newt: changed labels, notes
