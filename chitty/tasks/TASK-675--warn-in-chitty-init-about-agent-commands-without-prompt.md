@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: todo
+status: doing
 created: 2026-11-24
 ---
 
@@ -54,3 +54,4 @@ Triage 2026-11-24, merged from TASK-659 (circuitry): with the old command, 10 ci
 - 2026-11-24T23:06:21Z zesty-coral-newt backlog → cold-read
 - 2026-11-24T23:07:59Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:07:59Z zesty-coral-newt cold-read → todo
+- 2026-11-24T23:36:36Z zesty-quartz-ibis todo → doing
