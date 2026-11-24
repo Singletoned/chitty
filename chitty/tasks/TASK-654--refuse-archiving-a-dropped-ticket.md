@@ -30,7 +30,12 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 - [ ] `chitty archive TASK-1` on a dropped ticket is refused with its message, the file unchanged and still in `chitty/tasks/`, with `archive = "move"` and with `archive = "delete"`; both fail before the change
 - [ ] `chitty archive` with no ID archives the `done` ticket and leaves the `dropped` one, and fails against the wrong version that archives both; record both runs in a note; `make check` passes
 
+## Notes
+
+Planner, 2026-11-24: `TASK-655` now lets a criterion mark tests that pin kept behaviour as regression tests, which must pass but need not fail without the change. When re-planning, mark such tests that way instead of requiring wrong-version runs as review evidence.
+
 ## History
 
 - 2026-11-24T08:45:30Z sunny-hazel-gannet → planning
 - 2026-11-24T09:27:49Z sunny-hazel-gannet: changed dependencies
+- 2026-11-24T22:32:19Z sunny-hazel-gannet: changed notes
