@@ -1,6 +1,8 @@
 ---
 title: Worker sent tickets to planning when it had only skipped the tests
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ In echonomicon on 2026-11-24, with work_model openai-codex/gpt-6-luna under chit
 
 Suggestion origin: echonomicon
 
+Duplicate: merged into TASK-686 (sound tickets returned to planning), TASK-676 (leftover uncommitted edits) and TASK-585 (stall detection); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:40Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:40Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:40Z zesty-coral-newt: changed labels, notes
