@@ -1,6 +1,8 @@
 ---
 title: Work agents quit within seconds on freshly planned tickets, leaving them in error
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ Seen twice on 2026-11-23, both right after planning moved a ticket to `todo` and
 
 Suggestion origin: chitty
 
+Duplicate of TASK-562 (work agents stop early on larger tickets); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:26Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:27Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:49Z zesty-coral-newt: changed labels, notes
