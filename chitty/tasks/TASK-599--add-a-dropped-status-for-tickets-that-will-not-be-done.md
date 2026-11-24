@@ -15,7 +15,7 @@ Split on 2026-11-24 into this ticket (the status) and three that depend on it: `
 
 Decisions:
 
-- New status `dropped`, last in `STATUSES` in `src/chitty/model.py`, and in the frontmatter `status` `Literal` (`src/chitty/model.py`, around line 172). The MCP `Status` `Literal` (`src/chitty/mcp.py`) is a separate ticket. Glyph `🚫` (U+1F6AB, an emoji-presentation character, so it needs no variation selector) in `STATUS_GLYPHS`; label `drop` in `STATUS_LABELS`. Not in `DEFAULT_LIST_STATUSES`, so `chitty list` hides it as it hides `done`; `chitty list -s dropped` and `--all` show it.
+- New status `dropped`, last in `STATUSES` in `src/chitty/model.py`, and in the frontmatter `status` `Literal` (`src/chitty/model.py`, around line 172). The MCP `Status` `Literal` (`src/chitty/mcp.py`) is `TASK-601`; until it lands, MCP `list` with `all` (which uses `STATUSES`) returns dropped tickets while MCP edits cannot set `dropped`, which is acceptable. Glyph `🚫` (U+1F6AB, an emoji-presentation character, so it needs no variation selector) in `STATUS_GLYPHS`; label `drop` in `STATUS_LABELS`. Not in `DEFAULT_LIST_STATUSES`, so `chitty list` hides it as it hides `done`; `chitty list -s dropped` and `--all` show it.
 - In this ticket `chitty edit <id> -s dropped` works like any other status change, from any status and with no Summary required; `TASK-652` adds those rules. `chitty add -s dropped` and `chitty archive <id>` on a dropped ticket are not changed here (`TASK-653`, `TASK-654`).
 - `chitty summary`: appending `dropped` to `STATUSES` makes `summarize` (which ranks `reversed(TASK_STATUSES)`) list a `dropped` section before `done`; keep that, as both are final.
 - Nothing else changes in this ticket: the runner selects only `todo` and `doing` to work and `review` to review (`src/chitty/selection.py`), so it never picks a dropped ticket. A ticket that depends on a dropped ticket stays blocked, since only `done` or archived satisfies a dependency (`src/chitty/store.py`, `_dependency_is_done` and the function after it, which test `archived` or `status == "done"`); an implementation that counted `dropped` as satisfied would be wrong; how dependents and release labels treat `dropped` is a later ticket.
@@ -24,19 +24,19 @@ Decisions:
 Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `tests/test_cli.py` (a `RepoTestCase` whose `run_cli` wraps `click.testing.CliRunner`), as `tests/test_edit_human.py` does; the repository is not a Git repository (no `git init`), so dependencies read the working files, in the `RepoTestCase` repository (`tests/support.py` `CONFIG`: `workflow = "runner"`, so review is on, and `archive` is the default `"move"`). Every `done` ticket in a fixture is written directly with `status: done` in its frontmatter, since review is on and `chitty add -s done` is refused:
 
 - `chitty edit TASK-1 -s dropped` on a `todo` ticket exits 0 and the file has `status: dropped` (fails before the change: `dropped` is not a valid `-s` choice).
-- For the list cases, write the `dropped` ticket file directly in the fixture (`status: dropped` in its frontmatter), since before the change the CLI cannot make one. `chitty list` does not show a dropped ticket; `chitty list -s dropped` and `chitty list --all` do, with `🚫` and `drop`.
+- For the list cases, write the `dropped` ticket file directly in the fixture (`status: dropped` in its frontmatter), since before the change the CLI cannot make one. Give the dropped ticket a title containing neither `drop` nor `done`, and assert on its ID: `chitty list` output does not contain it; `chitty list -s dropped` and `chitty list --all` do, with `🚫` and `drop`.
 - `chitty edit TASK-1 -s todo` from `dropped` exits 0.
 - A `todo` ticket `TASK-2` with `depends_on: [TASK-1]`, where `TASK-1` is `dropped`, plus an independent `todo` ticket `TASK-3`: `chitty next --mode work` exits 0 and prints `work TASK-3` (guards the unchanged dependency rule). Positive control: the same fixture without `TASK-3` and with `TASK-1` `done` prints `work TASK-2`.
 - `chitty summary`: a `dropped` ticket and a `done` ticket, both with History transitions in the window: in the output, `dropped (` comes before `done (` (the section headings `src/chitty/cli.py` prints).
 - The model round-trips: for each status in `("dropped", *chitty.model.STATUSES)` (`dropped` named explicitly so the test fails before the change, and `STATUSES` iterated so a future status is covered), the text of a ticket written by `chitty add`, with its status line changed to that status, gives `chitty.model.parse(text).render() == text`. It fails before the change: `parse` validates the status through `Frontmatter.model_validate`, which rejects `dropped`.
 
-Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontmatter` table) and the `chitty --help` text for `-s`, if it lists statuses, name `dropped` and say what it is for. The role guides are a later ticket.
+Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontmatter` table) names `dropped` and says what it is for. No `--help` text changes: the `-s` choices come from `STATUSES`, and the `list -s` help lists only the defaults, which do not change. The role guides are a later ticket.
 
 ## Acceptance Criteria
 
 - [ ] The `tests/test_status_dropped.py` cases for `-s dropped` on a `todo` ticket, `-s todo` from `dropped`, the per-status round trip and `chitty list` (hidden by default; shown by `-s dropped` and `--all` with `🚫` and `drop`) pass, and fail before the change. Record both runs in a note
 - [ ] The dependent `TASK-2` case and its positive control, and the `chitty summary` order case, pass; the dependent case fails before the change only because `dropped` cannot be parsed, and against the wrong version where `dropped` satisfies a dependency. Record the runs in a note
-- [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` lists `dropped` and says in one clause it is for tickets that will not be done, with a Summary saying why; `make check` passes
+- [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` lists `dropped` and says in one clause it is for tickets that will not be done; `make check` passes
 
 ## Plan
 
@@ -138,3 +138,4 @@ Planner, 2026-11-24: split. The latest blocker (success cases cannot assert a me
 - 2026-11-23T23:17:06Z friendly-khaki-lapwing: changed notes
 - 2026-11-24T08:45:46Z sunny-hazel-gannet: changed title, description, acceptance criteria, notes
 - 2026-11-24T08:45:46Z sunny-hazel-gannet planning → cold-read
+- 2026-11-24T09:24:02Z sunny-hazel-gannet: changed description, acceptance criteria
