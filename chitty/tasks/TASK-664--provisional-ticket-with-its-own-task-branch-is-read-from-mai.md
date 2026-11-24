@@ -3,6 +3,7 @@ title: Provisional ticket with its own task branch is read from main, so the run
 status: backlog
 labels:
   - bug
+priority: high
 created: 2026-11-24
 ---
 
@@ -23,3 +24,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:21:27Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:28Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:40Z zesty-coral-newt: changed labels
+- 2026-11-24T22:40:53Z zesty-coral-newt: changed priority
