@@ -30,7 +30,12 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 - [ ] The `chitty add T -d x -s dropped` and `chitty add Idea -c backlog -s dropped` cases pass, each asserting its message and that no file is written, and fail before the change
 - [ ] The `-s dropped` case on a `backlog`-context ticket passes, and fails against the wrong version that exempts `dropped` from the random-ID rule; record both runs in a note; `make check` passes
 
+## Notes
+
+Planner, 2026-11-24: `TASK-655` now lets a criterion mark tests that pin kept behaviour as regression tests, which must pass but need not fail without the change. When re-planning, mark such tests that way instead of requiring wrong-version runs as review evidence.
+
 ## History
 
 - 2026-11-24T08:45:27Z sunny-hazel-gannet → planning
 - 2026-11-24T09:27:45Z sunny-hazel-gannet: changed dependencies
+- 2026-11-24T22:32:17Z sunny-hazel-gannet: changed notes
