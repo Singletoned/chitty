@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: todo
+status: doing
 created: 2026-11-24
 ---
 
@@ -54,3 +54,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:54:38Z zesty-coral-newt: changed acceptance criteria
 - 2026-11-24T22:55:40Z zesty-coral-newt: changed description
 - 2026-11-24T22:55:40Z zesty-coral-newt cold-read → todo
+- 2026-11-24T23:54:25Z eager-indigo-vole todo → doing
