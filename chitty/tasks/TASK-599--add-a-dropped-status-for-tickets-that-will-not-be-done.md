@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -77,6 +77,8 @@ Planning blocker: Acceptance criterion 1 requires the allowed-starting-status ca
 
 Planner, 2026-11-24: split. The latest blocker (success cases cannot assert a message) is resolved by the rewrite: success cases assert state only. The ticket was also too large for one session (three stalled runs), so the edit rules, the `add` refusal and the archive refusal moved to `TASK-652`, `TASK-653` and `TASK-654`, which depend on this one.
 
+Planning blocker: the ticket requires before-change evidence that a broad new test matrix fails, implementation, documentation, and a full check; previous attempts stalled repeatedly. Propose splitting the test/implementation or reducing the required matrix so each ticket can be completed and verified in one session. No implementation changes made.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -143,3 +145,5 @@ Planner, 2026-11-24: split. The latest blocker (success cases cannot assert a me
 - 2026-11-24T09:24:19Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:27:35Z rosy-russet-wren todo → doing
 - 2026-11-24T09:29:47Z rosy-russet-wren: wrote the plan
+- 2026-11-24T09:30:16Z rosy-russet-wren: changed owner, notes
+- 2026-11-24T09:30:16Z rosy-russet-wren doing → planning
