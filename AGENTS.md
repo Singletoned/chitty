@@ -72,12 +72,12 @@ worktree as `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward
 `main`.
 
 A ticket lands on `main` only after its review passes; a worker never lands
-its own ticket. Under `chitty run`, the runner lands a passing review: it
-fast-forwards `main` only after rebasing the ticket branch onto `main` and
-running the configured setup and checks, so do not merge or remove branches or
-worktrees as a reviewer. A reviewer started without `chitty run` whose review
-passed should first rebase the branch onto `main` in its worktree and run the
-configured checks; after they pass, only fast-forward `main`.
+its own ticket. Under `chitty run`, the runner lands it: it rebases the ticket
+branch onto `main`, runs the configured setup and checks, then fast-forwards
+`main`. Reviewers there do not merge or remove branches or worktrees. A reviewer
+started by hand whose review passed rebases the branch onto `main` in its
+worktree, runs the configured checks and, once they pass, only fast-forwards
+`main`.
 
 When starting an agent by hand, run the matching focused guide:
 
@@ -85,35 +85,16 @@ When starting an agent by hand, run the matching focused guide:
 - `chitty guide review` for review.
 - `chitty guide plan` for writing or refining tickets.
 
-Workers may resolve a small omission when the ticket and existing code or tests
-point to one clear, cheap-to-reverse default. It must preserve requirements
-and acceptance criteria and introduce no new user-visible policy, command, or
-setting. Record `Decided: <case> -> <choice>, because <reason>`, cite the
-precedent, and add a focused test where testable. Reviewers check the choice,
-precedent, and test against the same boundary. Do not invent or weaken a test
-needed to verify a stated criterion.
+A ticket that cannot guide the work goes back to `planning` with a note giving
+the evidence and the decision needed; external obstacles go to `blocked`,
+implementation defects to `doing`.
 
-Apart from that exception, workers and reviewers return a ticket to `planning`
-for missing or contradictory requirements, an unresolved design decision, a
-wrong claim about the code, files or other tickets, a criterion that cannot be
-verified as written or would pass with nothing built, a test a criterion needs
-that the ticket does not describe (its fixture, action and assertions), or a
-ticket too large to finish in one session. Stop implementation, not
-investigation, at the first planning blocker. Before changing status, finish
-reading the ticket and checking relevant code and tests for the remaining
-requirements. Report all actionable planning issues in one note with evidence
-and the decision or correction needed. Say what could not be checked and why,
-and continue with independent checks without speculating or expanding scope.
-Preserve existing implementation work and follow normal
-planning and cold-read readiness before resuming. Implementation defects against
-clear requirements return to `doing`; external obstacles requiring help go to
-`blocked`.
-
-Every review note, whether passing or failing, has one line per criterion below
-its `Reviewed:` or `Review failed (<cause>):` first line: `<number>: pass -
-<evidence>` or `<number>: fail - <reason>`. Evidence is the command or test that
-shows it. A test criterion passes only with evidence that the test fails without
-the change.
+Every review note, passing or failing, starts `Reviewed:` or `Review failed
+(<cause>):`, then has one line per criterion: `<number>: pass - <evidence>` or
+`<number>: fail - <reason>`, where evidence is the command or test that shows
+it. A test criterion passes only with evidence that the test fails without the
+change, except a test the criterion marks as a regression test, which only has
+to pass.
 
 <!-- chitty:end -->
 
