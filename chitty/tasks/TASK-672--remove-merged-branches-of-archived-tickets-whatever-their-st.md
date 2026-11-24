@@ -1,6 +1,6 @@
 ---
 title: Remove merged branches of archived tickets whatever their status
-status: cold-read
+status: todo
 labels:
   - bug
 created: 2026-11-24
@@ -49,3 +49,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:48:31Z zesty-coral-newt: changed title, labels, description, acceptance criteria
 - 2026-11-24T22:48:31Z zesty-coral-newt backlog → planning
 - 2026-11-24T22:48:37Z zesty-coral-newt planning → cold-read
+- 2026-11-24T22:50:10Z zesty-coral-newt cold-read → todo
