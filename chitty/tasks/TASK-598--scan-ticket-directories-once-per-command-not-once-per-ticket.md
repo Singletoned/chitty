@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-639
@@ -220,3 +220,4 @@ Implemented per-command working-tree and ref ticket indexes. Regression tests pa
 - 2026-11-24T08:44:39Z sunny-hazel-gannet planning → cold-read
 - 2026-11-24T08:46:57Z sunny-hazel-gannet: changed acceptance criteria, notes
 - 2026-11-24T08:46:57Z sunny-hazel-gannet cold-read → planning
+- 2026-11-24T08:47:01Z sunny-hazel-gannet planning → todo
