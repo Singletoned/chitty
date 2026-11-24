@@ -18,7 +18,10 @@ Antigravity sets `ANTIGRAVITY_CONVERSATION_ID` (and `ANTIGRAVITY_AGENT`) in the 
 
 Suggestion origin: shelfpath
 
+Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravity also sets `ANTIGRAVITY_AGENT` and `ANTIGRAVITY_TRAJECTORY_ID`. `ANTIGRAVITY_CONVERSATION_ID` is the stable one to use.
+
 ## History
 
 - 2026-11-24T22:21:22Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:22Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:20Z zesty-coral-newt: changed notes
