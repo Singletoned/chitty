@@ -1,9 +1,10 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-639
+  - TASK-655
 created: 2026-11-22
 ---
 
@@ -158,6 +159,8 @@ Review failed (design): Criterion 1 requires preservation tests to pass against 
 2: pass - Three before/after/before comparisons were stable and byte-identical, 1967, 11047 and 38990 bytes. List times before: 4.874, 4.653, 4.900 seconds; after: 2.412, 2.376, 2.584 seconds. This resolves the unstable comparison in the previous design review.
 3: pass - `make check` reported 1176 passed, 620 subtests passed.
 
+Planner, 2026-11-24: the last review failed only on the conflict between `roles/review.md` and `roles/plan.md` about guard tests; its runs showed W1–W5 each failing their named tests, and criteria 2 and 3 passed. `TASK-655` fixes the review rule. When it is `done`, this ticket needs no more work: move it to `review`.
+
 ## Summary
 
 Implemented working-tree and ref indexes. Scan count and behavior tests pass; prior notes record W1-W5 wrong-version test runs, output comparisons, timings and make check. Review check timed out in this session; full make check passed previously (1173 tests, 602 subtests).
@@ -231,3 +234,5 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T09:07:21Z nimble-lilac-puffin doing → review
 - 2026-11-24T09:18:09Z golden-jade-marten: changed owner, acceptance criteria, notes
 - 2026-11-24T09:18:09Z golden-jade-marten review → planning
+- 2026-11-24T09:27:41Z sunny-hazel-gannet: changed owner, dependencies, notes
+- 2026-11-24T09:27:41Z sunny-hazel-gannet planning → todo
