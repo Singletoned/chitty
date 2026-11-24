@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: cold-read
+status: todo
 labels:
   - bug
 created: 2026-11-24
@@ -14,7 +14,7 @@ When `chitty edit <ID> -s review --summary-file F` is refused because the config
 
 ### Change
 
-In `Repo.edit` in `src/chitty/store.py`, the block guarded by `if (entering_review or passing_review) and (self.root / ".git").exists() and not edit.skip_current_version:` (around lines 1013-1059) can refuse in several ways: `_require_current_version` (before and after the check), `require_clean()` (before and after the check), check timed out, check command not found, and check failed. Every `ChittyError` raised from that block, for entering `review` and for `review` → `done` alike, gets the sentence `Nothing from this edit was saved.` appended after a space. Git or configuration errors raised inside the block get it too, which stays true because nothing is written before the block ends. Do it in one place: wrap the block's body in `try`/`except ChittyError as error:` and raise a new `ChittyError` with the extended message, `from error`. Messages keep their existing text, for example the check-failed message still ends with its path to `.chitty/check.log` before the new sentence.
+In `Repo.edit` in `src/chitty/store.py`, the block guarded by `if (entering_review or passing_review) and (self.root / ".git").exists() and not edit.skip_current_version:` (around lines 1013-1059) can refuse in several ways: `_require_current_version` (before and after the check), `require_clean()` (before and after the check), check timed out, check command not found, and check failed. Every `ChittyError` raised from that block, for entering `review` and for `review` → `done` alike, gets the sentence `Nothing from this edit was saved.`: if the existing message does not end with a period, add one, then a space and the sentence. Git or configuration errors raised inside the block get it too, which stays true because nothing is written before the block ends. Do it in one place: wrap the block's body in `try`/`except ChittyError as error:` and raise a new `ChittyError` with the extended message, `from error`. Messages keep their existing text, for example the check-failed message still ends with its path to `.chitty/check.log` before the new sentence.
 
 Only for a failed check (non-zero status), when `self.config.setup` is set, add one more sentence after that: ``If this worktree was never set up, run `<setup>` first.``
 
@@ -30,7 +30,7 @@ Saving any part of a refused edit; running `setup` automatically; refusals outsi
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
+- [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
 - [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
 ## Notes
@@ -51,3 +51,5 @@ Suggestion origin: chitty
 - 2026-11-24T23:02:18Z zesty-coral-newt: changed description
 - 2026-11-24T23:02:18Z zesty-coral-newt planning → cold-read
 - 2026-11-24T23:03:48Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T23:05:38Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T23:05:38Z zesty-coral-newt cold-read → todo
