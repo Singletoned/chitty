@@ -12,29 +12,31 @@ On 2026-11-23, while planning TASK-358, TASK-599, TASK-629 and TASK-632 (all ret
 
 ### Change
 
-In `Repo._reject_planning_conflicts` in `src/chitty/store.py` (around line 943), the refusal stays `planning edit for <ID> conflicts with <ref>`. When `<ref>` is `refs/heads/<branch>` and `<branch>` is the ticket's own branch (`str(task_id).lower()`, for example `task-358`), append a hint:
+In `Repo._reject_planning_conflicts` in `src/chitty/store.py` (around line 943), the refusal stays `planning edit for <ID> conflicts with <ref>`. When `<ref>` equals `refs/heads/{str(task_id).lower()}` exactly (the ticket's own branch, for example `refs/heads/task-358` or `refs/heads/task-fer4eb`; compare with that, not with the planning `branch` argument), append a hint:
 
 - if `git.worktree_for_branch(self.root, branch)` returns a path: ``; edit it from its worktree `<path>` ``;
 - otherwise: ``; edit it on branch `<branch>` ``.
 
 Any other ref (`main`, another `plan/` branch, a remote) keeps today's message unchanged.
 
-Put the wording in a pure function in `store.py`, `planning_conflict_message(task_id: TaskId, ref: str, worktree: Path | None) -> str`, and look up the worktree in `_reject_planning_conflicts` only for the ticket's own branch.
+Put the wording in a pure function in `store.py`, `planning_conflict_message(task_id: TaskId, ref: str, worktree: Path | None) -> str`, which embeds `str(worktree)` exactly as given (no resolving, no escaping), and look up the worktree in `_reject_planning_conflicts` only for the ticket's own branch.
 
 Decided: only the ticket's own branch gets a hint. For `main` or a sibling `plan/` branch the fix is a rebase or a merge, which this ticket does not try to advise.
 
 ### Tests
 
-Property, with Hypothesis (this repository's property-testing tool), in `tests/test_planning_worktrees.py` or a new `tests/test_planning_conflict_message.py`: for any ticket number (1 to 9999), any ref drawn from `refs/heads/task-<n>` (the ticket's own), `refs/heads/task-<m>` with `m != n` (built from `n`, for example `n + 1`), `refs/heads/main`, `refs/heads/plan/<word>` and `refs/remotes/origin/task-<n>`, and a worktree of `None` or a drawn path:
+Property, with Hypothesis (this repository's property-testing tool), in a new `tests/test_planning_conflict_message.py`. Draw the ticket ID with the `task_ids` strategy from `tests/test_property_ticket_source.py`, and also `TaskId("TASK", provisional_suffix(...))` from `chitty.ids` so suffix IDs such as `TASK-FER4EB` occur. Draw the ref from: `refs/heads/<own>` where `<own>` is `str(task_id).lower()`; each local name from `decoy_names(task_id)` in the same file, as `refs/heads/<name>` (it includes the upper-case `str(task_id)` and `<own>0`); `refs/heads/main`; `refs/heads/plan/<word>`; and each remote name from `decoy_names` plus `origin/<own>`, as `refs/remotes/<name>`. Draw the worktree as `None` or a `Path` built from `st.text` of letters, digits, spaces, `é` and `` ` ``, under `/tmp/`. Then:
 
-- the message always starts with `planning edit for TASK-<n> conflicts with <ref>`;
-- it contains `edit it from its worktree` exactly when the ref is the ticket's own local branch and the worktree is not `None`, and then contains the path;
-- it contains ``edit it on branch `task-<n>` `` exactly when the ref is the ticket's own local branch and the worktree is `None`;
-- for every other ref it equals `planning edit for TASK-<n> conflicts with <ref>`.
+- the message always starts with `planning edit for <ID> conflicts with <ref>`;
+- it contains ``; edit it from its worktree `<str(worktree)>` `` exactly when the ref is `refs/heads/<own>` and the worktree is not `None`;
+- it contains ``; edit it on branch `<own>` `` exactly when the ref is `refs/heads/<own>` and the worktree is `None`;
+- for every other ref it equals `planning edit for <ID> conflicts with <ref>`.
 
-Example, in `tests/test_planning_worktrees.py`, extending `test_ticket_deletion_conflict` (which makes `task-1` with no worktree, then calls `assert_conflict("refs/heads/task-1")`): assert the stderr also contains ``edit it on branch `task-1` ``. A second example adds a worktree for `task-1` (`git worktree add <tmp>/task-1-tree task-1`) and asserts stderr contains ``edit it from its worktree `<that path>` ``. `assert_conflict` checks for the old text with `assertIn`, so existing conflict tests keep passing.
+Example, in `tests/test_planning_worktrees.py`, extending `test_ticket_deletion_conflict` (which makes `task-1` with no worktree, then calls `assert_conflict("refs/heads/task-1")`): assert the stderr also contains ``edit it on branch `task-1` ``. A second example adds a worktree for `task-1` (`git worktree add <self.tmp>/task-1-tree task-1`, with `self.addCleanup(self.git, "worktree", "remove", "--force", <path>)` as the other worktree tests do) and asserts stderr contains ``edit it from its worktree `<path>` ``, comparing with `str(path.resolve())` because Git prints the real path (on macOS under `/private`); `self.tmp` is already resolved. `assert_conflict` checks for the old text with `assertIn`, so existing conflict tests keep passing.
 
 ### Out of scope
+
+`git.worktree_for_branch` returning `None` when `git worktree list` fails (it catches `ChittyError`); that older behaviour has other callers and is left as it is.
 
 Advice for conflicts with `main` or other branches; any change to when a conflict is reported; the plan guide's wording (a separate untestable ticket can add one line once this lands).
 
@@ -53,3 +55,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:21:48Z zesty-coral-newt: changed notes
 - 2026-11-24T23:08:08Z zesty-coral-newt: changed title, description, acceptance criteria
 - 2026-11-24T23:08:08Z zesty-coral-newt backlog → cold-read
+- 2026-11-24T23:09:47Z zesty-coral-newt: changed description
