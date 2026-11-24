@@ -1,6 +1,8 @@
 ---
 title: Keep --summary text when edit -s review refuses on a failed check
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -22,3 +24,4 @@ Suggestion origin: chitty
 
 - 2026-11-24T22:21:37Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:38Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:48Z zesty-coral-newt: changed labels
