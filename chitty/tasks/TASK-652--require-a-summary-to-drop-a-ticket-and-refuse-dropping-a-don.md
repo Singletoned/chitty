@@ -14,7 +14,7 @@ created: 2026-11-24
 
 Decided with the person, 2026-11-22: there must be a quick, honest way to kill a ticket. Today the only way to close a ticket is `done`, which (with review on) needs `-s review` first, so closing a ticket nobody will build means pretending it was reviewed. On 2026-11-22 an agent asked to close the superseded `TASK-451` that way was stopped by its own permission check as faking a review; the ticket is still open. Add a terminal status for tickets that will not be done.
 
-Split from `TASK-599` on 2026-11-24; `TASK-599` adds the `dropped` status, and this ticket adds the rules for dropping a ticket with `chitty edit`. The `chitty add` refusal is `{C}`.
+Split from `TASK-599` on 2026-11-24; `TASK-599` adds the `dropped` status, and this ticket adds the rules for dropping a ticket with `chitty edit`. The `chitty add` refusal is `TASK-653`.
 
 Decisions:
 
@@ -37,3 +37,4 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 ## History
 
 - 2026-11-24T08:45:25Z sunny-hazel-gannet → planning
+- 2026-11-24T08:45:42Z sunny-hazel-gannet: changed description
