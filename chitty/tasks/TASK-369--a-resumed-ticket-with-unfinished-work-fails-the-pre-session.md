@@ -1,6 +1,6 @@
 ---
 title: A resumed ticket with unfinished work fails the pre-session check and goes to error
-status: backlog
+status: review
 labels:
   - bug
 created: 2026-11-17
@@ -18,3 +18,4 @@ Checked 2026-11-24: fixed. `b386eaec` (2026-11-20, "Resume todo branches with wo
 
 - 2026-11-17T22:48:50Z kind-umber-toad → backlog
 - 2026-11-24T12:26:19Z kind-navy-toad: changed notes
+- 2026-11-24T12:26:21Z kind-navy-toad backlog → review
