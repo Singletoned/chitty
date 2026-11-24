@@ -189,6 +189,7 @@ class TestRunErrorReporter(CliTestCase):
                 "PI_SESSION_ID": "",
                 "CODEX_THREAD_ID": "",
                 "CODEX_SESSION_ID": "",
+                "ANTIGRAVITY_CONVERSATION_ID": "",
             },
         ):
             self.run_cli("run", "--mode", "work", exit_code=3)

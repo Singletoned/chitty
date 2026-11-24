@@ -46,6 +46,7 @@ class RepoTestCase(unittest.TestCase):
             "PI_SESSION_ID",
             "CODEX_THREAD_ID",
             "CODEX_SESSION_ID",
+            "ANTIGRAVITY_CONVERSATION_ID",
         }
         environ = {k: v for k, v in os.environ.items() if k not in excluded}
         environ["HOME"] = str(self.tmp / "home")

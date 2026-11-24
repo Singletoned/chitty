@@ -28,5 +28,5 @@ src/chitty/
   they cannot diverge.
 - Actor identity comes from `CHITTY_ACTOR`, else a harness session variable
   (`CLAUDE_CODE_SESSION_ID`, `CHITTY_PI_SESSION_ID`, `PI_SESSION_ID`,
-  `CODEX_SESSION_ID`). `chitty run` sets `CHITTY_ACTOR` for the agent and its
+  `CODEX_SESSION_ID`, `ANTIGRAVITY_CONVERSATION_ID`). `chitty run` sets `CHITTY_ACTOR` for the agent and its
   descendants so they share one identity.

@@ -32,6 +32,7 @@ class TestActor(unittest.TestCase):
             "PI_SESSION_ID",
             "CODEX_THREAD_ID",
             "CODEX_SESSION_ID",
+            "ANTIGRAVITY_CONVERSATION_ID",
         ):
             with self.subTest(variable=variable):
                 first = self.resolve({variable: "session-123"})
@@ -59,6 +60,31 @@ class TestActor(unittest.TestCase):
         )
         self.assertEqual(child, parent)
 
+    def test_antigravity_conversation_identity_and_precedence(self):
+        antigravity = self.resolve({"ANTIGRAVITY_CONVERSATION_ID": "conversation-1"})
+        codex = self.resolve({"CODEX_SESSION_ID": "conversation-1"})
+        self.assertNotEqual(antigravity, codex)
+        self.assertEqual(
+            self.resolve(
+                {
+                    "CLAUDE_CODE_SESSION_ID": "conversation-1",
+                    "ANTIGRAVITY_CONVERSATION_ID": "conversation-1",
+                }
+            ),
+            self.resolve({"CLAUDE_CODE_SESSION_ID": "conversation-1"}),
+        )
+        for environment in (
+            {"ANTIGRAVITY_AGENT": "agent"},
+            {"ANTIGRAVITY_CONVERSATION_ID": "  "},
+        ):
+            with (
+                self.subTest(environment=environment),
+                self.assertRaisesRegex(ChittyError, "cannot determine actor"),
+            ):
+                self.resolve(environment)
+
     def test_missing_identity_fails_loudly(self):
-        with self.assertRaisesRegex(ChittyError, "cannot determine actor"):
+        with self.assertRaisesRegex(
+            ChittyError, "cannot determine actor.*ANTIGRAVITY_CONVERSATION_ID"
+        ):
             self.resolve({})

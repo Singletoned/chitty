@@ -234,7 +234,7 @@ eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 
 `chitty whoami` derives a stable readable name from `CHITTY_ACTOR` (when set),
 or a coding harness session identity: `CLAUDE_CODE_SESSION_ID`, `PI_SESSION_ID`,
-`CODEX_THREAD_ID`, or `CODEX_SESSION_ID`. `CHITTY_ACTOR` is for people and other tools. `chitty run` sets it for its
+`CODEX_THREAD_ID`, `CODEX_SESSION_ID`, or `ANTIGRAVITY_CONVERSATION_ID`. `CHITTY_ACTOR` is for people and other tools. `chitty run` sets it for its
 agent and descendants so they share one actor name. For standalone Pi sessions,
 use Pi's native `PI_SESSION_ID` or set `CHITTY_ACTOR` in the environment.
 
