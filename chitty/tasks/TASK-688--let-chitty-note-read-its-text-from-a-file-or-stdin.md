@@ -1,0 +1,48 @@
+---
+title: Let `chitty note` read its text from a file or stdin
+status: planning
+created: 2026-11-24
+---
+
+## Description
+
+### Why
+
+The managed `AGENTS.md` block tells agents to pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc. `chitty note ID TEXT` has no such option, so on 2026-11-23 an agent ran `chitty note TASK-557 --file -`, got `No such option '--file'`, and had to find `chitty edit ID --note-file -` instead.
+
+### Change
+
+In `src/chitty/cli.py`, `note` (around line 883):
+
+- Make the `text` argument optional (`required=False`, default `None`).
+- Add `--file`, `type=click.File(encoding="utf-8")`, help `Read TEXT from a file ('-' for stdin).`, like `--note-file` on `edit`.
+- Exactly one of TEXT and `--file` must be given; otherwise raise `click.UsageError("give TEXT or --file, not both")` when both are given, or `click.UsageError("give TEXT or --file")` when neither is. Check this before opening the repository or writing anything.
+- Then call `repo.edit(..., Edit(note=text))` as today, with the text read from the file when `--file` is given.
+
+Decided: the option is `--file`, the name the agent tried and the name the `AGENTS.md` advice suggests, not `--text-file`. A TEXT of `-` stays literal text, as today, so no existing call changes meaning.
+
+The MCP `note` tool already takes its text as a value; it does not change. Behaviour stays in `store.py`; this is a thin CLI change.
+
+### Tests
+
+The property follows `compare_option` in `tests/test_property_text_files.py`, which already runs inline, file and stdin modes for `add` and `edit` with Hypothesis and the `TEXT` strategy. `compare_option` builds `option + "-file"`, which does not fit `note`, so write a separate helper or test for `note`. Hypothesis is this repository's property-testing tool. The usage-error test needs no property: it has two fixed cases, both listed.
+
+### Out of scope
+
+Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording.
+
+## Acceptance Criteria
+
+- [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin) leave the ticket with the same Notes. It fails without the change.
+- [ ] A new test in `tests/test_cli.py` shows `chitty note 1` with neither TEXT nor `--file`, and `chitty note 1 Text --file <path>`, each exit with status 2, name both `TEXT` and `--file` in the output, and leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
+
+## Notes
+
+Suggestion origin: chitty
+
+## History
+
+- 2026-11-24T22:21:50Z zesty-coral-newt → backlog
+- 2026-11-24T22:21:51Z zesty-coral-newt: changed notes
+- 2026-11-24T22:50:14Z zesty-coral-newt: changed title, description, acceptance criteria
+- 2026-11-24T22:50:14Z zesty-coral-newt backlog → planning
