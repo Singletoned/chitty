@@ -1,6 +1,6 @@
 ---
 title: Derive the actor from `ANTIGRAVITY_CONVERSATION_ID`
-status: cold-read
+status: todo
 created: 2026-11-24
 ---
 
@@ -20,7 +20,7 @@ Also add `ANTIGRAVITY_CONVERSATION_ID` to the cleared variables in `tests/suppor
 
 ### Tests
 
-No property: the input is a small fixed set of variables, each listed and tested. The new name test sets the same value, for example `conversation-1`, under `ANTIGRAVITY_CONVERSATION_ID` and under `CODEX_SESSION_ID`, and asserts the names differ. Without the change the first call raises `ChittyError`, so the test fails. As for the other variables, a value that is empty or only whitespace counts as unset (`actor()` strips it); the new test also sets `ANTIGRAVITY_CONVERSATION_ID="  "` alone and expects the `cannot determine actor` error. It also sets only `ANTIGRAVITY_AGENT` and expects the same error, so an implementation keyed on the wrong variable fails.
+No property: the input is a small fixed set of variables, each listed and tested. The new name test sets the same value, for example `conversation-1`, under `ANTIGRAVITY_CONVERSATION_ID` and under `CODEX_SESSION_ID`, and asserts the names differ. Without the change the first call raises `ChittyError`, so the test fails. As for the other variables, a value that is empty or only whitespace counts as unset (`actor()` strips it); the new test also sets `ANTIGRAVITY_CONVERSATION_ID="  "` alone and expects the `cannot determine actor` error. It also sets only `ANTIGRAVITY_AGENT` and expects the same error, so an implementation keyed on the wrong variable fails. Of these cases only the first (only `ANTIGRAVITY_CONVERSATION_ID` set) fails on todays code; the others guard against wrong implementations. Also change the existing `test_missing_identity_fails_loudly` (`tests/test_actor.py`, around line 62) to assert the error text contains `ANTIGRAVITY_CONVERSATION_ID`.
 
 ### Out of scope
 
@@ -28,7 +28,7 @@ No property: the input is a small fixed set of variables, each listed and tested
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_actor.py`, `test_harness_session_names_are_stable_and_readable` includes `ANTIGRAVITY_CONVERSATION_ID`, and a new test shows: with only `ANTIGRAVITY_CONVERSATION_ID` set, `actor()` returns a name that differs from the one `CODEX_SESSION_ID` gives for the same value; with both `CLAUDE_CODE_SESSION_ID` and `ANTIGRAVITY_CONVERSATION_ID` set, it returns the Claude Code name; with only `ANTIGRAVITY_AGENT`, or only a whitespace `ANTIGRAVITY_CONVERSATION_ID`, it raises `cannot determine actor`. The new test fails without the change.
+- [ ] In `tests/test_actor.py`, `test_harness_session_names_are_stable_and_readable` includes `ANTIGRAVITY_CONVERSATION_ID`, and a new test shows: with only `ANTIGRAVITY_CONVERSATION_ID` set, `actor()` returns a name that differs from the one `CODEX_SESSION_ID` gives for the same value; with both `CLAUDE_CODE_SESSION_ID` and `ANTIGRAVITY_CONVERSATION_ID` set, it returns the Claude Code name; with only `ANTIGRAVITY_AGENT`, or only a whitespace `ANTIGRAVITY_CONVERSATION_ID`, it raises `cannot determine actor`. The first of these cases fails without the change.
 - [ ] `test_missing_identity_fails_loudly` asserts the error names `ANTIGRAVITY_CONVERSATION_ID`, and `tests/support.py` and `tests/test_run_error_reporter.py` clear `ANTIGRAVITY_CONVERSATION_ID` wherever they clear `CODEX_SESSION_ID`.
 - [ ] `README.md` and `docs/plan/module-layout.md` list `ANTIGRAVITY_CONVERSATION_ID` with the other harness identities, and `make check` passes.
 
@@ -49,3 +49,5 @@ Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravi
 - 2026-11-24T22:47:04Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T22:47:04Z zesty-coral-newt cold-read → planning
 - 2026-11-24T22:47:08Z zesty-coral-newt planning → cold-read
+- 2026-11-24T22:48:02Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T22:48:02Z zesty-coral-newt cold-read → todo
