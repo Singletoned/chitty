@@ -1,6 +1,6 @@
 ---
 title: Remove merged branches of archived tickets whatever their status
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-24
@@ -34,8 +34,8 @@ The `dropped` status (TASK-599) and any change to `chitty archive` itself.
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_run_removes_merged_branches.py` adds one ticket in each status in `chitty.model.STATUSES` other than `done`, archives each with `chitty archive`, makes a branch for each at `main`, and runs `chitty run --errors`: every branch is deleted and stderr has `removed merged branch <branch>` for each. It fails without the change.
-- [ ] A second new test archives a `planning` ticket whose merged branch has a worktree with an untracked file: the branch is kept and stderr has `kept merged branch <branch>: worktree has uncommitted changes`. `test_keeps_non_done_statuses` (tickets not archived) still passes unchanged, and `make check` passes.
+- [x] A new test in `tests/test_run_removes_merged_branches.py` adds one ticket in each status in `chitty.model.STATUSES` other than `done`, archives each with `chitty archive`, makes a branch for each at `main`, and runs `chitty run --errors`: every branch is deleted and stderr has `removed merged branch <branch>` for each. It fails without the change.
+- [x] A second new test archives a `planning` ticket whose merged branch has a worktree with an untracked file: the branch is kept and stderr has `kept merged branch <branch>: worktree has uncommitted changes`. `test_keeps_non_done_statuses` (tickets not archived) still passes unchanged, and `make check` passes.
 
 ## Plan
 
@@ -44,6 +44,10 @@ Update merged-branch cleanup to ignore status for archived tickets while preserv
 ## Notes
 
 Suggestion origin: chitty
+
+Reviewed: implementation matches the archived-ticket decision and preserves other keep checks.
+1: pass - make check passed; the new status test against the merge base with PYTHONPATH pointing to its src failed with AssertionError: True is not false.
+2: pass - make check passed (1171 tests, 623 subtests), including unchanged test_keeps_non_done_statuses; the new dirty-worktree test against the merge base with PYTHONPATH pointing to its src failed because stderr reported TASK-2 is planning instead of uncommitted changes.
 
 ## Summary
 
@@ -62,3 +66,5 @@ Implemented archived-ticket cleanup and regression coverage for statuses and dir
 - 2026-11-24T23:13:11Z daring-ginger-urchin: wrote the plan
 - 2026-11-24T23:20:09Z daring-ginger-urchin: changed summary
 - 2026-11-24T23:20:09Z daring-ginger-urchin doing → review
+- 2026-11-24T23:26:44Z daring-amber-eel: changed notes; ticked acceptance criteria
+- 2026-11-24T23:26:44Z daring-amber-eel review → done
