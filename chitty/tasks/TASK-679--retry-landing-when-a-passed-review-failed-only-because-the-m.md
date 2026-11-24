@@ -12,7 +12,10 @@ In the echonomicon project (/Users/singletoned/src/singletoned/echonomicon), TAS
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-24, merged from TASK-666 (same TASK-199 landing failure): `edit -s review` counts the caller as having worked on the ticket, so the following `-s done --note "Reviewed: ..."` is refused even though the caller changed no code. TASK-666 suggests either a land-only path or that a status move to `review` alone should not count as work. Overlaps point 2 of TASK-563 (leave a ticket blocked only by a dirty main checkout as `done` and retry).
+
 ## History
 
 - 2026-11-24T22:21:41Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:43Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:27Z zesty-coral-newt: changed notes
