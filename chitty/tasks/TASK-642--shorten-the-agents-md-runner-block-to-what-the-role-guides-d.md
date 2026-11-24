@@ -1,6 +1,6 @@
 ---
 title: Shorten the `AGENTS.md` runner block to what the role guides do not say
-status: doing
+status: review
 labels:
   - untestable
 owner: untestable
@@ -59,3 +59,4 @@ Tightened, nothing removed: the landing paragraph (worker never lands its own ti
 - 2026-11-23T12:45:01Z friendly-zinc-dormouse planning → todo
 - 2026-11-24T22:56:05Z mellow-teal-jay: changed summary
 - 2026-11-24T23:17:35Z human todo → doing
+- 2026-11-24T23:17:57Z human doing → review
