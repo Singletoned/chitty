@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-24
@@ -53,3 +53,4 @@ Suggestion origin: chitty
 - 2026-11-24T23:03:48Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:05:38Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:05:38Z zesty-coral-newt cold-read → todo
+- 2026-11-24T23:22:19Z calm-white-raven todo → doing
