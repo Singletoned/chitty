@@ -40,7 +40,7 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 
 ## Plan
 
-Add focused CLI and model regression tests and confirm failures before implementing the status, store validation, archive protections, and documentation; then run formatting and checks and record results.
+Add dropped status definitions and docs; write the specified regression tests and verify they fail before implementation, then format, run make check, and record evidence.
 
 ## Notes
 
@@ -142,3 +142,4 @@ Planner, 2026-11-24: split. The latest blocker (success cases cannot assert a me
 - 2026-11-24T09:24:14Z sunny-hazel-gannet cold-read → planning
 - 2026-11-24T09:24:19Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:27:35Z rosy-russet-wren todo → doing
+- 2026-11-24T09:29:47Z rosy-russet-wren: wrote the plan
