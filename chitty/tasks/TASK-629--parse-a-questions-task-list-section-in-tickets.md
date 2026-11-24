@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: todo
+status: doing
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -137,3 +137,4 @@ Planner, 2026-11-24: requeued. The last return was about session budget, not the
 - 2026-11-23T21:33:52Z zesty-hazel-dormouse doing → planning
 - 2026-11-24T08:46:26Z sunny-hazel-gannet: changed owner, notes
 - 2026-11-24T08:46:26Z sunny-hazel-gannet planning → todo
+- 2026-11-24T09:22:57Z sunny-khaki-crane todo → doing
