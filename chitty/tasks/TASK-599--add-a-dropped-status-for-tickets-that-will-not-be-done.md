@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -141,3 +141,4 @@ Planner, 2026-11-24: split. The latest blocker (success cases cannot assert a me
 - 2026-11-24T09:24:02Z sunny-hazel-gannet: changed description, acceptance criteria
 - 2026-11-24T09:24:14Z sunny-hazel-gannet cold-read → planning
 - 2026-11-24T09:24:19Z sunny-hazel-gannet planning → todo
+- 2026-11-24T09:27:35Z rosy-russet-wren todo → doing
