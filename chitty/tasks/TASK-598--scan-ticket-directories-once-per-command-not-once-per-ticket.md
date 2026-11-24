@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: planning
 priority: high
 depends_on:
   - TASK-639
@@ -153,6 +153,11 @@ Planner run, 2026-11-24, on copies of `src` at `90385907`: each version failed i
 
 Planner, 2026-11-24, anchors for the `Wrong versions, exact` note (from its second cold read): `for archived in (False, True):` and `except ids.IdError: continue` each occur several times in `src/chitty/store.py`. W2 changes only the occurrence inside `_working_ticket_index`, the one directly followed by `for path in self._files(context, archived):` and `index.setdefault(...)`. W5 changes only the `continue` inside `_ref_ticket_index`, directly after `found, _ = ids.parse_filename(path.name)`. Apply the patches to the branch tip, not `90385907`. W6 is information only: the `_ref_index.clear()` line is already covered by the existing `tests/test_source_copy.py::TestSourceCopy::test_invalidation`, so criterion 1 does not need it. The earlier planner list (W3 catching `Exception`) is superseded.
 
+Review failed (design): Criterion 1 requires preservation tests to pass against unchanged behaviour, but the review instruction requires every required test to fail without the change. As in the previous design review, those requirements conflict; W1-W5 mutations demonstrate sensitivity to different defects, not failure against the merge base. Decide how review can accept preservation tests without weakening their specified behaviour. This prevents a passing review of criterion 1.
+1: fail - Against merge-base source, `.venv/bin/python -m pytest tests/test_list_performance.py -q` with PYTHONPATH set to that source reported 2 failed, 10 passed: both scan tests fail, but the preservation tests pass. At the tip, 12 passed. Independently tested W1-W5: respectively 1 failed/11 passed, 6/6, 2/10, 1/11, 1/11. The prior design review reported the same baseline conflict; the revised mutation procedure does not meet the stated review requirement.
+2: pass - Three before/after/before comparisons were stable and byte-identical, 1967, 11047 and 38990 bytes. List times before: 4.874, 4.653, 4.900 seconds; after: 2.412, 2.376, 2.584 seconds. This resolves the unstable comparison in the previous design review.
+3: pass - `make check` reported 1176 passed, 620 subtests passed.
+
 ## Summary
 
 Implemented working-tree and ref indexes. Scan count and behavior tests pass; prior notes record W1-W5 wrong-version test runs, output comparisons, timings and make check. Review check timed out in this session; full make check passed previously (1173 tests, 602 subtests).
@@ -224,3 +229,5 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T08:57:43Z nimble-lilac-puffin todo → doing
 - 2026-11-24T09:07:21Z nimble-lilac-puffin: changed summary
 - 2026-11-24T09:07:21Z nimble-lilac-puffin doing → review
+- 2026-11-24T09:18:09Z golden-jade-marten: changed owner, acceptance criteria, notes
+- 2026-11-24T09:18:09Z golden-jade-marten review → planning
