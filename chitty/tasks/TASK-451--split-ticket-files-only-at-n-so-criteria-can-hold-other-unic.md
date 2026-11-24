@@ -44,6 +44,10 @@ Write each kind of example as its own test method, using `subTest` for each char
 - [ ] The renumbering-caller example (`with_criterion_text` with `a\u2028b` and `a\x1db`) passes and fails against `main`; `tests/test_property_renumbering.py` passes
 - [ ] The frontmatter example passes (a title `a\x85b` reads back unchanged, written as `"a\u0085b"`) and fails against `main`
 
+## Plan
+
+Implement the agreed ticket: first run the specified new regression cases against main and record baseline results; add focused tests, update parser line splitting and criterion validation, and preserve YAML round-tripping for NEL. Run targeted tests and make check, then commit implementation and tests and hand off to review.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -117,3 +121,4 @@ Planning blocker: Acceptance criterion 1 still says every new test except three 
 - 2026-11-24T07:43:39Z sunny-hazel-gannet planning → todo
 - 2026-11-24T07:44:08Z sunny-hazel-gannet: changed description
 - 2026-11-24T09:18:36Z kind-teal-urchin todo → doing
+- 2026-11-24T09:21:07Z kind-teal-urchin: wrote the plan
