@@ -22,7 +22,7 @@ Change:
 Tests:
 
 - `tests/test_property_next.py`: in `facts_strategy`, draw `labels=st.sampled_from(((), ("bug",), ("cli",), ("cli", "bug"), ("bugs",)))` in both `st.builds` calls. In `test_choice_obeys_filters_and_independent_order`, the expected sort key becomes `(order.index(f.status), "bug" not in f.labels, TEST_PRIORITY_RANK[f.priority], <id key as now>)`. `("bugs",)` is a distractor that must not count.
-- `tests/test_next.py`: let the `add` helper take `labels` (a list), passing each as `-l`. In `test_selection_order_and_exclusions`, add cases: `"bug before higher priority"`, `(("High", {"priority": "high"}), ("Bug", {"labels": ["bug"], "priority": "low"}))`, expecting `("work", "TASK-2")`; `"status before bug"`, `(("Bug", {"labels": ["bug"]}), ("Review", {"status": "review"}))`, expecting `("review", "TASK-2")`; `"priority within bugs"`, `(("Bug low", {"labels": ["bug"], "priority": "low"}), ("Bug high", {"labels": ["bug"], "priority": "high"}))`, expecting `("work", "TASK-2")`.
+- `tests/test_next.py`: let the `add` helper take `labels` (a list), passing each as `-l`. In `test_selection_order_and_exclusions`, add cases: `"bug before higher priority"`, `(("High", {"priority": "high"}), ("Bug", {"labels": ["bug"], "priority": "low"}))`, expecting `("work", "TASK-2")`; `"status before bug"`, `(("Bug", {"labels": ["bug"]}), ("Review", {"status": "review"}))`, expecting `("review", "TASK-2")`; `"priority within bugs"`, `(("Bug low", {"labels": ["bug"], "priority": "low"}), ("Bug high", {"labels": ["bug"], "priority": "high"}))`, expecting `("work", "TASK-2")`. Move the loop that deletes the ticket files at the end of each subtest into a `finally`, so a failing case does not leave tickets behind for the next one (without it, on `main` the first failing case makes every later case fail).
 - `tests/test_cli.py`, new `test_list_puts_bug_tickets_first_within_each_status` next to `test_list_orders_and_displays_priority`, in the same style: add `High` (`-p high`), `Bug low` (`-p low -l bug`), `Bug unset` (`-l bug`), `Doing high` (`-p high`), `Doing bug` (`-l bug`), then `edit 4 -s doing` and `edit 5 -s doing`. Assert the `id` order of `json("list")` is `TASK-3, TASK-2, TASK-1, TASK-5, TASK-4`.
 
 The property test and the three new `test_next.py` cases except `"status before bug"` and `"priority within bugs"`, and the new list test, fail on `main`; `"status before bug"` and `"priority within bugs"` pin behaviour this ticket keeps.
@@ -33,6 +33,11 @@ The property test and the three new `test_next.py` cases except `"status before 
 - [ ] `README.md` and `docs/plan/cli.md` describe the bug-first order as the Description says
 - [ ] `make check` passes
 
+## Notes
+
+Planner, 2026-11-25: probed on a trial patch of `main` with the tests and change as described. Before the change: the property test fails (`TicketFacts` has no `labels`), `"bug before higher priority"` fails, and the list test gives `TASK-1, TASK-3, TASK-2, TASK-4, TASK-5`. The two regression cases failed too, but only because the failing case left its tickets behind; hence the `finally`. After the change all three tests pass. No other test changed result.
+
 ## History
 
 - 2026-11-25T10:34:00Z sunny-hazel-gannet → planning
+- 2026-11-25T10:38:08Z sunny-hazel-gannet: changed description, notes
