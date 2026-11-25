@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: planning
+status: todo
 labels:
   - bug
 priority: high
@@ -57,3 +57,4 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 - 2026-11-25T21:15:32Z daring-ebony-wren planning → cold-read
 - 2026-11-25T21:19:25Z daring-ebony-wren: changed description, acceptance criteria
 - 2026-11-25T21:19:25Z daring-ebony-wren cold-read → planning
+- 2026-11-25T21:19:46Z daring-ebony-wren planning → todo
