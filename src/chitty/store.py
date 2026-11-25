@@ -2194,12 +2194,13 @@ def init_repo(
 
 
 def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[StoredTask]:
-    """Order tasks by selected status and priority, preserving source order for ties."""
+    """Order tasks by status, bug label, and priority, preserving source order for ties."""
     status_order = {status: index for index, status in enumerate(statuses)}
     return sorted(
         tasks,
         key=lambda stored: (
             status_order[stored.task.frontmatter.status],
+            "bug" not in stored.task.frontmatter.labels,
             PRIORITY_ORDER[stored.task.frontmatter.priority],
         ),
     )
@@ -2229,6 +2230,7 @@ def _selection_facts(
         stored.archived,
         locked,
         tuple(dependency_facts),
+        tuple(fm.labels),
     )
 
 

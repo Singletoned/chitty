@@ -1125,6 +1125,20 @@ class TestAddShowList(CliTestCase):
             [task["priority"] for task in tasks], ["high", None, "medium", "low", "high"]
         )
 
+    def test_list_puts_bug_tickets_first_within_each_status(self):
+        self.run_cli("add", "High", "-d", "x", "-p", "high")
+        self.run_cli("add", "Bug low", "-d", "x", "-p", "low", "-l", "bug")
+        self.run_cli("add", "Bug unset", "-d", "x", "-l", "bug")
+        self.run_cli("add", "Doing high", "-d", "x", "-p", "high")
+        self.run_cli("add", "Doing bug", "-d", "x", "-l", "bug")
+        self.run_cli("add", "Near miss", "-d", "x", "-p", "high", "-l", "Bug", "-l", "bugs")
+        self.run_cli("edit", "4", "-s", "doing")
+        self.run_cli("edit", "5", "-s", "doing")
+        self.assertEqual(
+            [task["id"] for task in self.json("list")],
+            ["TASK-3", "TASK-2", "TASK-1", "TASK-6", "TASK-5", "TASK-4"],
+        )
+
     def test_list_shows_every_status_glyph(self):
         self.run_cli("add", "Backlog", "-s", "backlog")
         self.run_cli("add", "Todo", "-d", "x")

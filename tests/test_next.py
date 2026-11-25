@@ -41,6 +41,10 @@ class TestNext(CliTestCase):
         args = ["add", title, "-d", "Description.", "-s", status]
         if priority := fields.get("priority"):
             args.extend(["--priority", str(priority)])
+        labels = fields.get("labels", [])
+        assert isinstance(labels, list)
+        for label in labels:
+            args.extend(["-l", str(label)])
         if owner := fields.get("owner"):
             args.extend(["--owner", str(owner)])
         depends_on = fields.get("depends_on", [])
@@ -65,6 +69,24 @@ class TestNext(CliTestCase):
                 ("work", "TASK-2"),
             ),
             (
+                "bug before higher priority",
+                (("High", {"priority": "high"}), ("Bug", {"labels": ["bug"], "priority": "low"})),
+                ("work", "TASK-2"),
+            ),
+            (
+                "status before bug",
+                (("Bug", {"labels": ["bug"]}), ("Review", {"status": "review"})),
+                ("review", "TASK-2"),
+            ),
+            (
+                "priority within bugs",
+                (
+                    ("Bug low", {"labels": ["bug"], "priority": "low"}),
+                    ("Bug high", {"labels": ["bug"], "priority": "high"}),
+                ),
+                ("work", "TASK-2"),
+            ),
+            (
                 "priority before identifier",
                 (("Low", {"priority": "low"}), ("High", {"priority": "high"})),
                 ("work", "TASK-2"),
@@ -82,12 +104,17 @@ class TestNext(CliTestCase):
         )
         for name, tasks, expected in cases:
             with self.subTest(name):
-                for title, fields in tasks:
-                    self.add(title, **fields)
-                action = next_action(Repo.open(self.root))
-                self.assertEqual((action.mode, str(action.id)), expected)
-                for path in (self.root / "chitty/tasks").glob("*.md"):
-                    path.unlink()
+                try:
+                    for title, fields in tasks:
+                        options = dict(fields)
+                        status = options.pop("status", "todo")
+                        assert isinstance(status, str)
+                        self.add(title, status=status, **options)
+                    action = next_action(Repo.open(self.root))
+                    self.assertEqual((action.mode, str(action.id)), expected)
+                finally:
+                    for path in (self.root / "chitty/tasks").glob("*.md"):
+                        path.unlink()
 
     def test_configured_job_order_and_omitted_status(self):
         self.add("Review", status="review")

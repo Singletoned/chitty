@@ -47,6 +47,7 @@ def facts_strategy(draw):
         archived=st.booleans(),
         locked=st.booleans(),
         dependencies=dependency,
+        labels=st.sampled_from(((), ("bug",), ("cli",), ("cli", "bug"), ("bugs",))),
     )
     # Most samples contain several eligible tickets, making ordering meaningful.
     preferred = st.builds(
@@ -59,6 +60,7 @@ def facts_strategy(draw):
         archived=st.just(False),
         locked=st.just(False),
         dependencies=st.just(()),
+        labels=st.sampled_from(((), ("bug",), ("cli",), ("cli", "bug"), ("bugs",))),
     )
     count = draw(st.integers(min_value=2, max_value=5))
     return draw(st.lists(preferred, min_size=count, max_size=count) | st.lists(fact, max_size=20))
@@ -121,6 +123,7 @@ class TestPropertyNext(unittest.TestCase):
             (fact for fact in facts if independently_choosable(fact, mode, owner)),
             key=lambda f: (
                 order.index(f.status),
+                "bug" not in f.labels,
                 TEST_PRIORITY_RANK[f.priority],
                 (f.id.rsplit("-", 1)[0], int(f.id.rsplit("-", 1)[1])),
             ),

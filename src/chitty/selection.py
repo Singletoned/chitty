@@ -24,6 +24,7 @@ class TicketFacts:
     archived: bool
     locked: bool
     dependencies: tuple[DependencyFact, ...] = ()
+    labels: tuple[str, ...] = ()
 
 
 STATUSES = ("review", "doing", "todo")
@@ -121,7 +122,7 @@ def choose(
     owner: str | None = None,
     order: tuple[str, ...] = STATUSES,
 ) -> TicketFacts | None:
-    """Return the first selectable ticket in configured status, priority, ID order."""
+    """Return the first ticket in configured status, bug label, priority, ID order."""
     statuses = mode_statuses(modes)
     candidates: list[TicketFacts] = []
     for fact in facts:
@@ -136,6 +137,11 @@ def choose(
         candidates.append(fact)
     return min(
         candidates,
-        key=lambda fact: (order.index(fact.status), PRIORITY_RANK[fact.priority], _id_key(fact.id)),
+        key=lambda fact: (
+            order.index(fact.status),
+            "bug" not in fact.labels,
+            PRIORITY_RANK[fact.priority],
+            _id_key(fact.id),
+        ),
         default=None,
     )

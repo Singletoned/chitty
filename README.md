@@ -138,8 +138,8 @@ file whose ID is unique (use `chitty move`). It does not rewrite references, bec
 `depends_on` or `parent` naming the shared ID cannot say which file it meant;
 it lists each ticket naming the old ID for you to check.
 `chitty next` chooses tickets in the configured `job_order` (default
-`["review", "doing", "todo"]`), then uses priority and task ID across all
-non-human contexts. Omitted statuses are never selected. Plain selection
+`["review", "doing", "todo"]`), then puts tickets labelled `bug` first, then
+uses priority and task ID, across all non-human contexts. Omitted statuses are never selected. Plain selection
 skips every owned ticket; `chitty list` uses the same skip rules and reports
 ownership, human context, unmet `todo` dependencies, and broken dependency
 references. `doing` and `review` tickets ignore dependencies; dependency

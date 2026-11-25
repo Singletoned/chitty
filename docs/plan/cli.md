@@ -38,8 +38,9 @@ file holds the decisions behind them.
   `todo`, `doing`, `blocked`, `error`, `review`, from every context. `-c` and `-s`
   narrow and repeat; `-s` can add `backlog` and `done`. `--all` is every
   status, still without archives.
-- Order: selected statuses, then `high`, `medium` or unset, `low`. `--json`
-  uses the same order.
+- Order: selected statuses, then tickets labelled `bug`, then `high`, `medium`
+  or unset, `low`. `--json` uses the same order.
+  - 2026-11-25: tickets labelled `bug` sort first within each status.
 - Rows: `TASK-12  🔨 doing  ⏫  Add search to the task list  [cli,search]`.
   - Status glyphs: `💤 bklog`, `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`,
     `⛔ blckd`, `💥 error`, `👀 revw`, `✅ done`.
