@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -33,3 +33,4 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-SSVZJ6
 - 2026-11-25T23:48:15Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
 - 2026-11-25T23:48:15Z calm-ochre-quail backlog → planning
+- 2026-11-25T23:48:29Z calm-ochre-quail planning → cold-read
