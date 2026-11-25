@@ -116,6 +116,24 @@ class TestSourceCopy(CliTestCase):
         (self.root / "chitty/tasks/TASK-1--example.md").write_text("not frontmatter\n")
         self.assert_copy(self.source(1), "task-1", "chitty/tasks/TASK-1--example.md", "branch")
 
+    def test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it(self):
+        self.init_git()
+        path = self.file("K7Q2MY")
+        path.write_text(path.read_text().replace("status: todo", "provisional: true\nstatus: todo"))
+        self.commit()
+        self.git("checkout", "-b", "task-k7q2my")
+        path = self.file("K7Q2MY", "branch")
+        path.write_text(path.read_text().replace("status: todo", "provisional: true\nstatus: todo"))
+        self.commit()
+        self.git("checkout", "main")
+        self.assert_copy(
+            self.source("K7Q2MY"), "task-k7q2my", "chitty/tasks/TASK-K7Q2MY--example.md", "branch"
+        )
+        self.git("merge", "--ff-only", "task-k7q2my")
+        self.assert_copy(
+            self.source("K7Q2MY"), None, "chitty/tasks/TASK-K7Q2MY--example.md", "branch"
+        )
+
     def test_provisional_only_on_its_branch_is_read_from_it(self):
         self.init_git()
         self.git("checkout", "-b", "task-k7q2mx")

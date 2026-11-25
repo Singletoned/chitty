@@ -19,9 +19,6 @@ def ticket_source(
     contains: Callable[[str, str], bool],
     changed_on_both: Callable[[str], bool],
 ) -> str:
-    if provisional:
-        return WORKING_TREE
-
     branch_name = str(task_id).lower()
     candidates: dict[str, str] = {}
     if branch_name in local_tips:
@@ -33,6 +30,8 @@ def ticket_source(
     if main_tip is not None:
         candidates = {ref: tip for ref, tip in candidates.items() if not contains(main_tip, tip)}
     if not candidates:
+        if provisional:
+            return WORKING_TREE
         if current_branch == main_branch:
             return WORKING_TREE
         if main_tip is None:

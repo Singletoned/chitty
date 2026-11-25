@@ -160,14 +160,39 @@ def call(
 
 class TestTicketSource(unittest.TestCase):
     @given(st.data(), graphs(), task_ids(), st.sampled_from(MAIN_BRANCHES), st.booleans())
-    def test_rule_1_provisional_reads_the_working_tree(
+    def test_rule_1_provisional_follows_the_other_rules_unless_none_apply(
         self, data, graph, task_id, main_branch, changed
     ):
         maps = data.draw(ref_maps(task_id, graph.commits, graph.commits, data.draw(st.booleans())))
         main_tip = data.draw(st.none() | st.sampled_from(graph.commits))
         current = data.draw(current_branches(task_id, main_branch))
-        result = call(task_id, True, current, main_branch, main_tip, maps, graph.contains, changed)
-        self.assertEqual(result, WORKING_TREE)
+
+        def outcome(provisional):
+            try:
+                return (
+                    "value",
+                    call(
+                        task_id,
+                        provisional,
+                        current,
+                        main_branch,
+                        main_tip,
+                        maps,
+                        graph.contains,
+                        changed,
+                    ),
+                )
+            except ChittyError as error:
+                return ("error", str(error))
+
+        ordinary = outcome(False)
+        provisional = outcome(True)
+        if ordinary == ("value", main_branch) or (
+            ordinary[0] == "error" and "has no tip" in ordinary[1]
+        ):
+            self.assertEqual(provisional, ("value", WORKING_TREE))
+        else:
+            self.assertEqual(provisional, ordinary)
 
     @given(st.data(), graphs(), task_ids(), st.sampled_from(MAIN_BRANCHES), st.booleans())
     def test_rules_2_and_3_candidates_main_contains_are_dropped(
