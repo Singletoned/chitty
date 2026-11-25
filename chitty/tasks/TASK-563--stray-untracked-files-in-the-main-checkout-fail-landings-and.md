@@ -22,7 +22,10 @@ Worth deciding:
 
 Suggestion origin: chitty
 
+Point 2 (leave a ticket whose landing was stopped only by a dirty main checkout as done, and retry) is TASK-679, with more evidence; plan it there.
+
 ## History
 
 - 2026-11-22T09:47:34Z friendly-jade-stoat → backlog
 - 2026-11-22T09:47:35Z friendly-jade-stoat: changed notes
+- 2026-11-25T20:45:00Z golden-coral-stoat: changed notes
