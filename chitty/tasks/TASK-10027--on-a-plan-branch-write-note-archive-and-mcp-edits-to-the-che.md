@@ -5,7 +5,7 @@ labels:
   - bug
 priority: high
 created: 2026-11-25
-provisional: true
+moved_from: TASK-YCGMCS
 ---
 
 ## Description
@@ -45,3 +45,4 @@ Out of scope: branches other than `plan/`, and warnings instead of refusals (TAS
 - 2026-11-25T22:57:58Z calm-ochre-quail planning → cold-read
 - 2026-11-25T22:59:10Z calm-ochre-quail: changed description
 - 2026-11-25T22:59:10Z calm-ochre-quail cold-read → todo
+- 2026-11-25T22:59:30Z calm-ochre-quail: renumbered from TASK-YCGMCS

@@ -16,7 +16,7 @@ Suggestion origin: shelfpath
 
 Archived 2026-11-25: archiving from a plan/ worktree folded into TASK-602, which removes the latest-version-on-another-branch refusal; cancelling from main folded into TASK-599.
 
-Planner, 2026-11-25: covered by TASK-YCGMCS (on a `plan/` branch, `chitty archive <ID>` archives the checkout's copy). Archive this once that lands; it cannot be archived from a plan branch until then.
+Planner, 2026-11-25: covered by TASK-10027 (on a `plan/` branch, `chitty archive <ID>` archives the checkout's copy). Archive this once that lands; it cannot be archived from a plan branch until then.
 
 ## History
 
