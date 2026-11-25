@@ -19,6 +19,10 @@ Out of scope: changing `chitty check` exit codes, adding warnings to `chitty edi
 
 - [ ] In `src/chitty/check.py`, `check()` emits a `warning` `Problem` (excluded by `errors()`) for each exceeded limit (`MAX_SPEC_WORDS`, `MAX_TODO_NOTES_WORDS`, `MAX_COLD_READS`) and none at or below the limit or outside the listed statuses, verified by Hypothesis property tests varying status, word counts, and transition histories.
 
+## Plan
+
+Add the three status-scoped warning checks alongside the existing criteria warning. Exercise boundaries, statuses, combined specification word counts and transition histories through property tests of check(), including warning severity and errors() filtering.
+
 ## History
 
 - 2026-11-25T18:17:32Z human → cold-read
@@ -26,3 +30,4 @@ Out of scope: changing `chitty check` exit codes, adding warnings to `chitty edi
 - 2026-11-25T18:19:10Z human cold-read → todo
 - 2026-11-25T18:32:36Z human: renumbered from TASK-WQSEDK
 - 2026-11-25T20:54:43Z golden-maroon-urchin todo → doing
+- 2026-11-25T20:58:41Z golden-maroon-urchin: wrote the plan
