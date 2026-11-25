@@ -20,7 +20,10 @@ Suggestion for `chitty guide plan` (and the matching line in `guide cold-read`):
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: already built. `src/chitty/roles/plan.md` says to ground input contracts in the real source, prefer boundary validation, and prefer fixes that make the ticket shorter; `src/chitty/roles/cold-read.md` matches.
+
 ## History
 
 - 2026-11-25T22:28:40Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:41Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:23Z calm-ochre-quail: changed notes
