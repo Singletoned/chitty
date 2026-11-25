@@ -15,7 +15,10 @@ Suggestion: add one line to `chitty guide plan`: "When a criterion refers to a l
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: obsolete. The counted lists were wrong versions, which `chitty guide plan` no longer asks for.
+
 ## History
 
 - 2026-11-25T22:28:51Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:53Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:18Z calm-ochre-quail: changed notes
