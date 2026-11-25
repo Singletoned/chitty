@@ -1,6 +1,6 @@
 ---
 title: Read a provisional ticket from its own branch when that branch is ahead of main
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -31,8 +31,8 @@ Both new tests fail on `main` today. To show it, write the tests first and run t
 
 ## Acceptance Criteria
 
-- [ ] The new property test `test_rule_1_provisional_follows_the_other_rules_unless_none_apply` and `test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` pass, and each fails before the change to `src/chitty/ticket_source.py`; a ticket note records both runs. Regression tests: `test_provisional_is_read_from_the_id`, `test_provisional_only_on_its_branch_is_read_from_it`, `test_provisional_in_linked_worktree`
-- [ ] `make check` passes
+- [x] The new property test `test_rule_1_provisional_follows_the_other_rules_unless_none_apply` and `test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` pass, and each fails before the change to `src/chitty/ticket_source.py`; a ticket note records both runs. Regression tests: `test_provisional_is_read_from_the_id`, `test_provisional_only_on_its_branch_is_read_from_it`, `test_provisional_in_linked_worktree`
+- [x] `make check` passes
 
 ## Plan
 
@@ -45,6 +45,10 @@ Suggestion origin: chitty
 Planner, 2026-11-25: probed on a trial patch of `main` (the change and both tests as described). Before the change both new tests fail; after it, `tests/test_property_ticket_source.py` and `tests/test_source_copy.py` pass (23 tests), including the three regression tests. No other test changed result.
 
 Both added tests were run before the source fix and failed: property counterexample showed provisional selecting working tree instead of remote branch; source-copy regression failed reading the main copy. After implementing the no-candidates-only fallback, focused suite passed (23 passed) and make check passed (1180 passed).
+
+Reviewed: implementation matches the specified fallback and tests.
+1: pass - Both new tests failed against the merge base with branch test files: `python -m pytest -q tests/test_property_ticket_source.py::TestTicketSource::test_rule_1_provisional_follows_the_other_rules_unless_none_apply tests/test_source_copy.py::TestSourceCopy::test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` printed 2 failed; the property selected working tree instead of a branch and the copy returned original instead of branch. Both and the three unchanged regression tests pass in `make check`. Worker note records both runs.
+2: pass - `make check` printed 1180 passed, 1 warning, 623 subtests passed.
 
 ## History
 
@@ -62,3 +66,5 @@ Both added tests were run before the source fix and failed: property counterexam
 - 2026-11-25T10:38:26Z lively-pearl-lapwing: wrote the plan
 - 2026-11-25T10:41:40Z lively-pearl-lapwing: changed notes
 - 2026-11-25T10:45:21Z lively-pearl-lapwing doing → review
+- 2026-11-25T11:04:11Z intrepid-dusky-wren: changed notes; ticked acceptance criteria
+- 2026-11-25T11:04:11Z intrepid-dusky-wren review → done
