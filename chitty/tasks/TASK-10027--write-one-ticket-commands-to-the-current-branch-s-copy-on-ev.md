@@ -1,6 +1,6 @@
 ---
 title: Write one-ticket commands to the current branch's copy on every branch except `main` and `task-<n>`
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -41,6 +41,11 @@ Add real-Git CLI and MCP regression tests, confirm failures, then route branch-l
 
 Regression tests failed before the fix: CLI note on plan/one and hotfix/x and MCP edit on hotfix/x all refused the main branch version.
 
+Reviewed: Branch-local single-ticket changes meet the criteria.
+1: pass - make check passes; test_cli_one_ticket_commands_on_branches passes for both branches. On merge-base with branch tests and PYTHONPATH pointing to baseline src, it fails for both with latest committed version on branch main.
+2: pass - make check passes; test_mcp_one_ticket_commands_on_hotfix passes. The same baseline test fails at MCP edit with latest committed version on branch main.
+3: pass - make check: 1200 passed, 632 subtests passed, including the existing planning worktree tests.
+
 ## Summary
 
 CLI and MCP single-ticket edits, notes and archives now use the current non-main, non-ticket branch copy; MCP show reads it too. Real-Git regression tests cover plan and hotfix branches, isolation, and archive boundaries. make check passes; the new CLI and MCP tests failed before the fix.
@@ -69,3 +74,5 @@ CLI and MCP single-ticket edits, notes and archives now use the current non-main
 - 2026-11-25T23:28:08Z eager-russet-quail: changed notes
 - 2026-11-25T23:34:32Z eager-russet-quail: changed summary; ticked acceptance criteria
 - 2026-11-25T23:36:41Z eager-russet-quail doing → review
+- 2026-11-25T23:44:09Z plucky-dusky-falcon: changed notes
+- 2026-11-25T23:44:09Z plucky-dusky-falcon review → done
