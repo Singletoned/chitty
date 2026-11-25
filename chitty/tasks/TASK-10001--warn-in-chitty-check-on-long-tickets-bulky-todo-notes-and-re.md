@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on long tickets, bulky `todo` notes, and repeated cold reads
-status: review
+status: done
 created: 2026-11-25
 moved_from: TASK-WQSEDK
 ---
@@ -27,6 +27,9 @@ Add the three status-scoped warning checks alongside the existing criteria warni
 
 Property test confirmed failing against the original checker: planning ticket with 499 description words and 2 criterion words produced no specification warning.
 
+Reviewed: Changes meet the ticket requirements.
+1: pass - make check: 1185 passed; the property test covers statuses, boundaries, histories, warning severity and errors filtering. In a temporary merge-base worktree, PYTHONPATH=<worktree>/src:<worktree> TEST_TIER=check pytest -q tests/test_check_ticket_size.py --tb=short failed as expected: planning, 499 description words and 2 criterion words produced no warning (False != True).
+
 ## Summary
 
 Added status-scoped warnings for specification length, todo notes and repeated cold reads, with property tests covering boundaries, histories and archived tickets. make check passed.
@@ -42,3 +45,5 @@ Added status-scoped warnings for specification length, todo notes and repeated c
 - 2026-11-25T21:02:01Z golden-maroon-urchin: changed notes
 - 2026-11-25T21:06:21Z golden-maroon-urchin: changed summary; ticked acceptance criteria
 - 2026-11-25T21:08:55Z golden-maroon-urchin doing → review
+- 2026-11-25T21:18:39Z able-violet-newt: changed notes
+- 2026-11-25T21:18:39Z able-violet-newt review → done
