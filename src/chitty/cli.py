@@ -907,10 +907,18 @@ def _warn_active(task_id: TaskId, active: bool) -> None:
 
 @cli.command()
 @click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
-@click.argument("text")
+@click.argument("text", required=False)
+@click.option("--file", "text_file", type=click.File(encoding="utf-8"), help="Read TEXT from a file ('-' for stdin).")
 @json_option
-def note(task_id: str, text: str, as_json: bool) -> None:
+def note(task_id: str, text: str | None, text_file: TextIO | None, as_json: bool) -> None:
     """Append TEXT as a paragraph to a task's Notes section."""
+    if text is not None and text_file is not None:
+        raise click.UsageError("give TEXT or --file, not both")
+    if text is None and text_file is None:
+        raise click.UsageError("give TEXT or --file")
+    if text_file is not None:
+        text = text_file.read()
+    assert text is not None
     repo = _repo()
     resolved_id = repo.resolve(task_id)
     change, active = repo.edit_current(resolved_id, Edit(note=text))
