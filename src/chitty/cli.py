@@ -29,6 +29,7 @@ from chitty.config import (
     version_key,
 )
 from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, NoNextTicket, ProvisionalOffMain
+from chitty.ids import TaskId
 from chitty.import_backlog import import_directory
 from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
@@ -842,16 +843,11 @@ def edit(
     if human_edit:
         os.environ["CHITTY_ACTOR"] = "human"
     try:
-        if not human_edit and (branch := repo.planning_branch()):
-            change, active = repo.edit_planning(resolved_id, changes, branch)
-            if active:
-                click.echo(
-                    f"warning: runner work or review is in progress for {resolved_id}; "
-                    "coordinate with the other agent before continuing",
-                    err=True,
-                )
-        else:
+        if human_edit:
             change = repo.edit(resolved_id, changes)
+        else:
+            change, active = repo.edit_current(resolved_id, changes)
+            _warn_active(resolved_id, active)
     finally:
         if human_edit:
             if previous_actor is None:
@@ -876,6 +872,15 @@ def edit(
                 )
 
 
+def _warn_active(task_id: TaskId, active: bool) -> None:
+    if active:
+        click.echo(
+            f"warning: runner work or review is in progress for {task_id}; "
+            "coordinate with the other agent before continuing",
+            err=True,
+        )
+
+
 @cli.command()
 @click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @click.argument("text")
@@ -883,7 +888,10 @@ def edit(
 def note(task_id: str, text: str, as_json: bool) -> None:
     """Append TEXT as a paragraph to a task's Notes section."""
     repo = _repo()
-    _report(repo.edit(repo.resolve(task_id), Edit(note=text)), as_json, "updated")
+    resolved_id = repo.resolve(task_id)
+    change, active = repo.edit_current(resolved_id, Edit(note=text))
+    _warn_active(resolved_id, active)
+    _report(change, as_json, "updated")
 
 
 @cli.command("check")
@@ -1027,7 +1035,7 @@ def archive(task_id: str | None, as_json: bool) -> None:
     repo = _repo()
     verb = "deleted" if repo.config.archive == "delete" else "archived"
     if task_id is not None:
-        change = repo.archive(repo.resolve(task_id))
+        change = repo.archive_current(repo.resolve(task_id))
         _report(change, as_json, verb)
         if not as_json and verb == "deleted":
             for path in change.paths[:-1]:

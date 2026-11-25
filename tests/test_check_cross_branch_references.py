@@ -95,14 +95,12 @@ class TestCrossBranchReferences(CliTestCase):
         self.assertIn("depends_on TASK-3: no such task", result.stdout)
         self.assertNotIn("file must start with '---' frontmatter", result.stderr)
 
-    def test_edit_on_another_branch_is_refused(self):
+    def test_edit_on_another_branch_writes_local_copy(self):
         self.git("checkout", "-B", "b", "main")
         self.git("checkout", "main")
         self.add_second()
         self.git("checkout", "b")
 
-        result = self.run_cli("edit", "1", "--depends-on", "2", exit_code=1)
+        self.run_cli("edit", "1", "--depends-on", "2")
 
-        self.assertIn("latest committed version is on branch main", result.stderr)
-        self.assertEqual(self.git("status", "--porcelain"), "")
-        self.assertNotIn("TASK-2", (self.root / "chitty/tasks/TASK-1--one.md").read_text())
+        self.assertIn("TASK-2", (self.root / "chitty/tasks/TASK-1--one.md").read_text())

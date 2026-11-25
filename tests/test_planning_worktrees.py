@@ -4,7 +4,7 @@ from contextlib import chdir
 from pathlib import Path
 from unittest.mock import patch
 
-from chitty import locks
+from chitty import locks, mcp
 from chitty.ids import TaskId
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
@@ -52,11 +52,66 @@ class TestPlanningWorktrees(CliTestCase):
         assert stored is not None
         self.assertEqual(stored.path, self.path)
         self.assertEqual(stored.task.frontmatter.title, "First")
-        feature = self.tmp / "feature"
-        self.git("worktree", "add", "-b", "feature", str(feature))
-        self.addCleanup(self.git, "worktree", "remove", "--force", str(feature))
-        with chdir(feature):
-            self.run_cli("edit", "TASK-1", "--note", "No draft", exit_code=1)
+
+    def test_cli_one_ticket_commands_on_branches(self):
+        for branch in ("plan/one", "hotfix/x"):
+            with self.subTest(branch=branch):
+                worktree = self.plan if branch == "plan/one" else self.tmp / "hotfix"
+                if branch != "plan/one":
+                    self.git("worktree", "add", "-b", branch, str(worktree), "main")
+                    self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+                head = self.git("rev-parse", "main")
+                before = self.path.read_bytes()
+                with chdir(worktree):
+                    self.run_cli("note", "TASK-1", "Branch note")
+                    self.run_cli("edit", "TASK-1", "--title", "Branch title")
+                    self.run_cli("archive", "TASK-1")
+                self.assertEqual(self.git("rev-list", "--count", "main..HEAD", cwd=worktree), "3")
+                self.assertEqual(self.git("rev-parse", "main"), head)
+                self.assertEqual(self.path.read_bytes(), before)
+                self.assertTrue(
+                    (worktree / "chitty/tasks/archive/TASK-1--branch-title.md").exists()
+                )
+                if branch == "plan/one":
+                    self.git("reset", "--hard", "main", cwd=worktree)
+
+    def test_mcp_one_ticket_commands_on_hotfix(self):
+        worktree = self.tmp / "hotfix"
+        self.git("worktree", "add", "-b", "hotfix/x", str(worktree), "main")
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        head = self.git("rev-parse", "main")
+        before = self.path.read_bytes()
+        with chdir(worktree):
+            mcp.edit("TASK-1", title="Branch title")
+            self.assertEqual(mcp.show("TASK-1")["title"], "Branch title")
+            mcp.note("TASK-1", "Branch note")
+            mcp.archive("TASK-1")
+        self.assertEqual(self.git("rev-list", "--count", "main..HEAD", cwd=worktree), "3")
+        self.assertEqual(self.git("rev-parse", "main"), head)
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertTrue((worktree / "chitty/tasks/archive/TASK-1--branch-title.md").exists())
+
+    def test_branch_selection(self):
+        repo = Repo.open(self.root)
+        for branch, expected in (("main", None), ("task-1", None), ("hotfix/x", "hotfix/x")):
+            with (
+                self.subTest(branch=branch),
+                patch.object(repo, "_current_branch", return_value=branch),
+            ):
+                self.assertEqual(repo.planning_branch(), expected)
+
+    def test_archive_requires_local_copy_and_move(self):
+        with chdir(self.plan):
+            local = self.plan / self.path.relative_to(self.root)
+            local.unlink()
+            result = self.run_cli("archive", "TASK-1", exit_code=1)
+            self.assertIn("no local draft", result.stderr)
+            self.git("restore", str(local), cwd=self.plan)
+            config = self.plan / "chitty.toml"
+            config.write_text(config.read_text().replace('archive = "move"', 'archive = "delete"'))
+            result = self.run_cli("archive", "TASK-1", exit_code=1)
+            self.assertIn('archiving on a branch needs archive = "move"', result.stderr)
+            self.assertTrue(local.exists())
 
     def snapshot(self):
         git_dir = Path(self.git("rev-parse", "--absolute-git-dir", cwd=self.plan))

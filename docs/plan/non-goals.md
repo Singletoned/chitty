@@ -10,4 +10,4 @@ Current, not permanent: half the original list was later built.
 - Wizards or prompts.
 - Configurable statuses.
 - Moving tickets between repositories: `suggest` there, `archive` here.
-- Writing a ticket on another branch: writes name that branch's worktree.
+- Writing directly into another branch's worktree.

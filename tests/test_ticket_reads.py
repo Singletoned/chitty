@@ -158,7 +158,7 @@ class TestTicketReads(CliTestCase):
         task = Repo.open(self.root).find(TaskId.parse("TASK-1")).task
         self.assertEqual(task.frontmatter.title, "branch")
 
-    def test_unrelated_linked_worktree_ignores_uncommitted_title(self):
+    def test_unrelated_linked_worktree_shows_uncommitted_title(self):
         linked = self.root / "linked"
         self.git("worktree", "add", "-b", "feature", str(linked))
         path = linked / "chitty/tasks/TASK-2--example.md"
@@ -169,5 +169,5 @@ class TestTicketReads(CliTestCase):
             result = self.run_cli("show", "TASK-2")
         finally:
             os.chdir(previous)
-        self.assertIn("title: second", result.stdout)
-        self.assertNotIn("title: uncommitted", result.stdout)
+        self.assertIn("title: uncommitted", result.stdout)
+        self.assertNotIn("title: second", result.stdout)

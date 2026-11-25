@@ -943,9 +943,13 @@ class Repo:
         if shutil.which("git") is None:
             return None  # Preserve the usual command-specific Git prerequisite errors.
         branch = self._current_branch()
-        if branch is not None and branch.startswith("plan/") and branch != self._main_branch():
+        if branch is None or branch == self._main_branch():
+            return None
+        try:
+            task_id = TaskId.parse(branch)
+        except ids.IdError:
             return branch
-        return None
+        return None if branch == str(task_id).lower() else branch
 
     def find_for_show(self, task_id: TaskId) -> StoredTask:
         if self.planning_branch() and (draft := self._working_task(task_id)) is not None:
@@ -978,11 +982,20 @@ class Repo:
                 if changed_id == task_id:
                     raise ChittyError(f"planning edit for {task_id} conflicts with {ref}")
 
-    def edit_planning(self, task_id: TaskId, edit: Edit, branch: str) -> tuple[Change, bool]:
+    def _branch_task(self, task_id: TaskId, branch: str) -> StoredTask:
         draft = self._working_task(task_id)
         if draft is None:
             raise ChittyError(f"no local draft for {task_id} in {self.root / BACKLOG_DIR}")
         self._reject_planning_conflicts(task_id, branch)
+        return draft
+
+    def edit_current(self, task_id: TaskId, edit: Edit) -> tuple[Change, bool]:
+        if branch := self.planning_branch():
+            return self.edit_planning(task_id, edit, branch)
+        return self.edit(task_id, edit), False
+
+    def edit_planning(self, task_id: TaskId, edit: Edit, branch: str) -> tuple[Change, bool]:
+        draft = self._branch_task(task_id, branch)
         active = locks.holder(self.root, str(task_id)) is not None
         self._prepare_write()
         if edit.is_empty():
@@ -1297,6 +1310,17 @@ class Repo:
             raise ChittyError("sequential ticket numbers can only be allocated on main")
         return ids.next_number(used)
 
+    def archive_current(self, task_id: TaskId) -> Change:
+        branch = self.planning_branch()
+        if branch is None:
+            return self.archive(task_id)
+        if self.config.archive == "delete":
+            raise ChittyError('archiving on a branch needs archive = "move"')
+        stored = self._branch_task(task_id, branch)
+        self._prepare_write()
+        with self._all_or_nothing():
+            return self._commit(self._set_archived(stored, True), "archive")
+
     def archive(self, task_id: TaskId) -> Change:
         self._prepare_write()
         with self._all_or_nothing():
@@ -1352,7 +1376,9 @@ class Repo:
 
     def _archive(self, task_id: TaskId) -> Change:
         if self.config.archive == "move":
-            return self._set_archived(task_id, True)
+            stored = self.find(task_id)
+            self._require_current_version(stored)
+            return self._set_archived(stored, True)
         return self._delete_done(task_id)
 
     def _deleted_numbers(self, context: Context) -> list[int]:
@@ -1397,7 +1423,9 @@ class Repo:
     def restore(self, task_id: TaskId) -> Change:
         self._prepare_write()
         with self._all_or_nothing():
-            return self._commit(self._set_archived(task_id, False), "restore")
+            stored = self.find(task_id)
+            self._require_current_version(stored)
+            return self._commit(self._set_archived(stored, False), "restore")
 
     def move(self, task_id: TaskId, target: Context) -> Change:
         """Give a task the next ID in another context and rewrite references to it."""
@@ -1552,9 +1580,8 @@ class Repo:
     def _references(self, references: Sequence[str]) -> list[str]:
         return [str(self.resolve(reference)) for reference in dict.fromkeys(references)]
 
-    def _set_archived(self, task_id: TaskId, archived: bool) -> Change:
-        stored = self.find(task_id)
-        self._require_current_version(stored)
+    def _set_archived(self, stored: StoredTask, archived: bool) -> Change:
+        task_id = stored.id
         if stored.archived == archived:
             state = "archived" if archived else "not archived"
             raise ChittyError(f"{task_id} is already {state}")

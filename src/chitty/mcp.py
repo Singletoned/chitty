@@ -176,7 +176,7 @@ def next_(owner: str | None = None) -> dict[str, str]:
 @_tool("show", "Show a task. Work on one task per session: start here.")
 def show(id: str) -> dict[str, Any]:
     repo = _repo()
-    stored = repo.find(repo.resolve(id))
+    stored = repo.find_for_show(repo.resolve(id))
     return {**stored.as_dict(), "running": locks.holder(repo.root, str(stored.id))}
 
 
@@ -234,13 +234,13 @@ def edit(
         summary=summary,
         override_review_independence=override_review_independence,
     )
-    return repo.edit(repo.resolve(id), changes).task.as_dict()
+    return repo.edit_current(repo.resolve(id), changes)[0].task.as_dict()
 
 
 @_tool("note", "Append text as a paragraph to a task's Notes section.")
 def note(id: str, text: str) -> dict[str, Any]:
     repo = _repo()
-    return repo.edit(repo.resolve(id), Edit(note=text)).task.as_dict()
+    return repo.edit_current(repo.resolve(id), Edit(note=text))[0].task.as_dict()
 
 
 @_tool("move", "Move a task to another context in this repo; it gets a new ID there.")
@@ -262,7 +262,7 @@ def renumber(path: str) -> dict[str, Any]:
 def archive(id: str | None = None) -> dict[str, Any] | list[dict[str, Any]]:
     repo = _repo()
     if id is not None:
-        return repo.archive(repo.resolve(id)).task.as_dict()
+        return repo.archive_current(repo.resolve(id)).task.as_dict()
     return [change.task.as_dict() for change in repo.archive_done()]
 
 
