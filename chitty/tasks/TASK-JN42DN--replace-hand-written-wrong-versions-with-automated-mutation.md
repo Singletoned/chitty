@@ -15,7 +15,10 @@ Suggestion: make mutation checking a tool, not ticket prose. Add an optional con
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: merged into TASK-594.
+
 ## History
 
 - 2026-11-25T22:28:18Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:20Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:29Z calm-ochre-quail: changed notes
