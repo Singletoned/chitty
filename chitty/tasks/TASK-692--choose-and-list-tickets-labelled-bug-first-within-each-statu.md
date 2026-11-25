@@ -33,6 +33,10 @@ Order of work: first add only the `labels` field to `TicketFacts` and pass it fr
 - [ ] `README.md` and `docs/plan/cli.md` describe the bug-first order as the Description says
 - [ ] `make check` passes
 
+## Plan
+
+Add labels to selection facts and propagate them, first running the specified new tests before changing sort keys to capture assertion-level failures. Then implement bug-first ordering in selection/store, add/update focused tests and docs, run make check, and commit implementation changes.
+
 ## Notes
 
 Planner, 2026-11-25: probed on a trial patch of `main` with the tests and change as described. Before the change: the property test fails (`TicketFacts` has no `labels`), `"bug before higher priority"` fails, and the list test gives `TASK-1, TASK-3, TASK-2, TASK-4, TASK-5`. The two regression cases failed too, but only because the failing case left its tickets behind; hence the `finally`. After the change all three tests pass. No other test changed result.
@@ -47,3 +51,4 @@ Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TA
 - 2026-11-25T10:40:12Z sunny-hazel-gannet: changed notes
 - 2026-11-25T10:40:12Z sunny-hazel-gannet planning → todo
 - 2026-11-25T10:46:45Z tidy-lilac-raven todo → doing
+- 2026-11-25T10:59:01Z tidy-lilac-raven: wrote the plan
