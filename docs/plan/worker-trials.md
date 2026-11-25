@@ -208,6 +208,26 @@ lines added in `src/` and `tests/`, as a share of the reference's.
   not worse by itself; the blind review (not yet run) is what would judge
   quality.
 
+**Luna and terra on Pi, read side by side (2026-11-25).** Both changed the same
+code in nearly the same way on four of the five tickets; `TASK-515` is the same
+line for line. Where they differ, terra was better each time:
+- On `TASK-639` terra carried out the ticket's check of every method that creates
+  directories. It found that `refresh_setup` and `_prepare_write` create context
+  directories through `init_repo` without invalidating, and fixed both. Luna
+  dismissed `init_repo` as "not a `Repo` method" and missed them; the reference
+  missed them too.
+- On `TASK-609` luna's handler falls back to an empty log if `check.log` is
+  missing, hiding a failure. Terra reads the file directly, as the reference
+  does. Luna also put its new constant next to a function rather than with the
+  module's others.
+- Terra's tests were tighter: a direct `git merge-base --is-ancestor` call where
+  luna wrapped it in `assertTrue(... == "")`, a simple string edit of the config
+  where luna used `re.sub`, and an added check that `main` did not move.
+- Luna added docstrings terra left out, and once mangled a note by passing
+  backticks through the shell, which it then corrected.
+Luna's code is correct and close to terra's; terra's is a little leaner and
+more careful about edge cases.
+
 Conclusion: once Pi is on 1.5.2 and the harness is clean, every setup completes
 well-planned tickets correctly. Cost differs by about 40 times. Pi + luna is
 cheapest at about 2 cents a ticket; Pi + terra is the best balance of cost,
