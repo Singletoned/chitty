@@ -20,7 +20,7 @@ Decided with the person, 2026-11-25:
 - `backlog` stays separate; planners take `to-plan` tickets first.
 - Existing `planning` tickets move to `to-plan` once, when repository setup upgrades.
 
-Children, in order: `TASK-10029` (add `to-plan`, send returns there), `TASK-10032` (refuse other actors' writes to a `planning` ticket), `TASK-10031` (migrate on setup upgrade), `TASK-10033` (plan guide). Separate but related: `TASK-10028` (rename `todo` to `to-do`) and `TASK-599` (`dropped`), which also change the status set; `TASK-340`, which this claim makes safer.
+Children, in order: `TASK-10029` (add `to-plan`, send returns there), `TASK-10030` (guide, prompt and doc wording), `TASK-10032` (refuse other actors' writes to a `planning` ticket), `TASK-10031` (migrate on setup upgrade), `TASK-10033` (plan guide). Separate but related: `TASK-10028` (rename `todo` to `to-do`) and `TASK-599` (`dropped`), which also change the status set; `TASK-340`, which this claim makes safer.
 
 This ticket is done when its children are.
 
@@ -29,3 +29,4 @@ This ticket is done when its children are.
 - 2026-11-25T22:56:40Z golden-coral-stoat → backlog
 - 2026-11-25T23:00:49Z golden-coral-stoat: changed title, labels, description
 - 2026-11-25T23:08:29Z golden-coral-stoat: changed description
+- 2026-11-25T23:13:07Z golden-coral-stoat: changed description
