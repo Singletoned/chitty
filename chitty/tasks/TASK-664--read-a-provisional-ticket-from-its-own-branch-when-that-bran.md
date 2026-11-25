@@ -34,6 +34,10 @@ Both new tests fail on `main` today. To show it, write the tests first and run t
 - [ ] The new property test `test_rule_1_provisional_follows_the_other_rules_unless_none_apply` and `test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` pass, and each fails before the change to `src/chitty/ticket_source.py`; a ticket note records both runs. Regression tests: `test_provisional_is_read_from_the_id`, `test_provisional_only_on_its_branch_is_read_from_it`, `test_provisional_in_linked_worktree`
 - [ ] `make check` passes
 
+## Plan
+
+Replace provisional early-return behavior with the specified no-candidates fallback. Add both tests as described, run them before implementation, then implement and run focused tests plus make check. Commit code/tests separately and finish through the configured review transition.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -53,3 +57,4 @@ Planner, 2026-11-25: probed on a trial patch of `main` (the change and both test
 - 2026-11-25T10:34:24Z sunny-hazel-gannet: changed acceptance criteria
 - 2026-11-25T10:34:24Z sunny-hazel-gannet planning → todo
 - 2026-11-25T10:35:02Z lively-pearl-lapwing todo → doing
+- 2026-11-25T10:38:26Z lively-pearl-lapwing: wrote the plan
