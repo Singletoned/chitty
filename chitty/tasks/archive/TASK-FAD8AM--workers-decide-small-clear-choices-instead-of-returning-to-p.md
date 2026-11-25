@@ -24,3 +24,4 @@ Triage 2026-11-25: already built. `src/chitty/roles/work.md` (Make decisions lou
 - 2026-11-25T22:28:17Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:18Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:07Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:10Z calm-ochre-quail backlog → archived
