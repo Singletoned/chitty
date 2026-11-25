@@ -1,6 +1,6 @@
 ---
 title: Skip the automatic setup upgrade with a warning while setup files have uncommitted changes
-status: planning
+status: todo
 labels:
   - bug
 depends_on:
@@ -40,10 +40,6 @@ Probed while planning with this recipe: on `main` 15 of the 16 subsets fail (eve
 - [ ] Every case in `tests/test_setup_upgrade_dirty.py` passes; the non-empty subsets and the untracked case fail on `main`, and the test fails against each of W1 to W4; a note records the runs
 - [ ] `grep -n _dirty_setup_files src/chitty/store.py` shows a call in `_prepare_write` and one in `refresh_setup`; the `refresh_setup` case passes; `make check` passes
 
-## Notes
-
-Planner, 2026-11-24: set to `planning` on `main` by hand. Its branch `task-fer4eb` already says `planning`, but a provisional ID is always read from `main` (`TASK-664`), so the runner kept selecting it as `todo`: about 70 work sessions between 09:39 and 16:06, each returning it to `planning` on the branch.
-
 ## History
 
 - 2026-11-24T08:42:39Z kind-navy-toad → backlog
@@ -56,5 +52,3 @@ Planner, 2026-11-24: set to `planning` on `main` by hand. Its branch `task-fer4e
 - 2026-11-24T09:13:40Z kind-navy-toad planning → cold-read
 - 2026-11-24T09:14:56Z kind-navy-toad: changed description, acceptance criteria
 - 2026-11-24T09:14:56Z kind-navy-toad cold-read → todo
-- 2026-11-24T23:28:50Z sunny-hazel-gannet: changed notes
-- 2026-11-24T23:28:50Z sunny-hazel-gannet todo → planning
