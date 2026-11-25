@@ -38,6 +38,8 @@ Both new tests fail on `main` today. The existing `test_provisional_is_read_from
 
 Suggestion origin: chitty
 
+Planner, 2026-11-25: probed on a trial patch of `main` (the change and both tests as described). Before the change both new tests fail; after it, `tests/test_property_ticket_source.py` and `tests/test_source_copy.py` pass (23 tests), including the three regression tests. No other test changed result.
+
 ## History
 
 - 2026-11-24T22:21:27Z zesty-coral-newt → backlog
@@ -46,3 +48,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:40:53Z zesty-coral-newt: changed priority
 - 2026-11-25T10:27:18Z sunny-hazel-gannet: changed title, description, acceptance criteria
 - 2026-11-25T10:27:18Z sunny-hazel-gannet backlog → planning
+- 2026-11-25T10:32:14Z sunny-hazel-gannet: changed notes
