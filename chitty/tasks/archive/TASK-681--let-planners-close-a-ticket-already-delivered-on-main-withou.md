@@ -33,3 +33,4 @@ Archived 2026-11-25: closing path folded into TASK-599 (on branch task-599); ide
 - 2026-11-24T22:39:56Z zesty-coral-newt: changed labels, notes
 - 2026-11-24T22:41:00Z zesty-coral-newt: changed notes
 - 2026-11-25T20:45:50Z golden-coral-stoat: changed notes
+- 2026-11-25T20:45:59Z golden-coral-stoat backlog → archived
