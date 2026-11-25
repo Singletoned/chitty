@@ -1,6 +1,6 @@
 ---
 title: Split ticket bodies only at `\n`, so criteria can hold other Unicode line separators
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -114,3 +114,4 @@ Body parsing now splits only at LF; criterion edits trim before rejecting embedd
 - 2026-11-25T21:17:00Z mellow-yellow-jay: changed notes
 - 2026-11-25T21:20:31Z daring-ebony-wren: changed acceptance criteria
 - 2026-11-25T21:21:13Z mellow-yellow-jay: changed summary; ticked acceptance criteria
+- 2026-11-25T21:23:40Z mellow-yellow-jay doing → review
