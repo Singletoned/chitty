@@ -1,6 +1,6 @@
 ---
 title: Stop the work continuation prompt offering `planning` as an equal way out
-status: planning
+status: todo
 labels:
   - untestable
 priority: high
@@ -30,3 +30,4 @@ Out of scope: the `review` branch of `continuation_prompt`, the guides, and refu
 - 2026-11-24T22:40:55Z zesty-coral-newt: changed priority
 - 2026-11-25T22:27:38Z golden-coral-stoat: replaced notes; changed title, labels, owner, description
 - 2026-11-25T22:27:38Z golden-coral-stoat backlog → planning
+- 2026-11-25T22:27:40Z golden-coral-stoat planning → todo
