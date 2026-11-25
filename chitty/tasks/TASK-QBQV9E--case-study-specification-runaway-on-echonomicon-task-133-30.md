@@ -182,7 +182,10 @@ equivalents of all three.
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: a case study, not a ticket; kept here as evidence. Its recommendations: grounding contracts (1) and letting workers decide (5) are in the plan and work guides; the cold-read cap is in the plan guide; mutation testing (4) is TASK-594; the tripwires (3) and the proportionality check (2) are TASK-PT4DEM.
+
 ## History
 
 - 2026-11-25T22:28:22Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:23Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:55Z calm-ochre-quail: changed notes
