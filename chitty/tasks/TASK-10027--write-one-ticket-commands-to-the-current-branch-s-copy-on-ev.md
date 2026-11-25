@@ -23,7 +23,7 @@ Seen 2026-11-25 during inbox triage (notes on TASK-676, TASK-594, TASK-472) and 
 
 Change, keeping `cli.py` and `mcp.py` thin:
 
-- `Repo.planning_branch()` (rename it if a clearer name fits, for example `local_write_branch`) returns the current branch when it is not `None`, not the configured main branch, and not a ticket branch (`task-<n>`, matched as the runner names them), instead of only `plan/...` branches. On `task-<n>` branches nothing changes: workers there already write their own ticket on that branch, and `main` often changes that ticket (the runner's claim) while they work.
+- `Repo.planning_branch()` (rename it if a clearer name fits, for example `local_write_branch`) returns the current branch when it is not `None`, not the configured main branch, and not a ticket branch (a name that is some ticket's ID lowercased, as the runner names them with `str(task_id).lower()`, for example `task-602` or `human-14`), instead of only `plan/...` branches. On `task-<n>` branches nothing changes: workers there already write their own ticket on that branch, and `main` often changes that ticket (the runner's claim) while they work.
 - Add `Repo.edit_current(task_id, edit) -> tuple[Change, bool]`: on such a branch it returns `edit_planning(...)`; otherwise `(edit(...), False)`. The `bool` is "a run holds the ticket's lock", as `edit_planning` returns today.
 - Add `Repo.archive_current(task_id) -> Change`: on such a branch it takes the working-tree copy (`_working_task`), refusing as `edit_planning` does when there is none, runs `_reject_planning_conflicts`, and moves that copy to the archive directory; `_set_archived` takes the `StoredTask` instead of calling `find` and `_require_current_version` for it. With `archive = "delete"` it refuses on such a branch (`archiving on a branch needs archive = "move"`), so `_delete_done` and its dependency cleanup are untouched. Otherwise it calls `archive`.
 - CLI `edit` (when not `--human`, as today) and `note`, and MCP `edit` and `note`, call `edit_current`. CLI `archive <ID>` and MCP `archive` with an ID call `archive_current`. MCP `show` calls `find_for_show`. The CLI prints its existing lock warning for `edit` and `note`; MCP and `archive` do not warn.
@@ -55,3 +55,4 @@ Out of scope: the configured main branch and `task-<n>` branches, and warnings i
 - 2026-11-25T23:06:04Z calm-ochre-quail planning → cold-read
 - 2026-11-25T23:06:36Z calm-ochre-quail: changed title, description
 - 2026-11-25T23:06:36Z calm-ochre-quail cold-read → planning
+- 2026-11-25T23:06:46Z calm-ochre-quail: changed description
