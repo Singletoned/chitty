@@ -1,6 +1,6 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -18,7 +18,8 @@ Change:
 
 - Raise both as a new `SourceConflict(ChittyError)` in `ticket_source.py`, with the same messages.
 - In `_tasks_in_location`, on `SourceConflict` keep the ticket, using its copy on the configured main branch, or the working tree's copy if `main` has none (if neither exists, raise as today), and set a new `StoredTask.conflict: str | None` to the error text.
-- `skip_reason` in `src/chitty/store.py` returns `🔀 <error text>` for a conflicted ticket before any other reason, so `list_marker` shows it and selection (`chitty next`, `chitty run`) skips it. Add `CONFLICT_GLYPH = "🔀"` beside the other glyphs in `src/chitty/selection.py`.
+- Add `conflict: str | None = None` to `TicketFacts` (`src/chitty/selection.py`), set by `_selection_facts` (`src/chitty/store.py`) from `StoredTask.conflict`. The pure `selection.skip_reason` returns `🔀 <error text>` for it before any other reason, so `chitty list` shows it and `chitty next` and `chitty run` (through `selection.choose`) skip it. Add `CONFLICT_GLYPH = "🔀"` beside the other glyphs.
+- A ticket that depends on a conflicted one keeps today's broken-dependency marker (`💔`, from the `ChittyError` that `_selection_facts` already catches).
 - `chitty list --json` and the MCP `list` tool add `"conflict": "<error text>"` for such tickets only.
 - Commands on one ticket (`show`, `edit`, `note` and others that use `Repo.find`) still raise.
 
@@ -28,9 +29,9 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test with real Git: make 1 to 4 tickets, and give each one of: no conflict, changes on both `task-<n>` and `main` since they split, or diverged `task-<n>` and `origin/task-<n>`. `chitty list` exits 0 and lists every ticket exactly once; exactly the conflicted ones show `🔀` with today's error text, and `chitty list --json` gives exactly those a `conflict` key. Fails today: `chitty list` exits 1 with only the error.
+- [ ] A Hypothesis property test with real Git, `@settings(max_examples=examples(25))` as in `tests/test_property_hidden_entries.py`: make 1 to 4 tickets, and give each one of: no conflict, changes on both `task-<n>` and `main` since they split, or diverged `task-<n>` and `origin/task-<n>`. `chitty list` exits 0 and lists every ticket exactly once; exactly the conflicted ones show `🔀` with today's error text, and `chitty list --json` gives exactly those a `conflict` key. Fails today: `chitty list` exits 1 with only the error.
 - [ ] In that setup with one conflicted `todo` ticket of `high` priority and one plain `todo` ticket, `chitty next` names the plain ticket; `chitty show` of the conflicted one still fails with today's message. Fails today.
-- [ ] Regression tests: `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py` and `tests/test_authoritative_listing.py` pass; `make check` passes.
+- [ ] Regression tests: the existing tests stay green, including `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py`, `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` (single-ticket commands keep their messages); `make check` passes.
 
 ## History
 
@@ -39,3 +40,5 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 - 2026-11-25T23:27:43Z calm-ochre-quail: replaced notes; changed labels, priority, dependencies, description, acceptance criteria
 - 2026-11-25T23:27:43Z calm-ochre-quail backlog → planning
 - 2026-11-25T23:28:23Z calm-ochre-quail planning → cold-read
+- 2026-11-25T23:30:07Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-25T23:30:07Z calm-ochre-quail cold-read → planning
