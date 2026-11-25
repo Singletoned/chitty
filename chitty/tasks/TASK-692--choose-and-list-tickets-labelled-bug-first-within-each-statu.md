@@ -1,6 +1,6 @@
 ---
 title: Choose and list tickets labelled bug first within each status
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -46,3 +46,4 @@ Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TA
 - 2026-11-25T10:39:12Z sunny-hazel-gannet: changed description, acceptance criteria
 - 2026-11-25T10:40:12Z sunny-hazel-gannet: changed notes
 - 2026-11-25T10:40:12Z sunny-hazel-gannet planning → todo
+- 2026-11-25T10:46:45Z tidy-lilac-raven todo → doing
