@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
-status: planning
+status: cold-read
 created: 2026-11-25
 moved_from: TASK-VKTREF
 ---
@@ -34,3 +34,4 @@ Out of scope: warning `chitty show` readers about newer copies on other branches
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-VKTREF
 - 2026-11-25T23:49:13Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
 - 2026-11-25T23:49:13Z calm-ochre-quail backlog → planning
+- 2026-11-25T23:49:23Z calm-ochre-quail planning → cold-read
