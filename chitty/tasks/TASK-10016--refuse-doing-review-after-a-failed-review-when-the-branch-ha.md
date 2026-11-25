@@ -3,7 +3,7 @@ title: Refuse `doing -> review` after a failed review when the branch has no new
 status: backlog
 priority: medium
 created: 2026-11-25
-provisional: true
+moved_from: TASK-QD8H6G
 ---
 
 ## Description
@@ -21,3 +21,4 @@ Suggestion origin: echonomicon
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:51Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:32Z calm-ochre-quail: changed title, priority
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-QD8H6G

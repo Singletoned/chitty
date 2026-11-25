@@ -2,7 +2,7 @@
 title: "Case study: specification runaway on echonomicon TASK-133 (30 lines of code, 2,000 words of spec, 13 sessions, nothing committed)"
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-QBQV9E
 ---
 
 ## Description
@@ -182,7 +182,7 @@ equivalents of all three.
 
 Suggestion origin: echonomicon
 
-Triage 2026-11-25: a case study, not a ticket; kept here as evidence. Its recommendations: grounding contracts (1) and letting workers decide (5) are in the plan and work guides; the cold-read cap is in the plan guide; mutation testing (4) is TASK-594; the tripwires (3) and the proportionality check (2) are TASK-PT4DEM.
+Triage 2026-11-25: a case study, not a ticket; kept here as evidence. Its recommendations: grounding contracts (1) and letting workers decide (5) are in the plan and work guides; the cold-read cap is in the plan guide; mutation testing (4) is TASK-594; the tripwires (3) and the proportionality check (2) are TASK-10013.
 
 ## History
 
@@ -190,3 +190,4 @@ Triage 2026-11-25: a case study, not a ticket; kept here as evidence. Its recomm
 - 2026-11-25T22:28:23Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:55Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:58Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-QBQV9E

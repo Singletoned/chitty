@@ -2,7 +2,7 @@
 title: Replace hand-written wrong versions with automated mutation testing in review
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-JN42DN
 ---
 
 ## Description
@@ -23,3 +23,4 @@ Triage 2026-11-25: merged into TASK-594.
 - 2026-11-25T22:28:20Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:29Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:31Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-JN42DN

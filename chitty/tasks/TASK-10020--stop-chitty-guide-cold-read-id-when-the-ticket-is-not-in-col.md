@@ -2,7 +2,7 @@
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-VKTREF
 ---
 
 ## Description
@@ -20,3 +20,4 @@ Triage 2026-11-25: `.claude/agents/cold-reader.md` step 1 tells the reader to wo
 - 2026-11-25T22:28:28Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:30Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:23Z calm-ochre-quail: changed title, notes
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-VKTREF

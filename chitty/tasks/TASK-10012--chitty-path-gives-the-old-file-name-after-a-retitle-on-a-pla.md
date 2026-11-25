@@ -6,7 +6,7 @@ labels:
 depends_on:
   - TASK-602
 created: 2026-11-25
-provisional: true
+moved_from: TASK-N8MC9A
 ---
 
 ## Description
@@ -24,3 +24,4 @@ Triage 2026-11-25: TASK-602 makes Chitty read tickets from the current branch, w
 - 2026-11-25T22:28:41Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:43Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:20Z calm-ochre-quail: changed labels, dependencies, notes
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-N8MC9A

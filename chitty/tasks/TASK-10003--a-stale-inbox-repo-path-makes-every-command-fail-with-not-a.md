@@ -4,7 +4,7 @@ status: backlog
 labels:
   - bug
 created: 2026-11-25
-provisional: true
+moved_from: TASK-AZ59M3
 ---
 
 ## Description
@@ -24,3 +24,4 @@ Triage 2026-11-25: related to TASK-50 (prune inbox registrations whose repo is g
 - 2026-11-25T22:28:31Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:33Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:18Z calm-ochre-quail: changed labels, notes
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-AZ59M3

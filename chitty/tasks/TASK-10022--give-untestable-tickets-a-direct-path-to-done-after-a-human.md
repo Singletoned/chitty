@@ -3,7 +3,7 @@ title: Give untestable tickets a direct path to done after a human-approved land
 status: backlog
 priority: medium
 created: 2026-11-25
-provisional: true
+moved_from: TASK-W8FA7M
 ---
 
 ## Description
@@ -19,3 +19,4 @@ Suggestion origin: chitty
 - 2026-11-25T22:28:36Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:38Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:30Z calm-ochre-quail: changed priority
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-W8FA7M

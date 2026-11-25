@@ -2,7 +2,7 @@
 title: "Workers: decide small, clear choices instead of returning to planning"
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-FAD8AM
 ---
 
 ## Description
@@ -25,3 +25,4 @@ Triage 2026-11-25: already built. `src/chitty/roles/work.md` (Make decisions lou
 - 2026-11-25T22:28:18Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:07Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:10Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-FAD8AM

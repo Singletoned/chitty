@@ -3,7 +3,7 @@ title: Check that a worker trial's base lacks the ticket's own commits
 status: backlog
 priority: low
 created: 2026-11-25
-provisional: true
+moved_from: TASK-E6HSHJ
 ---
 
 ## Description
@@ -25,3 +25,4 @@ Triage 2026-11-25: `scripts/worker_trial/find_base.sh` already finds the commit 
 - 2026-11-25T22:28:46Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:48Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:28Z calm-ochre-quail: changed priority, notes
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-E6HSHJ

@@ -2,7 +2,7 @@
 title: "Planning guide: give wrong versions as literal edits with checked expected failures"
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-E4AW3D
 ---
 
 ## Description
@@ -21,3 +21,4 @@ Triage 2026-11-25: obsolete. `chitty guide plan` no longer asks for wrong versio
 - 2026-11-25T22:28:25Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:13Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:15Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-E4AW3D

@@ -2,7 +2,7 @@
 title: Runner blames main for a check failure caused by uncommitted edits in the ticket worktree
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-SQW2EX
 ---
 
 ## Description
@@ -25,3 +25,4 @@ Triage 2026-11-25: merged into TASK-676.
 - 2026-11-25T22:28:28Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:34Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:37Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-SQW2EX

@@ -2,7 +2,7 @@
 title: "Plan guide: label listed items instead of counting them in prose"
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-DSR23B
 ---
 
 ## Description
@@ -23,3 +23,4 @@ Triage 2026-11-25: obsolete. The counted lists were wrong versions, which `chitt
 - 2026-11-25T22:28:53Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:18Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:21Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-DSR23B

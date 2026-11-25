@@ -2,7 +2,7 @@
 title: Runner check error blames main when the worktree has uncommitted work
 status: backlog
 created: 2026-11-25
-provisional: true
+moved_from: TASK-Q4VB7A
 ---
 
 ## Description
@@ -21,3 +21,4 @@ Triage 2026-11-25: merged into TASK-676.
 - 2026-11-25T22:28:36Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:39Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:42Z calm-ochre-quail backlog → archived
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-Q4VB7A

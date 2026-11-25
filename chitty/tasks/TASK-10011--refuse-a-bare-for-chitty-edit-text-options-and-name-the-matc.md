@@ -4,7 +4,7 @@ status: backlog
 labels:
   - bug
 created: 2026-11-25
-provisional: true
+moved_from: TASK-JTE4ZH
 ---
 
 ## Description
@@ -20,3 +20,4 @@ Suggestion origin: chitty-trial-round2-claude-haiku-task-639
 - 2026-11-25T22:28:33Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:34Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:16Z calm-ochre-quail: changed title, labels
+- 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-JTE4ZH
