@@ -19,9 +19,12 @@ Suggestion origin: chitty
 
 Triage 2026-11-25: TASK-602 makes Chitty read tickets from the current branch, which probably fixes this. Recheck once it lands; related to TASK-494.
 
+Reproduced 2026-11-25 on `plan/branch-writes-all`: after `chitty edit TASK-10027 --title ...`, `chitty path TASK-10027` printed the old file name and `chitty check "$(chitty path TASK-10027)"` failed with "not a task file in any chitty context".
+
 ## History
 
 - 2026-11-25T22:28:41Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:43Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:20Z calm-ochre-quail: changed labels, dependencies, notes
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-N8MC9A
+- 2026-11-25T23:06:31Z calm-ochre-quail: changed notes
