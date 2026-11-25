@@ -162,6 +162,6 @@ class TestTicketIds(CliTestCase):
             self.assertEqual(repo.ticket_ids(), self.expected(1, 2))
             self.assertCountEqual(
                 [args[1] for name, args, _ in calls if name == "files_at"],
-                ["refs/heads/main", "refs/heads/task-1", "refs/heads/task-2"],
+                [self.git("rev-parse", ref) for ref in ("main", "task-1", "task-2")],
             )
             self.assertFalse(any(name == "file_at" for name, _, _ in calls))

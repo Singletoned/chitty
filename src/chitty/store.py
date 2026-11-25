@@ -622,8 +622,8 @@ class Repo:
                 }
             )
             return git.changed_since_split(
-                self.root, ref, main_ref, paths
-            ) and git.changed_since_split(self.root, main_ref, ref, paths)
+                self.root, tips[ref], main_tip, paths
+            ) and git.changed_since_split(self.root, main_tip, tips[ref], paths)
 
         def contains(a: str | None, b: str) -> bool:
             return a is not None and git.is_ancestor(self.root, b, a)
@@ -684,11 +684,12 @@ class Repo:
             self._ticket_ref_files = {}
             return self._ticket_ref_files
         main_ref = f"refs/heads/{self._main_branch()}"
-        refs: dict[str, TaskId | None] = {}
-        if self._main_tip() is not None:
-            refs[main_ref] = None
+        refs: dict[str, str] = {}
+        main_tip = self._main_tip()
+        if main_tip is not None:
+            refs[main_ref] = main_tip
         prefixes = {context.prefix for context in self.contexts()}
-        for ref in self._branch_tips():
+        for ref, tip in self._branch_tips().items():
             if ref.startswith("refs/heads/"):
                 name = ref.removeprefix("refs/heads/")
             elif ref.startswith("refs/remotes/"):
@@ -700,10 +701,10 @@ class Repo:
             except ids.IdError:
                 continue
             if name == str(task_id).lower() and task_id.prefix in prefixes and ref != main_ref:
-                refs[ref] = task_id
+                refs[ref] = tip
 
         self._ticket_ref_files = {
-            ref: git.files_at(self.root, ref, (Path(BACKLOG_DIR),)) for ref in refs
+            ref: git.files_at(self.root, tip, (Path(BACKLOG_DIR),)) for ref, tip in refs.items()
         }
         return self._ticket_ref_files
 
