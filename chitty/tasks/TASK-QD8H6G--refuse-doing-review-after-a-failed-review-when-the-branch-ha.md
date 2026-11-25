@@ -1,6 +1,7 @@
 ---
-title: Flag a summary claiming fixes when no commit followed the failed review
+title: Refuse `doing -> review` after a failed review when the branch has no new code commit
 status: backlog
+priority: medium
 created: 2026-11-25
 provisional: true
 ---
@@ -19,3 +20,4 @@ Suggestion origin: echonomicon
 
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:51Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:32Z calm-ochre-quail: changed title, priority
