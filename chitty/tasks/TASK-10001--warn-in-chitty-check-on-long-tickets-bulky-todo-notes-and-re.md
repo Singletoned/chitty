@@ -17,7 +17,7 @@ Out of scope: changing `chitty check` exit codes, adding warnings to `chitty edi
 
 ## Acceptance Criteria
 
-- [ ] In `src/chitty/check.py`, `check()` emits a `warning` `Problem` (excluded by `errors()`) for each exceeded limit (`MAX_SPEC_WORDS`, `MAX_TODO_NOTES_WORDS`, `MAX_COLD_READS`) and none at or below the limit or outside the listed statuses, verified by Hypothesis property tests varying status, word counts, and transition histories.
+- [x] In `src/chitty/check.py`, `check()` emits a `warning` `Problem` (excluded by `errors()`) for each exceeded limit (`MAX_SPEC_WORDS`, `MAX_TODO_NOTES_WORDS`, `MAX_COLD_READS`) and none at or below the limit or outside the listed statuses, verified by Hypothesis property tests varying status, word counts, and transition histories.
 
 ## Plan
 
@@ -26,6 +26,10 @@ Add the three status-scoped warning checks alongside the existing criteria warni
 ## Notes
 
 Property test confirmed failing against the original checker: planning ticket with 499 description words and 2 criterion words produced no specification warning.
+
+## Summary
+
+Added status-scoped warnings for specification length, todo notes and repeated cold reads, with property tests covering boundaries, histories and archived tickets. make check passed.
 
 ## History
 
@@ -36,3 +40,4 @@ Property test confirmed failing against the original checker: planning ticket wi
 - 2026-11-25T20:54:43Z golden-maroon-urchin todo → doing
 - 2026-11-25T20:58:41Z golden-maroon-urchin: wrote the plan
 - 2026-11-25T21:02:01Z golden-maroon-urchin: changed notes
+- 2026-11-25T21:06:21Z golden-maroon-urchin: changed summary; ticked acceptance criteria
