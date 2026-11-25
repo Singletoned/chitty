@@ -30,6 +30,8 @@ Planning branches partly exist already: `TASK-521` (done) lets `chitty show` and
 
 Branch prefixes decided (the person, 2026-11-23; TASK-608): `task-<n>`, `plan/<name>` and `hotfix/<name>`. A `chitty land` should tell the kind from these.
 
+Planner, 2026-11-25: landing a plan branch must also renumber its provisional tickets. Today `chitty renumber` refuses off `main` (`ProvisionalOffMain` in `Repo._plan_provisional_renumbering`), so after fast-forwarding a plan branch the planner makes one more commit on `main` (for example `b4d237bf` after the 2026-11-25 inbox triage). A `chitty land` should renumber after rebasing onto `main` and before the fast-forward, so the numbers land in the same squashed commit. A planner working on a branch should make no commits on `main`.
+
 ## History
 
 - 2026-11-16T09:50:22Z intrepid-coral-raven → backlog
@@ -39,3 +41,4 @@ Branch prefixes decided (the person, 2026-11-23; TASK-608): `task-<n>`, `plan/<n
 - 2026-11-22T22:52:42Z plucky-umber-wren: changed description
 - 2026-11-23T08:24:39Z plucky-umber-wren: changed notes
 - 2026-11-23T10:54:21Z witty-russet-gannet: changed notes
+- 2026-11-25T22:57:15Z calm-ochre-quail: changed notes
