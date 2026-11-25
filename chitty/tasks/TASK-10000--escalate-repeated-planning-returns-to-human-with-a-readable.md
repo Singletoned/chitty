@@ -1,6 +1,6 @@
 ---
 title: Escalate repeated planning returns to human with a readable summary
-status: todo
+status: doing
 created: 2026-11-25
 moved_from: TASK-D92QA4
 ---
@@ -29,3 +29,4 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT` or `chitty run` selection logic.
 - 2026-11-25T18:22:23Z human: changed description, acceptance criteria
 - 2026-11-25T18:22:23Z human cold-read → todo
 - 2026-11-25T18:32:36Z human: renumbered from TASK-D92QA4
+- 2026-11-25T20:39:10Z witty-teal-urchin todo → doing
