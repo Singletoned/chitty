@@ -14,7 +14,10 @@ Suggestion: when `chitty show <ID>` (and `chitty guide cold-read <ID>`) runs out
 
 Suggestion origin: chitty
 
+Archived 2026-11-25: folded into TASK-602, whose warnings name other branches that changed the ticket; a note there asks it to cover plan/ branches and name the worktree.
+
 ## History
 
 - 2026-11-24T22:21:40Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:41Z zesty-coral-newt: changed notes
+- 2026-11-25T20:46:23Z golden-coral-stoat: changed notes
