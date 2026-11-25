@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-21
@@ -52,3 +52,4 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 - 2026-11-25T21:44:52Z daring-ebony-wren: changed description
 - 2026-11-25T21:44:52Z daring-ebony-wren cold-read → planning
 - 2026-11-25T21:44:55Z daring-ebony-wren planning → todo
+- 2026-11-25T21:45:48Z sunny-ebony-stoat todo → doing
