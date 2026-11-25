@@ -4,7 +4,7 @@
 # The landed implementation commit's test files are copied onto a temporary
 # checkout of the trial branch and run there. A failure can mean the trial got
 # the behaviour wrong, or only that it chose other names than the landed code;
-# read the failures before scoring. Prints one summary line.
+# read the failures (in <run>.hidden.out) before scoring. Prints one summary line.
 set -eu
 [ $# -eq 2 ] || { sed -n '3,7p' "$0" >&2; exit 2; }
 variant=$1
@@ -24,6 +24,9 @@ trap 'git -C "$dir" worktree remove --force "$checkout"' EXIT
 (cd "$checkout" && git checkout --quiet "$ref" -- $files)
 # Plain unittest: every test is a unittest.TestCase, and older bases have no pytest.
 modules=$(printf '%s\n' $files | grep '/test_.*\.py$' | sed 's|\.py$||; s|/|.|g')
-output=$(cd "$checkout" && PYTHONPATH=src "$dir/.venv/bin/python" -m unittest $modules 2>&1 || true)
+# An absolute path: tests that start Python in another directory must still
+# import the trial's code, not the clone's install of the base.
+output=$(cd "$checkout" && PYTHONPATH="$checkout/src" "$dir/.venv/bin/python" -m unittest $modules 2>&1 || true)
+printf '%s\n' "$output" > "$dir.hidden.out"
 summary="$(printf '%s\n' "$output" | grep '^Ran ' | tail -1); $(printf '%s\n' "$output" | grep -E '^(OK|FAILED)' | tail -1)"
 printf '%s\t%s\t%s\n' "$variant" "$ticket" "$summary"
