@@ -139,7 +139,7 @@ has none.
 - Pi, Codex and Claude Code use your own global settings and hooks, as a real
   runner would.
 
-## Round 2: plan (started 2026-11-25)
+## Round 2: method
 
 Purpose: compare setups on tickets known to be well planned and completable, and
 compare the code they write. Candidates are done tickets that landed since
@@ -169,6 +169,50 @@ Code quality, per run:
 4. A blind review: give a reviewer agent the ticket, the trial diff and the
    reference diff unlabelled, and a fixed rubric (criteria met, test strength,
    simplicity, fit with existing code). Not scripted yet.
+
+## Round 2: results (2026-11-25)
+
+Data: `tmp/worker-trial/round2/` (`results.tsv`, `costs.tsv`, `hidden.tsv`,
+`diffstat.txt`, `runs/`). Costs are API list prices in dollars. Added lines are
+lines added in `src/` and `tests/`, as a share of the reference's.
+
+| Setup | Reached `review` | Mean minutes | Cost per run | Total cost | Hidden tests | Added lines vs reference |
+|---|---|---|---|---|---|---|
+| Pi 1.5.2 + luna | 4/5 | 21 | 0.020 | 0.10 | 5/5 | about 1.3x |
+| Pi 1.5.2 + terra | 5/5 | 14 | 0.082 | 0.41 | 5/5 | about 1.1x |
+| Codex + luna | 5/5 | 17 | 0.047 | 0.23 | 5/5 | about 1.3x |
+| Codex + terra | 5/5 | 12 | 0.269 | 1.34 | 5/5 | about 1.1x |
+| Claude Code + Haiku | 5/5 | 15 | 0.052 | 0.26 | 5/5 | about 1.5x |
+| Claude Code + Sonnet | 5/5 | 16 | 0.793 | 3.96 | 5/5 | about 1.8x |
+| agy + Gemini 4 Hydrogen | 4/5 | 18 | 0.470 | 2.35 | 5/5 | about 1.6x |
+
+- **Every branch passes the reference's own tests**, including the two runs
+  that did not reach `review`. On well-planned tickets, every setup wrote code
+  that behaves like the landed code.
+- **Pi 1.5.2 + luna returned `TASK-512`** with a false claim that its properties
+  pass without the change. It had run a bare `pytest` that imported the real
+  repository's code (see the `PATH` pitfall). This was a harness fault, not the
+  model's.
+- **agy + Hydrogen blocked `TASK-639`**, saying `tests/test_review_rebase_session.py`
+  fails on `main`. That file passes at the base and on agy's branch outside agy
+  (14 passed), so something in agy's environment breaks it. agy blocked the
+  ticket without checking. Not investigated further.
+- **agy no longer polls.** Hydrogen took 27 steps on `TASK-512` with one status
+  call, compared with Gemini 3.8 Flash's ~350 steps in round 1.
+- **The lean-prompt runs are void.** At these bases the test suite asserts
+  phrases from the full work guide, so the runner's pre-session check failed
+  and each ticket went straight to `error`. Round 1 already found the lean
+  prompt no better, so it was not rerun.
+- **Size.** Terra on either harness stayed closest to the reference. Sonnet wrote
+  the most: more tests, and on `TASK-559` and `TASK-609` an extra file. Larger is
+  not worse by itself; the blind review (not yet run) is what would judge
+  quality.
+
+Conclusion: once Pi is on 1.5.2 and the harness is clean, every setup completes
+well-planned tickets correctly. Cost differs by about 40 times. Pi + luna is
+cheapest at about 2 cents a ticket; Pi + terra is the best balance of cost,
+speed and reliability (5/5, 8 cents, 14 minutes). The worker failures before 23
+November came from Pi 1.6.0 and from defective tickets, not from the models.
 
 ## Running a round
 
