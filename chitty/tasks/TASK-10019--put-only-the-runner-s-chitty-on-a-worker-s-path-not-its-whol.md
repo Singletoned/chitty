@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -39,3 +39,4 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - 2026-11-25T23:49:46Z calm-ochre-quail planning → cold-read
 - 2026-11-25T23:50:41Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T23:50:41Z calm-ochre-quail cold-read → todo
+- 2026-11-25T23:56:37Z calm-umber-adder todo → doing
