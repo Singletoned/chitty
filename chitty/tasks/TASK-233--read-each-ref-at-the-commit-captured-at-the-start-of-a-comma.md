@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -28,8 +28,8 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 
 ## Acceptance Criteria
 
-- [ ] The property in `tests/test_ref_snapshot.py`, with its `@example`s, passes, and fails with the `store.py` fix reverted
-- [ ] Regression tests: `test_ref_reads_once_and_cached` expects commit IDs and passes; `make check` passes
+- [x] The property in `tests/test_ref_snapshot.py`, with its `@example`s, passes, and fails with the `store.py` fix reverted
+- [x] Regression tests: `test_ref_reads_once_and_cached` expects commit IDs and passes; `make check` passes
 
 ## Plan
 
@@ -40,6 +40,10 @@ Capture expected ticket discovery before mutating refs, add a property test prov
 The new snapshot property fails before the fix: deleted refs cause git ls-tree to fail, and moved refs return the new title instead of the captured title.
 
 With only the split-change fix reverted, the deleted conflicting branch example also fails at git merge-base; restoring it passes.
+
+Reviewed: Snapshot reads use captured commit IDs; the property detects the original race.
+1: pass - `make check` passes the property and its explicit examples. In a temporary merge-base worktree with the new test and `PYTHONPATH` pointing to its `src`, `TEST_TIER=check python -m pytest -q tests/test_ref_snapshot.py --tb=short` fails: deleted refs produce `fatal: Not a valid object name`, and moved refs yield `moved` instead of `branch`.
+2: pass - `test_ref_reads_once_and_cached` expects `git rev-parse` commit IDs; `make check` passed (1190 tests, 621 subtests).
 
 ## Summary
 
@@ -78,3 +82,5 @@ Ticket discovery and conflict selection read captured commit IDs, preserving the
 - 2026-11-25T21:33:45Z honest-zinc-vole: changed notes
 - 2026-11-25T21:33:52Z honest-zinc-vole: changed summary
 - 2026-11-25T21:36:09Z honest-zinc-vole doing → review
+- 2026-11-25T21:42:21Z eager-zinc-wren: changed notes; ticked acceptance criteria
+- 2026-11-25T21:42:21Z eager-zinc-wren review → done
