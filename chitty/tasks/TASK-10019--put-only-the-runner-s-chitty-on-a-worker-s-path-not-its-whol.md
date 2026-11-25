@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -14,7 +14,7 @@ moved_from: TASK-SSVZJ6
 
 Seen 2026-11-25 in a worker trial: a worker ran bare `pytest` against a placeholder as its ticket asked, got the runner checkout's code, where the feature had already landed, saw the properties pass, and wrongly sent the ticket back to `planning`. With the worktree's code they fail.
 
-Change: one helper in `run.py`, used at both places, that makes a directory holding only a `chitty` symbolic link to the runner's `chitty`, under the Git common directory (beside the run locks, `.git/chitty/run/`; for example `.git/chitty/bin/`), replacing an existing link, and puts that directory first on the agent's `PATH` instead of `.venv/bin`. Keep today's `runner chitty executable not found` error.
+Change: one helper in `run.py`, used at both places, that makes a temporary directory for this run (removed when the agent exits) holding only a `chitty` symbolic link to the runner's `chitty`, and puts that directory first on the agent's `PATH` instead of `.venv/bin`. Keep today's `runner chitty executable not found` error.
 
 A fake agent as in `tests/test_run_repair_mode.py` (`agent_command = "fake-agent {mode} {id} {prompt}"`) can record what it resolves. No property test: a fixed environment change, shown by one example per agent mode.
 
@@ -22,7 +22,7 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 
 ## Acceptance Criteria
 
-- [ ] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python` from its own environment: `chitty` resolves to a link to the runner's `chitty` (`Path(sys.executable).parent / "chitty"`), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: both resolve into the runner's `.venv/bin`.
+- [ ] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python`: the `chitty` path is a symbolic link (`os.path.islink`) whose `os.path.realpath` is the runner's `chitty` (`Path(sys.executable).parent / "chitty"`, resolved), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: all three resolve into the runner's `.venv/bin`, and `chitty` is not a link.
 - [ ] Regression tests: the existing `chitty run` tests pass, including `runner chitty executable not found` handling; `make check` passes.
 
 ## History
@@ -37,3 +37,5 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - 2026-11-25T23:49:43Z calm-ochre-quail: changed description
 - 2026-11-25T23:49:43Z calm-ochre-quail cold-read → planning
 - 2026-11-25T23:49:46Z calm-ochre-quail planning → cold-read
+- 2026-11-25T23:50:41Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-25T23:50:41Z calm-ochre-quail cold-read → todo
