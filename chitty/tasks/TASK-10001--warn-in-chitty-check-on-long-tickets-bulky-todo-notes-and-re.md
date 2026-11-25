@@ -23,6 +23,10 @@ Out of scope: changing `chitty check` exit codes, adding warnings to `chitty edi
 
 Add the three status-scoped warning checks alongside the existing criteria warning. Exercise boundaries, statuses, combined specification word counts and transition histories through property tests of check(), including warning severity and errors() filtering.
 
+## Notes
+
+Property test confirmed failing against the original checker: planning ticket with 499 description words and 2 criterion words produced no specification warning.
+
 ## History
 
 - 2026-11-25T18:17:32Z human → cold-read
@@ -31,3 +35,4 @@ Add the three status-scoped warning checks alongside the existing criteria warni
 - 2026-11-25T18:32:36Z human: renumbered from TASK-WQSEDK
 - 2026-11-25T20:54:43Z golden-maroon-urchin todo → doing
 - 2026-11-25T20:58:41Z golden-maroon-urchin: wrote the plan
+- 2026-11-25T21:02:01Z golden-maroon-urchin: changed notes
