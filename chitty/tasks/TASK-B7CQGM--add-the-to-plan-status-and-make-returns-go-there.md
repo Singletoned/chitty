@@ -1,6 +1,6 @@
 ---
 title: Add the `to-plan` status and make returns go there
-status: backlog
+status: todo
 labels:
   - needs-minor
 parent: TASK-10026
@@ -39,3 +39,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:09:42Z golden-coral-stoat: changed description
 - 2026-11-25T23:10:53Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:14Z golden-coral-stoat: changed description
+- 2026-11-25T23:12:19Z golden-coral-stoat backlog → todo
