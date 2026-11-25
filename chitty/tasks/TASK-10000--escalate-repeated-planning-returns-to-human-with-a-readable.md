@@ -1,6 +1,6 @@
 ---
 title: Escalate repeated planning returns to human with a readable summary
-status: review
+status: done
 created: 2026-11-25
 moved_from: TASK-D92QA4
 ---
@@ -20,8 +20,8 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT` or `chitty run` selection logic.
 
 ## Acceptance Criteria
 
-- [ ] In `src/chitty/store.py`, `check_edit()` keeps `status="planning"` and `owner=""` below `PLANNING_RETURN_LIMIT` and escalates to `status="blocked"`, `owner="human"`, an escalation note, and `summary` (containing the return count and first non-empty line of incoming `(edit.note, *edit.notes)`, preserving a non-empty caller-supplied `summary`) at or above `PLANNING_RETURN_LIMIT`, resetting after any transition to `blocked`. Verified by Hypothesis property tests in `tests/test_check_edit.py` varying transition history, incoming status (`doing` or `review`), and caller-supplied `summary`.
-- [ ] In `src/chitty/store.py`, `check_edit()` sets `summary` the same way on repeated review-failure escalations (`REVIEW_FAILURE_LIMIT`), leaving `summary` unchanged below the limit and handling an empty incoming note on `done → doing` without crashing, and `src/chitty/cli.py` prints `escalated to human review` for escalated `planning` edits too. Verified by tests in `tests/test_check_edit.py` (and a CLI test for `planning` escalation).
+- [x] In `src/chitty/store.py`, `check_edit()` keeps `status="planning"` and `owner=""` below `PLANNING_RETURN_LIMIT` and escalates to `status="blocked"`, `owner="human"`, an escalation note, and `summary` (containing the return count and first non-empty line of incoming `(edit.note, *edit.notes)`, preserving a non-empty caller-supplied `summary`) at or above `PLANNING_RETURN_LIMIT`, resetting after any transition to `blocked`. Verified by Hypothesis property tests in `tests/test_check_edit.py` varying transition history, incoming status (`doing` or `review`), and caller-supplied `summary`.
+- [x] In `src/chitty/store.py`, `check_edit()` sets `summary` the same way on repeated review-failure escalations (`REVIEW_FAILURE_LIMIT`), leaving `summary` unchanged below the limit and handling an empty incoming note on `done → doing` without crashing, and `src/chitty/cli.py` prints `escalated to human review` for escalated `planning` edits too. Verified by tests in `tests/test_check_edit.py` (and a CLI test for `planning` escalation).
 
 ## Plan
 
@@ -30,6 +30,10 @@ Add property and CLI tests for planning and review escalation, then implement sh
 ## Notes
 
 Confirmed new property tests fail before the fix: planning remains unblocked at three returns and review escalation lacks a summary.
+
+Reviewed: Implementation and complete diff reviewed; make check passed (1184 tests).
+1: pass - Planning property test passes and fails on merge-base with planning instead of blocked after three returns; it covers both incoming statuses, reset histories, and supplied summaries.
+2: pass - Review summary property and planning CLI test pass; on merge-base they fail respectively for missing summary and updated rather than escalated output. The property covers empty notes and preserved summaries.
 
 ## Summary
 
@@ -46,3 +50,5 @@ Repeated planning returns now escalate after three attempts since the last block
 - 2026-11-25T20:43:41Z witty-teal-urchin: changed notes
 - 2026-11-25T20:51:07Z witty-teal-urchin: changed summary
 - 2026-11-25T20:53:25Z witty-teal-urchin doing → review
+- 2026-11-25T21:00:04Z zesty-lilac-zander: changed notes; ticked acceptance criteria
+- 2026-11-25T21:00:04Z zesty-lilac-zander review → done
