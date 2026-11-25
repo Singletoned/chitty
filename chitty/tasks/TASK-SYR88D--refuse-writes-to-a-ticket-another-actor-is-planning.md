@@ -16,15 +16,15 @@ Rule: a ticket whose status is `planning` is claimed by the actor of its latest 
 
 Change:
 
-- Add a pure function to `src/chitty/model.py`: `claim_refusal(task, actor, releasing) -> str | None`, returning ``<ID> is being planned by <claimant>; leave it alone, or release it with `chitty edit <ID> -s to-plan --note <reason>` `` when the rule refuses, else `None`. (`<ID>` may need passing in, or format the message at the call site.)
-- In `src/chitty/store.py`, raise `ChittyError` with that message at the top of `Repo._edit_stored`, before any other rule (so `-s done` or `-s review` on a claimed ticket gets this message, not another), with `releasing` true when `edit.status == "to-plan"` and the edit has a non-blank note; at the top of `Repo._set_archived` (archive and restore); and in `Repo.move` for the moved ticket itself.
+- Add a pure function to `src/chitty/model.py`: `claim_refusal(task_id, task, actor, releasing) -> str | None`, returning ``<ID> is being planned by <claimant>; leave it alone, or release it with `chitty edit <ID> -s to-plan --note <reason>` `` when the rule refuses, else `None`.
+- In `src/chitty/store.py`, raise `ChittyError` with that message at the top of `Repo._edit_stored`, before any other rule (so `-s done` or `-s review` on a claimed ticket gets this message, not another), with `releasing` true when `edit.status == "to-plan"` and the edit has a non-blank note; at the top of `Repo._set_archived` (archive and restore); and in `Repo.move` for the moved ticket itself (`releasing` is false for both). `Repo.edit_planning` reaches `_edit_stored` with the planner's branch copy, so the claimant's own branch edits pass.
 
 Out of scope, not refused: `renumber`, `renumber_provisional`, `chitty fix`, and reference rewrites in other tickets during `renumber` or `move` (all mechanical); `cold-read`; `chitty run`, which never selects a `planning` ticket; the plan guide (`TASK-WWNDDM`).
 
 Tests:
 
 - A Hypothesis property on `claim_refusal` in `tests/test_check_edit.py`, drawing a claimant and another actor (distinct, neither `human`), the status, and `releasing`. For a task whose History ends with `<claimant> backlog → planning`: the claimant and `human` get `None`; the other actor gets a message naming the claimant, or `None` when releasing. With no attributed `→ planning` entry, or any status other than `planning`, every actor gets `None`.
-- A CLI example in `tests/test_cli.py`: with `CHITTY_ACTOR=one`, move `TASK-1` to `planning`. With `CHITTY_ACTOR=two`, `chitty note TASK-1 x`, `chitty edit TASK-1 -s done`, `chitty edit TASK-1 -s backlog` and `chitty archive TASK-1` each fail with `being planned by one` and leave the file unchanged; then `chitty edit TASK-1 -s to-plan --note stale` succeeds.
+- A CLI example in `tests/test_cli.py`, with the default `archive = "move"`: with `CHITTY_ACTOR=one`, move `TASK-1` to `planning`. With `CHITTY_ACTOR=two`, `chitty note TASK-1 x`, `chitty edit TASK-1 -s done`, `chitty edit TASK-1 -s backlog` and `chitty archive TASK-1` each fail with `being planned by one` and leave the file unchanged; then `chitty edit TASK-1 -s to-plan --note stale` succeeds.
 
 ## Acceptance Criteria
 
@@ -38,3 +38,4 @@ Tests:
 - 2026-11-25T23:10:11Z golden-coral-stoat: changed description
 - 2026-11-25T23:10:13Z golden-coral-stoat: changed acceptance criteria
 - 2026-11-25T23:10:43Z golden-coral-stoat: changed description
+- 2026-11-25T23:12:17Z golden-coral-stoat: changed description
