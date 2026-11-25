@@ -1,6 +1,6 @@
 ---
-title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: planning
+title: Split ticket bodies only at `\n`, so criteria can hold other Unicode line separators
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -92,3 +92,5 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - 2026-11-25T12:11:52Z sunny-hazel-gannet todo → planning
 - 2026-11-25T21:07:08Z daring-ebony-wren: replaced notes; changed owner, description; wrote the plan
 - 2026-11-25T21:07:13Z daring-ebony-wren: changed acceptance criteria
+- 2026-11-25T21:07:31Z daring-ebony-wren: changed title
+- 2026-11-25T21:07:31Z daring-ebony-wren planning → cold-read
