@@ -858,7 +858,7 @@ def edit(
                 os.environ.pop("CHITTY_ACTOR", None)
             else:
                 os.environ["CHITTY_ACTOR"] = previous_actor
-    escalated = status == "doing" and change.task.task.frontmatter.status == "blocked"
+    escalated = status in {"doing", "planning"} and change.task.task.frontmatter.status == "blocked"
     _report(change, as_json, "escalated to human review" if escalated else "updated")
     if (
         not as_json

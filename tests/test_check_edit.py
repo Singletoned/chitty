@@ -97,6 +97,69 @@ class TestCheckEdit(unittest.TestCase):
         if failures >= REVIEW_FAILURE_LIMIT:
             self.assertEqual(result.owner, "human")
 
+    @given(
+        st.lists(
+            st.sampled_from(
+                (
+                    ("doing", "planning"),
+                    ("review", "planning"),
+                    ("doing", "blocked"),
+                    ("blocked", "doing"),
+                )
+            ),
+            max_size=9,
+        ),
+        st.sampled_from(("doing", "review")),
+        st.one_of(st.none(), st.just(""), TEXT),
+    )
+    def test_planning_returns_escalate_since_last_block(self, transitions, status, summary):
+        task = make_task(status, [], None, [])
+        count = 1
+        for old, new in transitions:
+            task = task.with_history(datetime(2026, 1, 1, tzinfo=UTC), "other", old, new)
+            if new == "blocked":
+                count = 1
+            elif (old, new) in (("doing", "planning"), ("review", "planning")):
+                count += 1
+        result = check_edit(
+            task, Edit(status="planning", note="\n reason\nmore", summary=summary), "fresh"
+        )
+        if count < 3:
+            self.assertEqual(
+                (result.status, result.owner, result.summary), ("planning", "", summary)
+            )
+        else:
+            self.assertEqual((result.status, result.owner), ("blocked", "human"))
+            self.assertIn("Escalated", result.notes[-1])
+            if summary:
+                self.assertEqual(result.summary, summary)
+            else:
+                assert result.summary is not None
+                self.assertIn(str(count), result.summary)
+                self.assertIn("reason", result.summary)
+
+    @given(
+        st.integers(min_value=0, max_value=5),
+        st.one_of(st.none(), st.just(""), TEXT),
+        st.booleans(),
+    )
+    def test_review_escalation_summary(self, failures, summary, has_note):
+        task = make_task("done", [], None, [])
+        for _ in range(failures):
+            task = task.with_history(datetime(2026, 1, 1, tzinfo=UTC), "other", "review", "doing")
+        result = check_edit(
+            task,
+            Edit(status="doing", notes=("\n  cause\nother",) if has_note else (), summary=summary),
+            "fresh",
+        )
+        if failures + 1 < REVIEW_FAILURE_LIMIT or summary:
+            self.assertEqual(result.summary, summary)
+        else:
+            assert result.summary is not None
+            self.assertIn(str(failures + 1), result.summary)
+            if has_note:
+                self.assertIn("cause", result.summary)
+
     def test_landing_failure_is_not_a_review_transition(self):
         task = make_task("done", [], None, []).with_history(
             datetime(2026, 1, 1, tzinfo=UTC), "fresh-reviewer", "doing", "review"

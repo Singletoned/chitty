@@ -1404,6 +1404,17 @@ class TestReviewStatus(CliTestCase):
         self.assertIn("failed review 3 times", notes)
         self.assertTrue(task["history"].endswith("review → blocked"))
 
+    def test_third_planning_return_reports_escalation(self):
+        self.run_cli("add", "Bounce", "-d", "x")
+        self.run_cli("edit", "1", "-s", "doing")
+        for _ in range(2):
+            self.run_cli("edit", "1", "-s", "planning", "--note", "Needs a decision")
+            self.run_cli("edit", "1", "-s", "doing")
+        result = self.run_cli("edit", "1", "-s", "planning", "--note", "Needs a decision")
+        self.assertIn("escalated to human review TASK-1", result.stdout)
+        task = self.json("show", "1")
+        self.assertEqual((task["status"], task["owner"]), ("blocked", "human"))
+
     def test_escalation_count_restarts_after_a_human_unblocks(self):
         self.run_cli("add", "Bounce", "-d", "x")
         for reason in ("First.", "Second.", "Third."):

@@ -72,6 +72,7 @@ GUIDE_END = "<!-- chitty:end -->"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
+PLANNING_RETURN_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 ROLE_NAMES = ("work", "review", "repair", "plan", "cold-read", "setup", "rebase")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
@@ -1664,8 +1665,16 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
             )
     if edit.status == "doing" and previous_status in {"review", "done"}:
         return _escalate_repeated_failure(task, edit)
-    # Planning is a handoff, not another assignment to the current worker.
-    return replace(edit, owner="") if returning_to_planning else edit
+    if returning_to_planning:
+        returns = _count_since_block(task, {("doing", "planning"), ("review", "planning")})
+        if returns >= PLANNING_RETURN_LIMIT:
+            reason = (
+                f"Escalated to human review: returned to planning {returns} times. "
+                "A human should decide how to proceed, then unblock it."
+            )
+            return _escalate(edit, reason, f"Returned to planning {returns} times")
+        return replace(edit, owner="")
+    return edit
 
 
 def _validate_review_verdict(task: Task, edit: Edit) -> None:
@@ -1711,18 +1720,37 @@ def _validate_review_verdict(task: Task, edit: Edit) -> None:
 
 def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
     """Turn the limit-th failed review since the last block into a block for a human."""
-    failures = 1
-    for old, new in reversed(task.transitions()):
-        if new == "blocked":
-            break
-        failures += (old, new) in {("review", "doing"), ("done", "doing")}
+    failures = _count_since_block(task, {("review", "doing"), ("done", "doing")})
     if failures < REVIEW_FAILURE_LIMIT:
         return edit
     reason = (
         f"Escalated to human review: failed review {failures} times. "
         "A human should decide how to proceed, then unblock it."
     )
-    return replace(edit, status="blocked", owner="human", notes=(*edit.notes, reason))
+    return _escalate(edit, reason, f"Failed review {failures} times")
+
+
+def _count_since_block(task: Task, transitions: set[tuple[str, str]]) -> int:
+    count = 1
+    for old, new in reversed(task.transitions()):
+        if new == "blocked":
+            break
+        count += (old, new) in transitions
+    return count
+
+
+def _escalate(edit: Edit, reason: str, summary: str) -> Edit:
+    first_line = next(
+        (line.strip() for note in (edit.note, *edit.notes) if note
+         for line in note.splitlines() if line.strip()),
+        "",
+    )
+    if first_line:
+        summary += f": {first_line}"
+    return replace(
+        edit, status="blocked", owner="human", notes=(*edit.notes, reason),
+        summary=edit.summary or summary,
+    )
 
 
 def renumbered_dict(change: Change, references: Sequence[StoredTask]) -> dict[str, Any]:
