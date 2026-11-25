@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: doing
+status: planning
 created: 2026-11-24
 ---
 
@@ -46,6 +46,8 @@ Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording; TEXT tha
 
 Suggestion origin: chitty
 
+-
+
 ## History
 
 - 2026-11-24T22:21:50Z zesty-coral-newt → backlog
@@ -60,3 +62,5 @@ Suggestion origin: chitty
 - 2026-11-24T22:55:40Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:54:25Z eager-indigo-vole todo → doing
 - 2026-11-24T23:58:04Z eager-indigo-vole: wrote the plan
+- 2026-11-25T00:01:37Z eager-indigo-vole: changed owner, notes
+- 2026-11-25T00:01:37Z eager-indigo-vole doing → planning
