@@ -22,9 +22,12 @@ Related: TASK-499 warns on the size of the whole ticket file. Out of scope: a mo
 
 Suggestion origin: echonomicon
 
+Planner, 2026-11-25: `chitty check` already warns `3 cold reads; simplify or split instead of another read`. Check what is left (returns to planning, description length) before planning this.
+
 ## History
 
 - 2026-11-25T22:28:44Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:46Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:45Z calm-ochre-quail: changed title, priority, description
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-PT4DEM
+- 2026-11-25T23:06:34Z calm-ochre-quail: changed notes
