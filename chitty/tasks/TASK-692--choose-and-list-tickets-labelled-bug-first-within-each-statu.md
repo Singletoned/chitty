@@ -43,6 +43,8 @@ Planner, 2026-11-25: probed on a trial patch of `main` with the tests and change
 
 Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TASK-6`); with it, the expected order before the key change is `TASK-1, TASK-6, TASK-3, TASK-2, TASK-4, TASK-5`. Record the real run, not this.
 
+Verified after implementation: make check passes (1180 tests). The required pre-key-change failures were not recorded; regression tests now pass. Source changes and focused tests are committed as 80046b10.
+
 ## History
 
 - 2026-11-25T10:34:00Z sunny-hazel-gannet → planning
@@ -52,3 +54,4 @@ Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TA
 - 2026-11-25T10:40:12Z sunny-hazel-gannet planning → todo
 - 2026-11-25T10:46:45Z tidy-lilac-raven todo → doing
 - 2026-11-25T10:59:01Z tidy-lilac-raven: wrote the plan
+- 2026-11-25T11:39:11Z tidy-lilac-raven: changed notes
