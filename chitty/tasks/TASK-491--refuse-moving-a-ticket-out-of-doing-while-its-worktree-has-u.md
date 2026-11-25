@@ -31,8 +31,8 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 
 ## Acceptance Criteria
 
-- [ ] The refused cases in `tests/test_leave_doing_clean.py` pass, and fail with the `store.py` change reverted
-- [ ] Regression tests: the allowed cases, and `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` with its fixture fix, pass; `make check` passes
+- [x] The refused cases in `tests/test_leave_doing_clean.py` pass, and fail with the `store.py` change reverted
+- [x] Regression tests: the allowed cases, and `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` with its fixture fix, pass; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,12 @@ Inspect the existing guard and CLI fixtures, add the specified transition tests 
 ## Notes
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
+With the leaving-doing guard disabled, all six refused status subtests failed because the edit succeeded; restoring the guard makes them pass.
+
+## Summary
+
+Shared the clean-worktree refusal with review transitions, added dirty and allowed transition coverage, and excluded runner probe files in its fixture. Focused tests and make check pass.
 
 ## History
 
@@ -63,3 +69,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-25T21:45:48Z sunny-ebony-stoat todo → doing
 - 2026-11-25T21:47:52Z sunny-ebony-stoat: changed notes
 - 2026-11-25T21:48:11Z sunny-ebony-stoat: wrote the plan
+- 2026-11-25T21:52:00Z sunny-ebony-stoat: changed notes, summary; ticked acceptance criteria
