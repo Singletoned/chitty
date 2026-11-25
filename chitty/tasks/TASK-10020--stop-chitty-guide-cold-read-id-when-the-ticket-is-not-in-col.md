@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
-status: cold-read
+status: todo
 created: 2026-11-25
 moved_from: TASK-VKTREF
 ---
@@ -17,7 +17,7 @@ Change:
 - In `guide`, for the `cold-read` role with an ID, open the repository at `directory`, read the ticket as `chitty show` does (`Repo.find_for_show`), and if its status is not `cold-read`, raise `ChittyError` with `<ID> is <status> in this checkout, not cold-read; run this in the checkout where it is being planned (see git worktree list)`.
 - In `.claude/agents/cold-reader.md`, step 1: work in the checkout the prompt names; if it names none, the main checkout. If the guide command refuses, stop and report the message.
 
-No other role changes.
+Outside a Chitty repository, let the existing `find_root` error propagate. `tests/test_guide_cold_read.py` runs `guide cold-read TASK-1` against this repository; make it seed a temporary repository with a `cold-read` ticket instead. No other role changes.
 
 Out of scope: warning `chitty show` readers about newer copies on other branches (TASK-602).
 
@@ -40,3 +40,5 @@ Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named 
 - 2026-11-25T23:49:13Z calm-ochre-quail backlog → planning
 - 2026-11-25T23:49:23Z calm-ochre-quail planning → cold-read
 - 2026-11-25T23:49:48Z calm-ochre-quail: changed notes
+- 2026-11-25T23:50:43Z calm-ochre-quail: changed description
+- 2026-11-25T23:50:43Z calm-ochre-quail cold-read → todo
