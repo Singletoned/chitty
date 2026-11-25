@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: cold-read
+status: planning
 labels:
   - bug
 created: 2026-11-21
@@ -20,7 +20,7 @@ Change: in `Repo._edit_stored`, refuse an edit that moves a ticket out of `doing
 
 Use the same message as `require_clean`: `cannot move <ID> to <status>; the worktree has uncommitted changes: <paths>. Commit or resolve them before changing status`. Nothing is written or committed. Refuse rather than warn, to match the review refusal.
 
-This is already implemented on branch `task-491` (commit `5eb3db64`); check it against the above and keep it. With it, `make check` fails only `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` in `tests/test_next.py`: its fake agent writes probe files (`pi-arguments`, `run-actor`, `child-actor`, `pi-session-id`) into the worktree and then moves the ticket to `blocked`. That is the behaviour this ticket refuses, so fix the fixture, not the rule: after the setup commit, append those four names to `.git/info/exclude` in `self.root` (worktrees share it). A trial (2026-11-25) showed this makes the test pass.
+This is already implemented on branch `task-491` (commit `5eb3db64`); check it against the above and keep it, sharing one copy of the message with `require_clean` rather than repeating its text. With it, `make check` fails only `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` in `tests/test_next.py`: its fake agent writes probe files (`pi-arguments`, `run-actor`, `child-actor`, `pi-session-id`) into the worktree and then moves the ticket to `blocked`. That is the behaviour this ticket refuses, so fix the fixture, not the rule: after the setup commit, append those four names to `.git/info/exclude` in `self.root` (worktrees share it). A trial (2026-11-25) showed this makes the test pass.
 
 Out of scope: guides, `review` and `done`, `chitty run`, and how Git quotes unusual paths.
 
@@ -49,3 +49,5 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 - 2026-11-24T12:46:04Z nimble-zinc-vole doing → planning
 - 2026-11-25T21:21:15Z daring-ebony-wren: replaced notes; changed owner, description, acceptance criteria; wrote the plan
 - 2026-11-25T21:21:15Z daring-ebony-wren planning → cold-read
+- 2026-11-25T21:44:52Z daring-ebony-wren: changed description
+- 2026-11-25T21:44:52Z daring-ebony-wren cold-read → planning
