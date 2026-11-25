@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on long tickets, bulky `todo` notes, and repeated cold reads
-status: doing
+status: review
 created: 2026-11-25
 moved_from: TASK-WQSEDK
 ---
@@ -41,3 +41,4 @@ Added status-scoped warnings for specification length, todo notes and repeated c
 - 2026-11-25T20:58:41Z golden-maroon-urchin: wrote the plan
 - 2026-11-25T21:02:01Z golden-maroon-urchin: changed notes
 - 2026-11-25T21:06:21Z golden-maroon-urchin: changed summary; ticked acceptance criteria
+- 2026-11-25T21:08:55Z golden-maroon-urchin doing → review
