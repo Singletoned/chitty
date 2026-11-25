@@ -38,6 +38,10 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 
 Add a specific source-conflict exception; recover only during listing from main or the working tree, propagate conflict into selection and serialized list results, and cover real Git conflicts and single-ticket failures with regression and property tests.
 
+## Notes
+
+Regression test confirmed failing before the fix: list --json exits 1 with the changed-on-both error.
+
 ## History
 
 - 2026-11-20T11:10:11Z lively-bronze-crane → backlog
@@ -52,3 +56,4 @@ Add a specific source-conflict exception; recover only during listing from main 
 - 2026-11-25T23:31:45Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T23:37:55Z nimble-bronze-otter todo → doing
 - 2026-11-25T23:42:02Z nimble-bronze-otter: wrote the plan
+- 2026-11-25T23:42:29Z nimble-bronze-otter: changed notes
