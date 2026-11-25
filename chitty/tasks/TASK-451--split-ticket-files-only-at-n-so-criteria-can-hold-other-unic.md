@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: todo
+status: planning
 labels:
   - bug
 priority: medium
@@ -58,6 +58,32 @@ The ticket appears actionable, but implementation was not started in this sessio
 
 Planner, 2026-11-25: fixed the CLI test fixture: `chitty add` needs `-d` outside `backlog`, so it is now `run_cli("add", "T", "-d", "x", "--ac", "one")` (found by a Codex worker in a trial run). Nothing else changed.
 
+Planner, 2026-11-25: back to `planning`. A Sonnet worker in a throwaway trial clone (`tmp/worker-trial/runs/claude-sonnet--task-451`, not this branch) implemented the ticket and found two wrong claims in it. Its note follows unchanged; resolve both before the next cold read. Its partial work is on that clone's `task-451` branch, not here.
+
+Worker, 2026-11-25: back to planning for two wrong claims in the Description. Both need decisions. Partial work, matching the ticket as written, is committed on `task-451` (commit "End ticket file lines only at LF so criteria keep other separators"). It must not land as it is: it exposes the second problem.
+
+1. `U+2028` and `U+2029` do not always read back unchanged.
+   - Claim: "`U+2028` and `U+2029` already read back unchanged after the change, so they need nothing."
+   - Evidence: with the change, a title or label holding a space next to either character loses the space. `a U+2028b` and `aU+2028 b` both read back as `aU+2028b` (same for `U+2029`). `chitty add` with title `a U+2028b` succeeds and `show --json` gives `aU+2028b`. On `main`, `a U+2028b` is refused as unreadable, so there the change turns a refusal into a silent alteration; `aU+2028 b` is already altered on `main`. `owner` was not probed, but uses the same `render_scalar`.
+   - Decision: should `render_scalar` also escape these two? Suggested: yes, treat them as `\x85` is treated (`json.dumps`, then replace each with its `\uXXXX` escape). A `yaml.safe_load` probe read such escaped values back unchanged, including with adjacent spaces and tabs. Add those cases to the frontmatter example.
+
+2. The change breaks a second existing test, through the suggestion inbox.
+   - Claim: `test_new_criterion_rejects_all_line_breaks` "is the only existing test the change breaks".
+   - Evidence: `make check` gives 1 failed, 1189 passed. The failure is `test_accepted_suggestion_pulls_with_the_same_title_and_description` in `tests/test_property_inbox.py`. That file passes against `main`'s source.
+   - Title `0\x85`: `main` refuses it in `suggest`; now `suggest` accepts it and `pull` stores `0 ` (silent alteration).
+   - Title `0U+2028\x85`: `main` refuses it; now `suggest` accepts it and `pull` fails with `value '0U+2028\n' must be a single line`.
+   - Cause: `suggest` in `src/chitty/inbox.py` writes the inbox file with `yaml.safe_dump(..., allow_unicode=True)`, and PyYAML does not read its own output back for these titles. Its round-trip guard checks only `new_task`, not the inbox file. `main` hid this because the parser refused the titles.
+   - Why blocked: the ticket does not describe any change to `inbox.py` or whether such suggestions should be accepted, and criterion 2 cannot pass without one.
+   - Decision: how should the inbox write these titles? Suggested: accept them and write the file so they read back. `allow_unicode=False` round-trips both titles in a probe but escapes all non-ASCII text, so prefer escaping only when the title holds `\x85`, `U+2028` or `U+2029`. Describe a fixed example for both titles. `_read_suggestion` also splits with `str.splitlines`; no failure was traced to that, but check it with the chosen fix.
+
+State of the criteria (none ticked):
+- 1: new tests pass on the branch. Baseline against `main` `2fc1b7d1` source (`python -m unittest -v tests.test_criteria_line_breaks`, before the fix): all 8 tests in `TestBreaksAccepted` fail (property, break inside, break at end, `a\n`, parse, renumbering caller, frontmatter, CLI); both tests in `TestUnchangedBehaviour` pass. `test_new_criterion_rejects_all_line_breaks` is narrowed to `\n` and `\r`.
+- 2: not met, see 2 above. `tests/test_property_criterion_text.py` passes, and ruff and pyright passed.
+- 3: renumbering-caller example fails on `main`'s source and passes on the branch; `tests/test_property_renumbering.py` passes.
+- 4: frontmatter example fails on `main`'s source for all three characters and passes on the branch, including the `"a\u0085b"` line.
+
+Not checked: `make test` (random examples) and the Linux check. Also added a line to `docs/plan/task-file.md` saying lines end only at `\n`. Unrelated older bug filed as `TASK-XX8E7B` (control characters written as unreadable YAML).
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -113,3 +139,5 @@ Planner, 2026-11-25: fixed the CLI test fixture: `chitty add` needs `-d` outside
 - 2026-11-24T09:38:18Z open-pearl-raven doing → planning
 - 2026-11-25T11:34:54Z sunny-hazel-gannet: changed description, notes
 - 2026-11-25T11:34:54Z sunny-hazel-gannet planning → todo
+- 2026-11-25T12:11:52Z sunny-hazel-gannet: changed notes
+- 2026-11-25T12:11:52Z sunny-hazel-gannet todo → planning
