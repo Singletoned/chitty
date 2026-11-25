@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-21
@@ -44,6 +44,10 @@ Check failed before this session: check exited with status 2; output in `.chitty
 
 With the leaving-doing guard disabled, all six refused status subtests failed because the edit succeeded; restoring the guard makes them pass.
 
+Reviewed: implementation and complete diff checked.
+1: pass - `make check` passes; copied `tests/test_leave_doing_clean.py` to a temporary merge-base worktree and ran `python -m pytest -q tests/test_leave_doing_clean.py::TestLeaveDoingClean::test_refuses_dirty_transition`: all six status subtests failed with `0 != 1` because the edits succeeded without the guard.
+2: pass - `make check` passed, including the allowed cases and runner fixture test (1196 passed, 627 subtests passed).
+
 ## Summary
 
 Shared the clean-worktree refusal with review transitions, added dirty and allowed transition coverage, and excluded runner probe files in its fixture. Focused tests and make check pass.
@@ -71,3 +75,5 @@ Shared the clean-worktree refusal with review transitions, added dirty and allow
 - 2026-11-25T21:48:11Z sunny-ebony-stoat: wrote the plan
 - 2026-11-25T21:52:00Z sunny-ebony-stoat: changed notes, summary; ticked acceptance criteria
 - 2026-11-25T21:54:03Z sunny-ebony-stoat doing → review
+- 2026-11-25T21:58:51Z open-dusky-vole: changed notes
+- 2026-11-25T21:58:51Z open-dusky-vole review → done
