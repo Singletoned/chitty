@@ -26,7 +26,7 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 ## Acceptance Criteria
 
 - [ ] The new property test (an edit from `doing` or `review` to `planning` is refused) and the mixed-history escalation example pass, and each fails before the change. Regression tests: the re-pointed return and escalation tests named above
-- [ ] `tests/test_statuses_planning.py` covers `to-plan` in `chitty list` and MCP `list` defaults and in `chitty next` never picking it, and those cases fail before the change
+- [ ] The `tests/test_statuses_planning.py` cases for a `to-plan` ticket pass, and fail before the change
 - [ ] `make check` passes
 
 ## History
@@ -34,3 +34,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:05:55Z golden-coral-stoat → backlog
 - 2026-11-25T23:06:21Z golden-coral-stoat: changed description, acceptance criteria
 - 2026-11-25T23:09:23Z golden-coral-stoat: changed title, description
+- 2026-11-25T23:09:25Z golden-coral-stoat: changed acceptance criteria
