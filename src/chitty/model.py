@@ -476,7 +476,7 @@ class Task:
         Reject out-of-range indices, conflicting operations on the same item,
         and repeated replacement indices. Validate replacement text before
         validating additions: both are trimmed and must be nonempty and contain
-        no line breaks, even at the ends, or `TaskError` is raised.
+        no newline or carriage return after trimming, or `TaskError` is raised.
 
         Walk the original items in order: skip removals, apply replacements,
         and check or uncheck the flagged items. A replacement is one unchecked
@@ -638,7 +638,9 @@ def parse(text: str) -> Task:
     fm_lines = lines[1:close]
     fields = _split_fields(fm_lines)
     frontmatter = _load_frontmatter(fm_lines, fields)
-    preamble, sections = _split_sections(lines[close + 1 :], first_line=close + 2)
+    body = "".join(lines[close + 1 :])
+    body_lines = [line + "\n" for line in body.split("\n")[:-1]]
+    preamble, sections = _split_sections(body_lines, first_line=close + 2)
     criteria = _parse_criteria(sections)
     _parse_history(sections)
     description = next((s for s in sections if s.name == DESCRIPTION), None)
@@ -907,10 +909,9 @@ def _verify_section_edit(
 
 
 def _criterion_text(text: str) -> str:
-    # Sentinels make splitlines detect breaks at either end as well.
-    if len(("a" + text + "a").splitlines()) > 1:
-        raise TaskError("acceptance criterion must be a single line")
     text = text.strip()
+    if "\n" in text or "\r" in text:
+        raise TaskError("acceptance criterion must be a single line")
     if not text:
         raise TaskError("acceptance criterion must not be empty")
     return text
