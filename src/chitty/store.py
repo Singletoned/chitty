@@ -1020,6 +1020,15 @@ class Repo:
                 raise ChittyError("setting status done requires -s review first")
             if not any(note and note.strip() for note in (edit.note, *edit.notes)):
                 raise ChittyError("moving error → done requires --note with the reason")
+        def require_clean() -> None:
+            if uncommitted := git.uncommitted_paths(self.root):
+                listed = ", ".join(f"`{path}`" for path in uncommitted)
+                raise ChittyError(
+                    f"cannot move {task_id} to {edit.status}; the worktree has "
+                    f"uncommitted changes: {listed}. Commit or resolve them "
+                    "before changing status"
+                )
+
         leaving_doing = (
             previous_status == "doing"
             and edit.status is not None
@@ -1027,13 +1036,8 @@ class Repo:
             and not edit.skip_current_version
             and self._current_branch() == str(task_id).lower()
         )
-        if leaving_doing and (uncommitted := git.uncommitted_paths(self.root)):
-            listed = ", ".join(f"`{path}`" for path in uncommitted)
-            raise ChittyError(
-                f"cannot move {task_id} to {edit.status}; the worktree has "
-                f"uncommitted changes: {listed}. Commit or resolve them "
-                "before changing status"
-            )
+        if leaving_doing:
+            require_clean()
         entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
         if (
@@ -1042,15 +1046,6 @@ class Repo:
             and not edit.skip_current_version
         ):
             self._require_current_version(stored)
-
-            def require_clean() -> None:
-                if uncommitted := git.uncommitted_paths(self.root):
-                    listed = ", ".join(f"`{path}`" for path in uncommitted)
-                    raise ChittyError(
-                        f"cannot move {task_id} to {edit.status}; the worktree has "
-                        f"uncommitted changes: {listed}. Commit or resolve them "
-                        "before changing status"
-                    )
 
             require_clean()
             skip_check = (

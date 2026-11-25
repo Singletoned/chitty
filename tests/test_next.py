@@ -2245,6 +2245,8 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
+        with (self.root / ".git" / "info" / "exclude").open("a") as exclude:
+            exclude.write("\npi-arguments\nrun-actor\nchild-actor\npi-session-id\n")
         fake.write_text(
             "#!" + sys.executable + "\n"
             "import os, pathlib, re, subprocess, sys\n"
