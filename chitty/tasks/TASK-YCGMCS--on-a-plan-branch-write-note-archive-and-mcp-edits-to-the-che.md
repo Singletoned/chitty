@@ -1,6 +1,6 @@
 ---
 title: On a `plan/` branch, write `note`, `archive` and MCP edits to the checkout's copy, as `edit` does
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -27,9 +27,11 @@ Out of scope: other branches and the warnings instead of refusals (TASK-602, whi
 ## Acceptance Criteria
 
 - [ ] A real-Git test in `tests/test_planning_worktrees.py`: on a `plan/x` branch made from `main`, with a numbered ticket committed on `main`, `chitty note` and `chitty archive` on that ticket succeed, commit on `plan/x`, and leave `main` unchanged. Fails today with `latest committed version is on branch main`.
-- [ ] The same setup through `chitty.mcp`: the `edit` and `note` tools succeed and commit on `plan/x`, and `show` returns the checkout's copy after the edit. Fails today.
+- [ ] The same setup through `chitty.mcp`: the `edit`, `note` and `archive` tools succeed and commit on `plan/x`, and `show` returns the checkout's copy after the edit. Fails today.
 - [ ] Regression tests: the existing tests in `tests/test_planning_worktrees.py` pass, including the refusal when another branch changed the ticket since the split; `make check` passes.
 
 ## History
 
 - 2026-11-25T22:56:47Z calm-ochre-quail → planning
+- 2026-11-25T22:57:01Z calm-ochre-quail: changed acceptance criteria
+- 2026-11-25T22:57:01Z calm-ochre-quail planning → cold-read
