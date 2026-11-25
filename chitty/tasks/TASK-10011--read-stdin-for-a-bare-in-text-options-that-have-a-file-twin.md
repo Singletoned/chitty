@@ -1,6 +1,6 @@
 ---
 title: Read stdin for a bare `-` in text options that have a `-file` twin
-status: planning
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -30,3 +30,4 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-JTE4ZH
 - 2026-11-25T23:32:51Z calm-ochre-quail: replaced notes; changed title, priority, description, acceptance criteria
 - 2026-11-25T23:32:51Z calm-ochre-quail backlog → planning
+- 2026-11-25T23:33:04Z calm-ochre-quail planning → cold-read
