@@ -37,6 +37,10 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 
 Add focused property, parser and CLI tests and confirm they fail before the fix; split only body lines on newline, narrow criterion validation, then run formatting and checks.
 
+## Notes
+
+Before the fix, all three new tests fail: parser rejects the split criterion, property rejects separator text, and CLI edit exits 1.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -103,3 +107,4 @@ Add focused property, parser and CLI tests and confirm they fail before the fix;
 - 2026-11-25T21:10:56Z daring-ebony-wren planning → todo
 - 2026-11-25T21:11:31Z mellow-yellow-jay todo → doing
 - 2026-11-25T21:16:06Z mellow-yellow-jay: wrote the plan
+- 2026-11-25T21:17:00Z mellow-yellow-jay: changed notes
