@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -77,3 +77,4 @@ Ticket discovery and conflict selection read captured commit IDs, preserving the
 - 2026-11-25T21:29:32Z honest-zinc-vole: changed notes
 - 2026-11-25T21:33:45Z honest-zinc-vole: changed notes
 - 2026-11-25T21:33:52Z honest-zinc-vole: changed summary
+- 2026-11-25T21:36:09Z honest-zinc-vole doing → review
