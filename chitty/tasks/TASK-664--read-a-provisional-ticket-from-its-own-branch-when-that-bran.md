@@ -1,6 +1,6 @@
 ---
 title: Read a provisional ticket from its own branch when that branch is ahead of main
-status: planning
+status: todo
 labels:
   - bug
 priority: high
@@ -31,7 +31,7 @@ Both new tests fail on `main` today. To show it, write the tests first and run t
 
 ## Acceptance Criteria
 
-- [ ] The new property test `test_rule_1_provisional_follows_the_other_rules_unless_none_apply` and `test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` pass, and each fails on `main`; a note records both runs. Regression tests: `test_provisional_is_read_from_the_id`, `test_provisional_only_on_its_branch_is_read_from_it`, `test_provisional_in_linked_worktree`
+- [ ] The new property test `test_rule_1_provisional_follows_the_other_rules_unless_none_apply` and `test_provisional_on_main_with_its_own_branch_ahead_is_read_from_it` pass, and each fails before the change to `src/chitty/ticket_source.py`; a ticket note records both runs. Regression tests: `test_provisional_is_read_from_the_id`, `test_provisional_only_on_its_branch_is_read_from_it`, `test_provisional_in_linked_worktree`
 - [ ] `make check` passes
 
 ## Notes
@@ -50,3 +50,5 @@ Planner, 2026-11-25: probed on a trial patch of `main` (the change and both test
 - 2026-11-25T10:27:18Z sunny-hazel-gannet backlog → planning
 - 2026-11-25T10:32:14Z sunny-hazel-gannet: changed notes
 - 2026-11-25T10:33:25Z sunny-hazel-gannet: changed description
+- 2026-11-25T10:34:24Z sunny-hazel-gannet: changed acceptance criteria
+- 2026-11-25T10:34:24Z sunny-hazel-gannet planning → todo
