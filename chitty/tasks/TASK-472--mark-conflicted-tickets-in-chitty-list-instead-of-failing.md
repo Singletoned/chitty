@@ -42,6 +42,8 @@ Add a specific source-conflict exception; recover only during listing from main 
 
 Regression test confirmed failing before the fix: list --json exits 1 with the changed-on-both error.
 
+The real-Git property also fails against the unmodified HEAD: list exits 1 for states=[both]. Existing placement tests expected listing to raise, so their listing assertions now check conflict markers while preserving find error checks.
+
 ## History
 
 - 2026-11-20T11:10:11Z lively-bronze-crane → backlog
@@ -57,3 +59,4 @@ Regression test confirmed failing before the fix: list --json exits 1 with the c
 - 2026-11-25T23:37:55Z nimble-bronze-otter todo → doing
 - 2026-11-25T23:42:02Z nimble-bronze-otter: wrote the plan
 - 2026-11-25T23:42:29Z nimble-bronze-otter: changed notes
+- 2026-11-25T23:50:23Z nimble-bronze-otter: changed notes
