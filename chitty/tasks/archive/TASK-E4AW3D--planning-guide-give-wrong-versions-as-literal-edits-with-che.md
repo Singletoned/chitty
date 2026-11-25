@@ -20,3 +20,4 @@ Triage 2026-11-25: obsolete. `chitty guide plan` no longer asks for wrong versio
 - 2026-11-25T22:28:23Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:25Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:13Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:15Z calm-ochre-quail backlog → archived
