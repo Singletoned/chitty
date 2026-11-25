@@ -13,7 +13,10 @@ In echonomicon, TASK-213's work was complete and checks passed, but the worker's
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: merged into TASK-676.
+
 ## History
 
 - 2026-11-25T22:28:43Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:44Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:45Z calm-ochre-quail: changed notes
