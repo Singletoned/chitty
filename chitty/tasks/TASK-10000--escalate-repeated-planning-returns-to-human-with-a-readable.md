@@ -31,6 +31,10 @@ Add property and CLI tests for planning and review escalation, then implement sh
 
 Confirmed new property tests fail before the fix: planning remains unblocked at three returns and review escalation lacks a summary.
 
+## Summary
+
+Repeated planning returns now escalate after three attempts since the last block; planning and review escalations include a concise incoming reason unless a summary was supplied. Property and CLI tests cover the behaviour; make check passed.
+
 ## History
 
 - 2026-11-25T18:20:06Z human → cold-read
@@ -40,3 +44,4 @@ Confirmed new property tests fail before the fix: planning remains unblocked at 
 - 2026-11-25T20:39:10Z witty-teal-urchin todo → doing
 - 2026-11-25T20:43:09Z witty-teal-urchin: wrote the plan
 - 2026-11-25T20:43:41Z witty-teal-urchin: changed notes
+- 2026-11-25T20:51:07Z witty-teal-urchin: changed summary
