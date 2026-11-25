@@ -30,10 +30,8 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 
 ## Acceptance Criteria
 
-- [ ] The tests in `tests/test_criteria_line_breaks.py` pass. A note records a run of that file against `main`: every test in `TestBreaksAccepted` fails there, and every test in `TestUnchangedBehaviour` passes there, because those pin behaviour this ticket keeps; `test_new_criterion_rejects_all_line_breaks` is narrowed to `\n` and `\r`
-- [ ] `tests/test_property_criterion_text.py` and the other existing tests still pass; `make check` passes
-- [ ] The renumbering-caller example (`with_criterion_text` with `a\u2028b` and `a\x1db`) passes and fails against `main`; `tests/test_property_renumbering.py` passes
-- [ ] The frontmatter example passes (a title `a\x85b` reads back unchanged, written as `"a\u0085b"`) and fails against `main`
+- [ ] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails on `main`
+- [ ] Regression tests: `a\nb` and `a\rb` are still refused with `acceptance criterion must be a single line`; `test_new_criterion_rejects_all_line_breaks` (narrowed to `\n` and `\r`) and `make check` pass
 
 ## History
 
@@ -93,3 +91,4 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - 2026-11-25T12:11:52Z sunny-hazel-gannet: changed notes
 - 2026-11-25T12:11:52Z sunny-hazel-gannet todo → planning
 - 2026-11-25T21:07:08Z daring-ebony-wren: replaced notes; changed owner, description; wrote the plan
+- 2026-11-25T21:07:13Z daring-ebony-wren: changed acceptance criteria
