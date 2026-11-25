@@ -20,9 +20,7 @@ Related: TASK-499 warns on the size of the whole ticket file. Out of scope: a mo
 
 ## Notes
 
-Suggestion origin: echonomicon
-
-Planner, 2026-11-25: `chitty check` already warns `3 cold reads; simplify or split instead of another read`. Check what is left (returns to planning, description length) before planning this.
+Planner, 2026-11-25: `chitty check` already warns `3 cold reads; simplify or split instead of another read` and `specification has N words; simplify or split tickets above 500 words`. Only the warning on repeated returns from `doing` to `planning` may be left; check before planning, and archive if nothing is.
 
 ## History
 
@@ -31,3 +29,4 @@ Planner, 2026-11-25: `chitty check` already warns `3 cold reads; simplify or spl
 - 2026-11-25T22:34:45Z calm-ochre-quail: changed title, priority, description
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-PT4DEM
 - 2026-11-25T23:06:34Z calm-ochre-quail: changed notes
+- 2026-11-25T23:07:18Z calm-ochre-quail: replaced notes
