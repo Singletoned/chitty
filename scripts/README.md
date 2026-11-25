@@ -28,3 +28,10 @@ and failed, first-review pass rates with and without a cold read, `chitty run`
 sessions and hours, and the share of Chitty autocommits; then failure causes
 and the tickets that failed review most often. It reads ticket files, `git log`
 and the machine-local usage log, and changes nothing.
+
+# Worker trials
+
+`scripts/worker_trial/` runs one `chitty run` work session per ticket and setup
+(harness, model, prompt) in throwaway clones, then compares outcome, time,
+API-equivalent cost and code against the landed reference. Method, round 1
+results and the round 2 plan: `docs/plan/worker-trials.md`.

@@ -27,6 +27,7 @@ One file per topic; read only the one you need.
 - [MCP](mcp.md)
 - [Agent instructions](agent-instructions.md)
 - [Pipeline and feedback](pipeline-and-feedback.md)
+- [Worker trials](worker-trials.md)
 - [Stack](stack.md)
 - [Next action and runner](next-action-and-runner.md)
 - [Module layout](module-layout.md)

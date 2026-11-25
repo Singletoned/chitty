@@ -1,0 +1,37 @@
+# Round 2: done tickets that passed their first review with no returns (see docs/plan/worker-trials.md).
+# <variant> <ticket> <base>; base from find_base.sh: main just before a worker claimed the ticket.
+pi152-luna TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+pi152-terra TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+pi152-luna-lean TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+codex-luna TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+codex-terra TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+claude-haiku TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+claude-sonnet TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+pi152-luna TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+pi152-terra TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+pi152-luna-lean TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+codex-luna TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+codex-terra TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+claude-haiku TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+claude-sonnet TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+pi152-luna TASK-559 bdc34030638f60039e18a124226683040df400b3
+pi152-terra TASK-559 bdc34030638f60039e18a124226683040df400b3
+pi152-luna-lean TASK-559 bdc34030638f60039e18a124226683040df400b3
+codex-luna TASK-559 bdc34030638f60039e18a124226683040df400b3
+codex-terra TASK-559 bdc34030638f60039e18a124226683040df400b3
+claude-haiku TASK-559 bdc34030638f60039e18a124226683040df400b3
+claude-sonnet TASK-559 bdc34030638f60039e18a124226683040df400b3
+pi152-luna TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+pi152-terra TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+pi152-luna-lean TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+codex-luna TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+codex-terra TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+claude-haiku TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+claude-sonnet TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+pi152-luna TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+pi152-terra TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+pi152-luna-lean TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+codex-luna TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+codex-terra TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+claude-haiku TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+claude-sonnet TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
