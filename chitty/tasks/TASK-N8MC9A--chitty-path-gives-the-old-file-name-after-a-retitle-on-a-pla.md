@@ -1,6 +1,10 @@
 ---
 title: "`chitty path` gives the old file name after a retitle on a `plan/` branch"
 status: backlog
+labels:
+  - bug
+depends_on:
+  - TASK-602
 created: 2026-11-25
 provisional: true
 ---
@@ -13,7 +17,10 @@ provisional: true
 
 Suggestion origin: chitty
 
+Triage 2026-11-25: TASK-602 makes Chitty read tickets from the current branch, which probably fixes this. Recheck once it lands; related to TASK-494.
+
 ## History
 
 - 2026-11-25T22:28:41Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:43Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:20Z calm-ochre-quail: changed labels, dependencies, notes
