@@ -1,6 +1,6 @@
 ---
 title: Read a provisional ticket from its own branch when that branch is ahead of main
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -52,3 +52,4 @@ Planner, 2026-11-25: probed on a trial patch of `main` (the change and both test
 - 2026-11-25T10:33:25Z sunny-hazel-gannet: changed description
 - 2026-11-25T10:34:24Z sunny-hazel-gannet: changed acceptance criteria
 - 2026-11-25T10:34:24Z sunny-hazel-gannet planning → todo
+- 2026-11-25T10:35:02Z lively-pearl-lapwing todo → doing
