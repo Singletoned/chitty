@@ -1,6 +1,6 @@
 ---
 title: Choose and list tickets labelled bug first within each status
-status: review
+status: done
 labels:
   - needs-minor
 priority: high
@@ -29,9 +29,9 @@ Order of work: first add only the `labels` field to `TicketFacts` and pass it fr
 
 ## Acceptance Criteria
 
-- [ ] The property test `test_choice_obeys_filters_and_independent_order` with labels, the `"bug before higher priority"` case and `test_list_puts_bug_tickets_first_within_each_status` pass, and each fails on its assertion with the `labels` field added but the sort keys unchanged; a ticket note records the runs. Regression tests: the `"status before bug"` and `"priority within bugs"` cases
-- [ ] `README.md` and `docs/plan/cli.md` describe the bug-first order as the Description says
-- [ ] `make check` passes
+- [x] The property test `test_choice_obeys_filters_and_independent_order` with labels, the `"bug before higher priority"` case and `test_list_puts_bug_tickets_first_within_each_status` pass, and each fails on its assertion with the `labels` field added but the sort keys unchanged; a ticket note records the runs. Regression tests: the `"status before bug"` and `"priority within bugs"` cases
+- [x] `README.md` and `docs/plan/cli.md` describe the bug-first order as the Description says
+- [x] `make check` passes
 
 ## Plan
 
@@ -44,6 +44,11 @@ Planner, 2026-11-25: probed on a trial patch of `main` with the tests and change
 Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TASK-6`); with it, the expected order before the key change is `TASK-1, TASK-6, TASK-3, TASK-2, TASK-4, TASK-5`. Record the real run, not this.
 
 Verified after implementation: make check passes (1180 tests). The required pre-key-change failures were not recorded; regression tests now pass. Source changes and focused tests are committed as 80046b10.
+
+Reviewed: implementation and complete diff checked.
+1: pass - `make check` passes the property, selection and list tests, including both regression cases. In a temporary HEAD worktree with only the two bug sort keys removed (labels retained), `PYTHONPATH=src .venv/bin/pytest -q tests/test_property_next.py::TestPropertyNext::test_choice_obeys_filters_and_independent_order tests/test_next.py::TestNext::test_selection_order_and_exclusions tests/test_cli.py::TestAddShowList::test_list_puts_bug_tickets_first_within_each_status --tb=short` produced assertion failures in all three required tests: selection chose TASK-1 instead of TASK-2; list returned TASK-1, TASK-6, TASK-3, TASK-2, TASK-4, TASK-5; the property selected an unlabelled ticket instead of a bug. The other seven subtests passed. The pytest executable was the ticket worktree's absolute `.venv/bin/pytest` path.
+2: pass - `README.md` and `docs/plan/cli.md` specify status, bug label, and priority ordering and the dated decision.
+3: pass - `make check`: 1181 passed, 626 subtests passed; ruff and pyright pass.
 
 ## Summary
 
@@ -61,3 +66,5 @@ Implemented bug-label-first ordering within each status for next-ticket selectio
 - 2026-11-25T11:39:11Z tidy-lilac-raven: changed notes
 - 2026-11-25T11:50:12Z tidy-lilac-raven: changed summary
 - 2026-11-25T11:50:12Z tidy-lilac-raven doing → review
+- 2026-11-25T20:46:33Z kind-coral-toad: changed notes; ticked acceptance criteria
+- 2026-11-25T20:46:33Z kind-coral-toad review → done
