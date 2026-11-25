@@ -1,6 +1,6 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -65,3 +65,4 @@ Listings retain conflicted tickets with main or working-tree fallback, conflict 
 - 2026-11-25T23:42:29Z nimble-bronze-otter: changed notes
 - 2026-11-25T23:50:23Z nimble-bronze-otter: changed notes
 - 2026-11-25T23:53:08Z nimble-bronze-otter: changed summary; ticked acceptance criteria
+- 2026-11-25T23:55:24Z nimble-bronze-otter doing → review
