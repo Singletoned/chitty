@@ -35,6 +35,10 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 
 Capture expected ticket discovery before mutating refs, add a property test proving snapshot consistency, then read files and split changes using captured commit IDs. Update the caching regression test, run formatting and checks, and hand off for review.
 
+## Notes
+
+The new snapshot property fails before the fix: deleted refs cause git ls-tree to fail, and moved refs return the new title instead of the captured title.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -64,3 +68,4 @@ Capture expected ticket discovery before mutating refs, add a property test prov
 - 2026-11-25T21:19:46Z daring-ebony-wren planning → todo
 - 2026-11-25T21:24:56Z honest-zinc-vole todo → doing
 - 2026-11-25T21:28:42Z honest-zinc-vole: wrote the plan
+- 2026-11-25T21:29:32Z honest-zinc-vole: changed notes
