@@ -1,6 +1,6 @@
 ---
 title: Split ticket bodies only at `\n`, so criteria can hold other Unicode line separators
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -40,6 +40,10 @@ Add focused property, parser and CLI tests and confirm they fail before the fix;
 ## Notes
 
 Before the fix, all three new tests fail: parser rejects the split criterion, property rejects separator text, and CLI edit exits 1.
+
+Reviewed:
+1: pass - make check passes the property and examples; in a temporary merge-base worktree with the new test file and PYTHONPATH pointing to its src, pytest on the three named tests produced 3 failures: single-line rejection for the property and CLI, and parse rejection of b for the example.
+2: pass - make check passed, including test_new_criterion_rejects_all_line_breaks for embedded LF and CR and their exact error message (1189 passed, 621 subtests passed).
 
 ## Summary
 
@@ -115,3 +119,5 @@ Body parsing now splits only at LF; criterion edits trim before rejecting embedd
 - 2026-11-25T21:20:31Z daring-ebony-wren: changed acceptance criteria
 - 2026-11-25T21:21:13Z mellow-yellow-jay: changed summary; ticked acceptance criteria
 - 2026-11-25T21:23:40Z mellow-yellow-jay doing → review
+- 2026-11-25T21:30:32Z zesty-zinc-raven: changed notes
+- 2026-11-25T21:30:32Z zesty-zinc-raven review → done
