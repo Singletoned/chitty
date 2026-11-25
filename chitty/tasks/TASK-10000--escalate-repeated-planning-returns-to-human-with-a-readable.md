@@ -27,6 +27,10 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT` or `chitty run` selection logic.
 
 Add property and CLI tests for planning and review escalation, then implement shared escalation summaries and reset-aware planning counts; format, check, and hand off for review.
 
+## Notes
+
+Confirmed new property tests fail before the fix: planning remains unblocked at three returns and review escalation lacks a summary.
+
 ## History
 
 - 2026-11-25T18:20:06Z human → cold-read
@@ -35,3 +39,4 @@ Add property and CLI tests for planning and review escalation, then implement sh
 - 2026-11-25T18:32:36Z human: renumbered from TASK-D92QA4
 - 2026-11-25T20:39:10Z witty-teal-urchin todo → doing
 - 2026-11-25T20:43:09Z witty-teal-urchin: wrote the plan
+- 2026-11-25T20:43:41Z witty-teal-urchin: changed notes
