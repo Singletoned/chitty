@@ -17,7 +17,10 @@ Suggested fix: before running the pre-session check, look at `git status` in the
 
 Suggestion origin: chitty
 
+Triage 2026-11-25: merged into TASK-676.
+
 ## History
 
 - 2026-11-25T22:28:27Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:28Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:34Z calm-ochre-quail: changed notes
