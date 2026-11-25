@@ -1,6 +1,6 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: backlog
+status: cold-read
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -19,3 +19,4 @@ Triage 2026-11-25: merged TASK-10017. Seen on 2026-11-25: `TASK-FER4EB` changed 
 
 - 2026-11-20T11:10:11Z lively-bronze-crane → backlog
 - 2026-11-25T22:32:49Z calm-ochre-quail: changed notes
+- 2026-11-25T23:27:51Z calm-ochre-quail backlog → cold-read
