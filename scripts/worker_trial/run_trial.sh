@@ -115,6 +115,11 @@ fi
 
 started=$(date +%s)
 set +e
+# Drop any checkout's .venv/bin from PATH, so that a bare `pytest` or `python`
+# in the trial cannot import the real repository's code, which may already
+# hold the landed work. The runner puts the clone's own .venv/bin first.
+PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '/\.venv/bin$' | paste -sd: -)
+export PATH
 timeout "${TRIAL_TIMEOUT:-7200}" "$chitty" run --ticket "$ticket" --agent trial > "$dir.run.out" 2>&1
 code=$?
 set -e

@@ -111,6 +111,16 @@ has none.
   matches the waiting shell's own command line and never ends.
 - **agy `-c`** continues the machine's most recent conversation, not the one for
   the directory; run one agy trial at a time.
+- **The caller's `PATH`.** A trial started from a shell whose `PATH` holds the
+  real repository's `.venv/bin` lets a bare `pytest` there import the real
+  `main`'s code. At older bases the clone's own `.venv` has no `pytest`, so in
+  round 2 luna ran its placeholder check against the landed code. It then
+  returned `TASK-512` with a false claim that the properties pass without the
+  change. `run_trial.sh` now removes every `.venv/bin` from `PATH`.
+- **Relative `PYTHONPATH` in hidden tests.** A test that starts Python in a
+  temporary directory loses a relative `PYTHONPATH=src` and imports the clone's
+  install of the base code instead. Every `TASK-515` run first failed this way.
+  `hidden_tests.sh` now uses an absolute path.
 - **Stale inbox entries.** Each clone's project gets an inbox entry recording
   its path. If a later run reuses the project name after that clone is deleted,
   every `chitty` command fails with `Not a directory`. The project name now
