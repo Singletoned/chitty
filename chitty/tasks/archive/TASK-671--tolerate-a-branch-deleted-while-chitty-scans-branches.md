@@ -32,3 +32,4 @@ Archived 2026-11-25: evidence added to TASK-233 (on branch task-233). The earlie
 - 2026-11-24T22:40:13Z zesty-coral-newt: changed labels, notes
 - 2026-11-24T22:41:02Z zesty-coral-newt: changed notes
 - 2026-11-25T20:45:24Z golden-coral-stoat: changed notes
+- 2026-11-25T20:45:39Z golden-coral-stoat backlog → archived
