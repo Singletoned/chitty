@@ -181,9 +181,9 @@ lines added in `src/` and `tests/`, as a share of the reference's.
 | Pi 1.5.2 + luna | 4/5 | 21 | 0.020 | 0.10 | 5/5 | about 1.3x |
 | Pi 1.5.2 + terra | 5/5 | 14 | 0.082 | 0.41 | 5/5 | about 1.1x |
 | Codex + luna | 5/5 | 17 | 0.047 | 0.23 | 5/5 | about 1.3x |
-| Codex + terra | 5/5 | 12 | 0.269 | 1.34 | 5/5 | about 1.1x |
+| Codex + terra | 5/5 | 12 | 0.269 | 1.34 | 5/5 | about 1.2x |
 | Claude Code + Haiku | 5/5 | 15 | 0.052 | 0.26 | 5/5 | about 1.5x |
-| Claude Code + Sonnet | 5/5 | 16 | 0.793 | 3.96 | 5/5 | about 1.8x |
+| Claude Code + Sonnet | 5/5 | 16 | 0.793 | 3.96 | 5/5 | about 1.9x |
 | agy + Gemini 4 Hydrogen | 4/5 | 18 | 0.470 | 2.35 | 5/5 | about 1.6x |
 
 - **Every branch passes the reference's own tests**, including the two runs
@@ -203,7 +203,7 @@ lines added in `src/` and `tests/`, as a share of the reference's.
   phrases from the full work guide, so the runner's pre-session check failed
   and each ticket went straight to `error`. Round 1 already found the lean
   prompt no better, so it was not rerun.
-- **Size.** Terra on either harness stayed closest to the reference. Sonnet wrote
+- **Size.** Terra, especially on Pi, stayed closest to the reference. Sonnet wrote
   the most: more tests, and on `TASK-559` and `TASK-609` an extra file. Larger is
   not worse by itself; the blind review (not yet run) is what would judge
   quality.
