@@ -31,6 +31,10 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 - [ ] The property in `tests/test_ref_snapshot.py`, with its `@example`s, passes, and fails with the `store.py` fix reverted
 - [ ] Regression tests: `test_ref_reads_once_and_cached` expects commit IDs and passes; `make check` passes
 
+## Plan
+
+Capture expected ticket discovery before mutating refs, add a property test proving snapshot consistency, then read files and split changes using captured commit IDs. Update the caching regression test, run formatting and checks, and hand off for review.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -59,3 +63,4 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 - 2026-11-25T21:19:25Z daring-ebony-wren cold-read → planning
 - 2026-11-25T21:19:46Z daring-ebony-wren planning → todo
 - 2026-11-25T21:24:56Z honest-zinc-vole todo → doing
+- 2026-11-25T21:28:42Z honest-zinc-vole: wrote the plan
