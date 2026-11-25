@@ -4,7 +4,7 @@ status: backlog
 depends_on:
   - TASK-602
 created: 2026-11-25
-provisional: true
+moved_from: TASK-N6YMT2
 ---
 
 ## Description
@@ -14,3 +14,4 @@ Split from TASK-602 on 2026-11-25 to keep it small. TASK-602 makes CLI `show`, `
 ## History
 
 - 2026-11-25T23:30:44Z calm-ochre-quail → backlog
+- 2026-11-25T23:32:09Z calm-ochre-quail: renumbered from TASK-N6YMT2
