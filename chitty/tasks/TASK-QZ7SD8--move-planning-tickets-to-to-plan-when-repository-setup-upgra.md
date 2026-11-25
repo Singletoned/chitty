@@ -1,6 +1,6 @@
 ---
 title: Move `planning` tickets to `to-plan` when repository setup upgrades
-status: backlog
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -35,3 +35,4 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 - 2026-11-25T23:07:24Z golden-coral-stoat → backlog
 - 2026-11-25T23:07:42Z golden-coral-stoat: changed description, acceptance criteria
 - 2026-11-25T23:10:16Z golden-coral-stoat: changed dependencies, description
+- 2026-11-25T23:12:35Z golden-coral-stoat backlog → todo
