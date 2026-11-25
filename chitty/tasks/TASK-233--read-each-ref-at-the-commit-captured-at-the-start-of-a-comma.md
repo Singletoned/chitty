@@ -41,6 +41,10 @@ The new snapshot property fails before the fix: deleted refs cause git ls-tree t
 
 With only the split-change fix reverted, the deleted conflicting branch example also fails at git merge-base; restoring it passes.
 
+## Summary
+
+Ticket discovery and conflict selection read captured commit IDs, preserving the command snapshot when branches move or disappear. Added a real-Git snapshot property with deletion, movement and conflicting-change examples; verified failures before the fix and with the split-change fix independently reverted. Updated the caching regression. make check passed.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -72,3 +76,4 @@ With only the split-change fix reverted, the deleted conflicting branch example 
 - 2026-11-25T21:28:42Z honest-zinc-vole: wrote the plan
 - 2026-11-25T21:29:32Z honest-zinc-vole: changed notes
 - 2026-11-25T21:33:45Z honest-zinc-vole: changed notes
+- 2026-11-25T21:33:52Z honest-zinc-vole: changed summary
