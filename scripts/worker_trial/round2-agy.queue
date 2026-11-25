@@ -1,6 +1,6 @@
 # Round 2, agy only: run with parallel 1 (agy -c continues the machine's latest conversation).
-agy TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
-agy TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
-agy TASK-559 bdc34030638f60039e18a124226683040df400b3
-agy TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
-agy TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5
+agy-hydrogen TASK-512 bf982a01e44c39669b080c1bab65000f223389d4
+agy-hydrogen TASK-515 9ac98b69940b0099fffbd2ebbe760e3e2be3e38b
+agy-hydrogen TASK-559 bdc34030638f60039e18a124226683040df400b3
+agy-hydrogen TASK-609 26a3ce54c562529008b677cd917bc912f0445f4d
+agy-hydrogen TASK-639 0f6d50f5a98a8d904f1d7bc16c50eb4bdd2005d5

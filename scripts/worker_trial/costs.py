@@ -31,6 +31,8 @@ PRICES = {
     # Gemini Developer API standard tier, introductory rates to 2026-12-31
     # (ai.google.dev/gemini-api/docs/pricing); implicit caching has no storage fee.
     "gemini-3.8-flash-medium": (0.75, 3.75, 0.0, 0.075),
+    # Standard tier as reported by secondary sources; not yet seen on ai.google.dev.
+    "gemini-4-hydrogen-medium": (1.50, 7.50, 0.0, 0.075),
 }
 CLAUDE_1H_WRITE = {"claude-haiku-5-5": 0.20, "claude-sonnet-5-5": 4.00}
 # A transcript that names the run's clone path fewer times than this only
@@ -174,7 +176,7 @@ def usage(run: Run) -> tuple[str | None, Counter, int]:
         return claude_usage(run)
     if run.variant.startswith("codex-"):
         return (*codex_usage(run), 0)
-    if run.variant == "agy":
+    if run.variant.startswith("agy"):
         return (*agy_usage(run), 0)
     raise SystemExit(f"no usage reader for variant {run.variant!r}")
 

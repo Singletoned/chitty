@@ -125,7 +125,7 @@ has none.
 - Pi, Codex and Claude Code use your own global settings and hooks, as a real
   runner would.
 
-## Round 2: plan (not yet run)
+## Round 2: plan (started 2026-11-25)
 
 Purpose: compare setups on tickets known to be well planned and completable, and
 compare the code they write. Candidates are done tickets that landed since
@@ -172,3 +172,8 @@ parallel 3; each run's `make check` is heavy. Watch the processes, not only
 `results.tsv`: a run that dies writes no row. Round 1's data is in
 `tmp/worker-trial/` (`results.tsv`, `costs.tsv`, `runs/`) on the machine that
 ran it.
+
+`round2-agy.queue` uses `agy-hydrogen` (Gemini 4 Hydrogen, medium), not round
+1's Gemini 3.8 Flash, which spent most of its steps polling (decided with the
+person, 2026-11-25). Its price in `costs.py` ($1.50 / $7.50 / $0.075 cached)
+comes from secondary sources, not Google's own page.

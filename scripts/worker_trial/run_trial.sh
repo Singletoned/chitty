@@ -52,6 +52,7 @@ case $variant in
     # `agy -c` continues the machine's most recent conversation, so run at most
     # one agy trial at a time.
     agy) agent="$run agy -p {prompt} --dangerously-skip-permissions --model gemini-3.8-flash-medium" ;;
+    agy-hydrogen) agent="$run agy -p {prompt} --dangerously-skip-permissions --model gemini-4-hydrogen-medium" ;;
     *) echo "unknown variant: $variant" >&2; exit 2 ;;
 esac
 case $variant in pi*)
