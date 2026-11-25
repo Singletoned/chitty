@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -16,7 +16,7 @@ Seen 2026-11-25 in a worker trial: a worker ran bare `pytest` against a placehol
 
 Change: one helper in `run.py`, used at both places, that makes a directory holding only a `chitty` symbolic link to the runner's `chitty`, under the Git common directory (beside the run locks, `.git/chitty/run/`; for example `.git/chitty/bin/`), replacing an existing link, and puts that directory first on the agent's `PATH` instead of `.venv/bin`. Keep today's `runner chitty executable not found` error.
 
-No property test: a fixed environment change, shown by one example per agent mode.
+A fake agent as in `tests/test_run_repair_mode.py` (`agent_command = "fake-agent {mode} {id} {prompt}"`) can record what it resolves. No property test: a fixed environment change, shown by one example per agent mode.
 
 Out of scope: work guide advice about bare `pytest` (the trap goes away instead).
 
@@ -34,3 +34,5 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - 2026-11-25T23:48:15Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
 - 2026-11-25T23:48:15Z calm-ochre-quail backlog → planning
 - 2026-11-25T23:48:29Z calm-ochre-quail planning → cold-read
+- 2026-11-25T23:49:43Z calm-ochre-quail: changed description
+- 2026-11-25T23:49:43Z calm-ochre-quail cold-read → planning
