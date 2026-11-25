@@ -1,6 +1,9 @@
 ---
-title: A bare pytest in a ticket worktree tests the main checkout's code
+title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
 status: backlog
+labels:
+  - bug
+priority: high
 created: 2026-11-25
 provisional: true
 ---
@@ -21,3 +24,4 @@ Suggestion origin: chitty
 
 - 2026-11-25T22:28:25Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:27Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:11Z calm-ochre-quail: changed title, labels, priority
