@@ -26,8 +26,14 @@ Change:
 
 Out of scope: `cold-read`; rewriting references in other tickets during `renumber` or `move` (mechanical, not refused); `chitty run`, which never selects a `planning` ticket; the plan guide (`TASK-10026`'s guide ticket).
 
-Tests, with Hypothesis, in `tests/test_check_edit.py`: a property over a claimant name, another actor name (distinct, neither `human`), and an edit drawn from the edit kinds `check_edit` accepts (fields changed, status, note): with a task whose History ends in `<claimant> backlog → planning`, `check_edit` by the claimant behaves exactly as it does for a task with no claim, by `human` likewise, and by the other actor it raises `ChittyError` naming the claimant unless the edit is a release. Add a CLI example in `tests/test_cli.py`: `CHITTY_ACTOR=one` moves `TASK-1` to `planning`; `CHITTY_ACTOR=two` then fails `chitty note TASK-1 x` and `chitty archive TASK-1` with the claimant named and the file unchanged, and succeeds with `chitty edit TASK-1 -s to-plan --note stale`.
+Tests, with Hypothesis, in `tests/test_check_edit.py`: a property over a claimant name, another actor name (distinct, neither `human`), and an edit drawn from the edit kinds `check_edit` accepts (fields changed, status, note): with a task whose History ends in `<claimant> backlog → planning`, `check_edit` by the claimant behaves exactly as it does for the same task whose last History line is the actor-less form `- 2026-11-25 backlog → planning` (unclaimed), by `human` likewise, and by the other actor it raises `ChittyError` naming the claimant unless the edit is a release. Add a CLI example in `tests/test_cli.py`: `CHITTY_ACTOR=one` moves `TASK-1` to `planning`; `CHITTY_ACTOR=two` then fails `chitty note TASK-1 x` and `chitty archive TASK-1` with the claimant named and the file unchanged, and succeeds with `chitty edit TASK-1 -s to-plan --note stale`.
+
+## Acceptance Criteria
+
+- [ ] The property test in `tests/test_check_edit.py` and the CLI example in `tests/test_cli.py` pass, and each fails before the change
+- [ ] `make check` passes
 
 ## History
 
 - 2026-11-25T23:06:45Z golden-coral-stoat → backlog
+- 2026-11-25T23:06:57Z golden-coral-stoat: changed description, acceptance criteria
