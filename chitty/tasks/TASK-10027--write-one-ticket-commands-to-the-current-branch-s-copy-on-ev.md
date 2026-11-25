@@ -1,6 +1,6 @@
 ---
 title: Write one-ticket commands to the current branch's copy on every branch except `main` and `task-<n>`
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -68,3 +68,4 @@ CLI and MCP single-ticket edits, notes and archives now use the current non-main
 - 2026-11-25T23:27:33Z eager-russet-quail: wrote the plan
 - 2026-11-25T23:28:08Z eager-russet-quail: changed notes
 - 2026-11-25T23:34:32Z eager-russet-quail: changed summary; ticked acceptance criteria
+- 2026-11-25T23:36:41Z eager-russet-quail doing → review
