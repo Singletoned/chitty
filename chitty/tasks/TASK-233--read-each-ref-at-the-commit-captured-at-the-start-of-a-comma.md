@@ -56,6 +56,8 @@ Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfac
 
 Implementation investigation found a conflict between the stated snapshot design and existing conflict detection: using captured commits in changed_since_split altered merge-base/change detection and caused 25 make check failures (including test_changed_both and provisional conflict tests). Existing relevant code is Repo._choose_source.changed_on_both; make check reproduces failures. Decision needed: specify the intended changed_since_split semantics with captured IDs while preserving current conflict behavior, or revise the required design/acceptance criteria. No test/property work completed; partial store.py change is uncommitted and should be preserved or reverted during planning.
 
+Folded in from TASK-671 (2026-11-25): on 2026-11-23, `chitty edit TASK-576 ...` in `.worktrees/task-576` failed with `git ls-tree -r -z --full-tree refs/heads/task-yj6vbs -- chitty` ... `fatal: Not a valid object name refs/heads/task-yj6vbs`, because another session deleted branch `task-yj6vbs` between Chitty listing branches and reading them. Rerunning succeeded. With many runners landing and removing branches, this race recurs.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -77,3 +79,4 @@ Implementation investigation found a conflict between the stated snapshot design
 - 2026-11-24T08:36:23Z intrepid-umber-quail: wrote the plan
 - 2026-11-24T08:39:47Z intrepid-umber-quail: changed owner, notes
 - 2026-11-24T08:39:47Z intrepid-umber-quail doing → planning
+- 2026-11-25T20:44:32Z golden-coral-stoat: changed notes
