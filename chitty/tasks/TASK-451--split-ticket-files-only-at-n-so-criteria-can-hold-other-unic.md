@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: planning
+status: todo
 labels:
   - bug
 priority: medium
@@ -33,7 +33,7 @@ Tests go in a new file, `tests/test_criteria_line_breaks.py`:
 - Parse example: a ticket file whose Acceptance Criteria section holds `- [ ] a\u2028b\n` parses to one criterion with text `a\u2028b`, and `render` returns the input byte for byte.
 - Renumbering-caller example, in the same new file: for `text` in `a\u2028b` and `a\x1db`, `parse(parse(SAMPLE).with_criterion_text(1, text).render()).criteria[0].text == text`, with `SAMPLE` imported from `tests/test_model.py`.
 - Frontmatter example, with `subTest` for each of `\x85`, `\u2028` and `\u2029` as `c`: `parse(task.with_field("title", f"a{c}b").render()).frontmatter.title == f"a{c}b"`, where `task = parse(SAMPLE)`. For `\x85`, the rendered title line is also `title: "a\u0085b"`, with the six characters backslash, `u`, `0`, `0`, `8`, `5` between the quotes, not the raw character. All three fail on `main`, where the file cannot be read back.
-- CLI test, in a class that inherits `CliTestCase` from `tests/test_cli.py`: `run_cli("add", "T", "--ac", "one")`, then `run_cli("edit", "TASK-1", "--set-ac", "1", "a\u2028b")` exits 0, and `show TASK-1 --json` gives criterion text `a\u2028b`.
+- CLI test, in a class that inherits `CliTestCase` from `tests/test_cli.py`: `run_cli("add", "T", "-d", "x", "--ac", "one")`, then `run_cli("edit", "TASK-1", "--set-ac", "1", "a\u2028b")` exits 0, and `show TASK-1 --json` gives criterion text `a\u2028b`.
 
 Put the `a\nb` and `a\rb` refusals and the `[x] a` example in a class `TestUnchangedBehaviour`, and every other new test in a class `TestBreaksAccepted`. Write each kind of example as its own test method, using `subTest` for each character, so a run shows which kinds pass. Run every test against `main` before the change and record the results in a note. Expected on `main`: the property, the parse example, the renumbering-caller example, the frontmatter example, the CLI test and the `a{c}b`, `a{c}` and `a\n` examples fail; the `a\nb` and `a\rb` refusals and the `[x] a` example pass, because they pin behaviour this ticket keeps. After the change, all pass.
 
@@ -55,6 +55,8 @@ Suggestion origin: chitty
 Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, and the notes that raised them were removed to stop them being re-raised (they are in Git history). In particular, `[x] a` and the `\n`/`\r` refusals are expected to pass on `main`: they are in `TestUnchangedBehaviour`, and criterion 1 asks only `TestBreaksAccepted` to fail there. Two cold reads on 2026-11-24 found nothing serious, and a trial patch of the planned change, run against the whole suite, broke only `test_new_criterion_rejects_all_line_breaks`.
 
 The ticket appears actionable, but implementation was not started in this session. The requested baseline run against main and code/test changes remain outstanding, so no acceptance criterion has been verified. No ticket defect or external obstacle was identified. Decision needed: resume implementation from the current plan; do not split—the scope is a focused parser/criterion fix with specified tests.
+
+Planner, 2026-11-25: fixed the CLI test fixture: `chitty add` needs `-d` outside `backlog`, so it is now `run_cli("add", "T", "-d", "x", "--ac", "one")` (found by a Codex worker in a trial run). Nothing else changed.
 
 ## History
 
@@ -109,3 +111,5 @@ The ticket appears actionable, but implementation was not started in this sessio
 - 2026-11-24T09:37:40Z open-pearl-raven: wrote the plan
 - 2026-11-24T09:38:18Z open-pearl-raven: changed owner, notes
 - 2026-11-24T09:38:18Z open-pearl-raven doing → planning
+- 2026-11-25T11:34:54Z sunny-hazel-gannet: changed description, notes
+- 2026-11-25T11:34:54Z sunny-hazel-gannet planning → todo
