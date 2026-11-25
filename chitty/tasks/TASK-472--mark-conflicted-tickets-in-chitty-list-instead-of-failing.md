@@ -30,9 +30,9 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test with real Git, `@settings(max_examples=examples(25))` as in `tests/test_property_hidden_entries.py`: commit 1 to 4 tickets on `main`, then give each one of: no conflict, changes on both `task-<n>` and `main` since they split, or diverged `task-<n>` and `origin/task-<n>`. `chitty list` exits 0 and lists every ticket exactly once; exactly the conflicted ones show `🔀` with today's error text, and `chitty list --json` gives exactly those a `conflict` key. Fails today: `chitty list` exits 1 with only the error.
-- [ ] In that setup with one conflicted `todo` ticket of `high` priority and one plain `todo` ticket, `chitty next` names the plain ticket; `chitty show` of the conflicted one still fails with today's message. Fails today.
-- [ ] Regression tests: the existing tests stay green, including `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py`, `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` (single-ticket commands keep their messages); `make check` passes.
+- [x] A Hypothesis property test with real Git, `@settings(max_examples=examples(25))` as in `tests/test_property_hidden_entries.py`: commit 1 to 4 tickets on `main`, then give each one of: no conflict, changes on both `task-<n>` and `main` since they split, or diverged `task-<n>` and `origin/task-<n>`. `chitty list` exits 0 and lists every ticket exactly once; exactly the conflicted ones show `🔀` with today's error text, and `chitty list --json` gives exactly those a `conflict` key. Fails today: `chitty list` exits 1 with only the error.
+- [x] In that setup with one conflicted `todo` ticket of `high` priority and one plain `todo` ticket, `chitty next` names the plain ticket; `chitty show` of the conflicted one still fails with today's message. Fails today.
+- [x] Regression tests: the existing tests stay green, including `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py`, `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` (single-ticket commands keep their messages); `make check` passes.
 
 ## Plan
 
@@ -43,6 +43,10 @@ Add a specific source-conflict exception; recover only during listing from main 
 Regression test confirmed failing before the fix: list --json exits 1 with the changed-on-both error.
 
 The real-Git property also fails against the unmodified HEAD: list exits 1 for states=[both]. Existing placement tests expected listing to raise, so their listing assertions now check conflict markers while preserving find error checks.
+
+## Summary
+
+Listings retain conflicted tickets with main or working-tree fallback, conflict markers and JSON details; selection skips them while direct operations still fail. Real-Git property and regression tests pass; make check passed.
 
 ## History
 
@@ -60,3 +64,4 @@ The real-Git property also fails against the unmodified HEAD: list exits 1 for s
 - 2026-11-25T23:42:02Z nimble-bronze-otter: wrote the plan
 - 2026-11-25T23:42:29Z nimble-bronze-otter: changed notes
 - 2026-11-25T23:50:23Z nimble-bronze-otter: changed notes
+- 2026-11-25T23:53:08Z nimble-bronze-otter: changed summary; ticked acceptance criteria
