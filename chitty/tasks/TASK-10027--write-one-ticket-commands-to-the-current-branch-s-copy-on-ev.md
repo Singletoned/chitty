@@ -29,9 +29,9 @@ Out of scope: the main branch, ticket branches and warnings instead of refusals 
 
 ## Acceptance Criteria
 
-- [ ] A real-Git test in `tests/test_planning_worktrees.py`, run once on a `plan/x` branch and once on a `hotfix/x` branch made from `main`, with a numbered ticket committed on `main`: `chitty note`, `chitty edit` and `chitty archive` on that ticket succeed, commit on that branch, and leave `main` unchanged. The `note`, `archive` and `hotfix/x` cases fail today with `latest committed version is on branch main`.
-- [ ] The same `hotfix/x` setup through `chitty.mcp`: the `edit`, `note` and `archive` tools succeed and commit on that branch, and `show` returns the checkout's copy after the edit. Fails today.
-- [ ] Regression tests: the existing tests in `tests/test_planning_worktrees.py` pass, including `test_main_conflict`, `test_sibling_rename_conflict` and `test_no_local_copy_refuses_edit_but_show_falls_back`; `make check` passes.
+- [x] A real-Git test in `tests/test_planning_worktrees.py`, run once on a `plan/x` branch and once on a `hotfix/x` branch made from `main`, with a numbered ticket committed on `main`: `chitty note`, `chitty edit` and `chitty archive` on that ticket succeed, commit on that branch, and leave `main` unchanged. The `note`, `archive` and `hotfix/x` cases fail today with `latest committed version is on branch main`.
+- [x] The same `hotfix/x` setup through `chitty.mcp`: the `edit`, `note` and `archive` tools succeed and commit on that branch, and `show` returns the checkout's copy after the edit. Fails today.
+- [x] Regression tests: the existing tests in `tests/test_planning_worktrees.py` pass, including `test_main_conflict`, `test_sibling_rename_conflict` and `test_no_local_copy_refuses_edit_but_show_falls_back`; `make check` passes.
 
 ## Plan
 
@@ -40,6 +40,10 @@ Add real-Git CLI and MCP regression tests, confirm failures, then route branch-l
 ## Notes
 
 Regression tests failed before the fix: CLI note on plan/one and hotfix/x and MCP edit on hotfix/x all refused the main branch version.
+
+## Summary
+
+CLI and MCP single-ticket edits, notes and archives now use the current non-main, non-ticket branch copy; MCP show reads it too. Real-Git regression tests cover plan and hotfix branches, isolation, and archive boundaries. make check passes; the new CLI and MCP tests failed before the fix.
 
 ## History
 
@@ -63,3 +67,4 @@ Regression tests failed before the fix: CLI note on plan/one and hotfix/x and MC
 - 2026-11-25T23:24:56Z eager-russet-quail todo → doing
 - 2026-11-25T23:27:33Z eager-russet-quail: wrote the plan
 - 2026-11-25T23:28:08Z eager-russet-quail: changed notes
+- 2026-11-25T23:34:32Z eager-russet-quail: changed summary; ticked acceptance criteria
