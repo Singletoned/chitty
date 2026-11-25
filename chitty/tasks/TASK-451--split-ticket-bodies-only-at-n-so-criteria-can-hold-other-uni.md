@@ -1,6 +1,6 @@
 ---
 title: Split ticket bodies only at `\n`, so criteria can hold other Unicode line separators
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -97,3 +97,4 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - 2026-11-25T21:10:50Z daring-ebony-wren: changed description
 - 2026-11-25T21:10:50Z daring-ebony-wren cold-read → planning
 - 2026-11-25T21:10:56Z daring-ebony-wren planning → todo
+- 2026-11-25T21:11:31Z mellow-yellow-jay todo → doing
