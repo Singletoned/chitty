@@ -24,9 +24,12 @@ Duplicate: the closing path is covered by TASK-599 (`dropped` status) and TASK-6
 
 Triage 2026-11-24: not archived, because its target ticket has a branch with a held run lock; fold this into the target when planning it, then archive.
 
+Archived 2026-11-25: closing path folded into TASK-599 (on branch task-599); identical-copies evidence is already on TASK-667. TASK-599's lock file was not held (pid 62280 dead).
+
 ## History
 
 - 2026-11-24T22:21:44Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:56Z zesty-coral-newt: changed labels, notes
 - 2026-11-24T22:41:00Z zesty-coral-newt: changed notes
+- 2026-11-25T20:45:50Z golden-coral-stoat: changed notes
