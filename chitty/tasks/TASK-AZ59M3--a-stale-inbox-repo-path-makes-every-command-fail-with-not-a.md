@@ -1,6 +1,8 @@
 ---
 title: A stale inbox repo path makes every command fail with Not a directory
 status: backlog
+labels:
+  - bug
 created: 2026-11-25
 provisional: true
 ---
@@ -15,7 +17,10 @@ The new clone was a valid repository with that project name. A recorded path tha
 
 Suggestion origin: chitty
 
+Triage 2026-11-25: related to TASK-50 (prune inbox registrations whose repo is gone). The worker-trial harness now avoids it by naming projects after the trial folder (`docs/plan/worker-trials.md`), but the fatal error remains for anyone else.
+
 ## History
 
 - 2026-11-25T22:28:31Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:33Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:18Z calm-ochre-quail: changed labels, notes
