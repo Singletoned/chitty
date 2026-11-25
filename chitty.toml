@@ -17,8 +17,8 @@ review = true
 list_width = 80
 
 chitty_version = "0.7.1"
-work_model = "openai-codex/gpt-6-luna" # default for work sessions
-# review_model = "provider/model" # default for review sessions
+work_model = "openai-codex/gpt-6.1-terra" # default for work sessions
+review_model = "openai-codex/gpt-6.1-terra" # default for review sessions
 
 # rebase_model = "provider/model" # default for rebase sessions
 
