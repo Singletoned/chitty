@@ -1,6 +1,9 @@
 ---
 title: "`git.worktree_for_branch` hides `git worktree list` failures"
 status: backlog
+labels:
+  - bug
+priority: medium
 created: 2026-11-25
 provisional: true
 ---
@@ -17,3 +20,4 @@ Suggestion origin: chitty
 
 - 2026-11-25T22:28:20Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:21Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:14Z calm-ochre-quail: changed labels, priority
