@@ -30,8 +30,8 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 
 ## Acceptance Criteria
 
-- [ ] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails with the `model.py` change reverted
-- [ ] Regression tests: `a\nb` and `a\rb` are still refused with `acceptance criterion must be a single line`; `test_new_criterion_rejects_all_line_breaks` (narrowed to `\n` and `\r`) and `make check` pass
+- [x] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails with the `model.py` change reverted
+- [x] Regression tests: `a\nb` and `a\rb` are still refused with `acceptance criterion must be a single line`; `test_new_criterion_rejects_all_line_breaks` (narrowed to `\n` and `\r`) and `make check` pass
 
 ## Plan
 
@@ -40,6 +40,10 @@ Add focused property, parser and CLI tests and confirm they fail before the fix;
 ## Notes
 
 Before the fix, all three new tests fail: parser rejects the split criterion, property rejects separator text, and CLI edit exits 1.
+
+## Summary
+
+Body parsing now splits only at LF; criterion edits trim before rejecting embedded CR or LF. New property, parser and CLI tests failed before the fix and pass after it; make check passes.
 
 ## History
 
@@ -109,3 +113,4 @@ Before the fix, all three new tests fail: parser rejects the split criterion, pr
 - 2026-11-25T21:16:06Z mellow-yellow-jay: wrote the plan
 - 2026-11-25T21:17:00Z mellow-yellow-jay: changed notes
 - 2026-11-25T21:20:31Z daring-ebony-wren: changed acceptance criteria
+- 2026-11-25T21:21:13Z mellow-yellow-jay: changed summary; ticked acceptance criteria
