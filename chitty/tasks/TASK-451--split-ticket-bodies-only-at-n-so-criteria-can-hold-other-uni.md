@@ -33,6 +33,10 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - [ ] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails on `main`
 - [ ] Regression tests: `a\nb` and `a\rb` are still refused with `acceptance criterion must be a single line`; `test_new_criterion_rejects_all_line_breaks` (narrowed to `\n` and `\r`) and `make check` pass
 
+## Plan
+
+Add focused property, parser and CLI tests and confirm they fail before the fix; split only body lines on newline, narrow criterion validation, then run formatting and checks.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -98,3 +102,4 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - 2026-11-25T21:10:50Z daring-ebony-wren cold-read → planning
 - 2026-11-25T21:10:56Z daring-ebony-wren planning → todo
 - 2026-11-25T21:11:31Z mellow-yellow-jay todo → doing
+- 2026-11-25T21:16:06Z mellow-yellow-jay: wrote the plan
