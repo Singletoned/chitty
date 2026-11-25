@@ -5,6 +5,7 @@ labels:
   - needs-minor
 depends_on:
   - TASK-SYR88D
+  - TASK-B7CQGM
 parent: TASK-10026
 created: 2026-11-25
 provisional: true
@@ -20,7 +21,9 @@ The automatic upgrade (`Repo._check_setup_version`) skips linked worktrees, so t
 
 Out of scope: archived tickets, `cold-read` tickets, and the guides.
 
-Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each tested): a repository whose `chitty.toml` records `chitty_version = "0.7.1"`, with one `planning` ticket (with an owner), one `todo` ticket and one archived `planning` ticket, committed; run `chitty init`. The `planning` ticket is now `to-plan` with no owner and a `chitty planning → to-plan` History line, the other two files are byte-identical, and `git log -1 --name-only` lists the moved file in the upgrade commit. Running `chitty init` again changes nothing. With `chitty_version` set to the running `CHITTY_VERSION`, a `planning` ticket is left as it is.
+A repository whose setup records exactly `0.8.0` is migrated on the first release after this lands, not by a branch build that also reports `0.8.0`; that is intended.
+
+Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each tested). Run at the real `CHITTY_VERSION`, not through `TestUpgradeWorkflow.invoke`, which patches the running version to `0.5.1`. Call `init_repo(root, False, "chitty: upgrade repository setup")` directly, as `Repo._check_setup_version` does (plain `chitty init` does not commit). Case 1: `chitty.toml` records `chitty_version = "0.7.1"`, with one `planning` ticket (with an owner), one `todo` ticket and one archived `planning` ticket, all committed. Afterwards the `planning` ticket is `to-plan` with no owner and a `chitty planning → to-plan` History line, the other two files are byte-identical, and the moved file is in `init_repo`'s returned paths and in `git log -1 --name-only`. Case 2: calling `init_repo` again changes nothing. Case 3: with `chitty_version` set to `CHITTY_VERSION`, a `planning` ticket is left as it is.
 
 ## Acceptance Criteria
 
@@ -31,3 +34,4 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 
 - 2026-11-25T23:07:24Z golden-coral-stoat → backlog
 - 2026-11-25T23:07:42Z golden-coral-stoat: changed description, acceptance criteria
+- 2026-11-25T23:10:16Z golden-coral-stoat: changed dependencies, description
