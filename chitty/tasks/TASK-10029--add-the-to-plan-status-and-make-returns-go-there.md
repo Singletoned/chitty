@@ -5,12 +5,12 @@ labels:
   - needs-minor
 parent: TASK-10026
 created: 2026-11-25
-provisional: true
+moved_from: TASK-B7CQGM
 ---
 
 ## Description
 
-Part of `TASK-10026`. Today `planning` means both "waiting for a planner" and "a planner has it". This ticket adds `to-plan` for the first meaning and makes every return go there; `planning` is left for a planner's claim (enforced by `TASK-SYR88D`). Guide, prompt and doc wording is `TASK-MHMNG8`.
+Part of `TASK-10026`. Today `planning` means both "waiting for a planner" and "a planner has it". This ticket adds `to-plan` for the first meaning and makes every return go there; `planning` is left for a planner's claim (enforced by `TASK-10032`). Guide, prompt and doc wording is `TASK-10030`.
 
 Change:
 
@@ -20,7 +20,7 @@ Change:
 - `scripts/retro.py`: add `to-plan` to `FAILED_REVIEW_TARGETS`.
 - The status glyph and label rows in `README.md` and `docs/plan/cli.md` (`test_docs_list_both_statuses` in `tests/test_statuses_planning.py` reads them): add `📥 plan` for `to-plan` and change `planning` to `📝 plnng`, and update that test to match.
 
-Out of scope: guides, prompts and docs (`TASK-MHMNG8`); refusing other actors' writes to a `planning` ticket; migrating existing `planning` tickets.
+Out of scope: guides, prompts and docs (`TASK-10030`); refusing other actors' writes to a `planning` ticket; migrating existing `planning` tickets.
 
 Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `tests/test_run_return_to_planning.py`, `test_planning_returns_escalate_since_last_block` in `tests/test_check_edit.py`, `test_third_planning_return_reports_escalation` in `tests/test_cli.py`, and other tests that return a ticket with `-s planning`) to `to-plan`, and update the `📝 plan` row expectations in `tests/test_cli.py` to the new labels. Add to `tests/test_return_to_planning.py` a property test, using Hypothesis as the file already does: for a previous status drawn from `doing` and `review`, any note text and any reviewer, an edit to `planning` raises `ChittyError` mentioning `to-plan`. Add one example where a history with one `doing → planning` and one `doing → to-plan` return makes the next `to-plan` return escalate (the count includes the current return, so this is the third). In `tests/test_statuses_planning.py`, with one `to-plan` and one `todo` ticket: `chitty list` with no status shows the `📥 plan` row, MCP `list` returns both, and `chitty next` picks the `todo` ticket.
 
@@ -40,3 +40,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:10:53Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:14Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:19Z golden-coral-stoat backlog → todo
+- 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-B7CQGM

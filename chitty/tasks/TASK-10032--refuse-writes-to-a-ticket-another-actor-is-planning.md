@@ -2,15 +2,15 @@
 title: Refuse writes to a ticket another actor is planning
 status: todo
 depends_on:
-  - TASK-B7CQGM
+  - TASK-10029
 parent: TASK-10026
 created: 2026-11-25
-provisional: true
+moved_from: TASK-SYR88D
 ---
 
 ## Description
 
-Part of `TASK-10026`, after `TASK-B7CQGM` adds `to-plan`. A planner claims a ticket by moving it to `planning` in the main checkout, then plans on a `plan/` branch and changes the ticket's text only when it has finished. Until then, nothing stops another session editing the same ticket (seen 2026-11-25 on `TASK-676`, where a triage session's edits on `main` forced the planner to redo its work twice).
+Part of `TASK-10026`, after `TASK-10029` adds `to-plan`. A planner claims a ticket by moving it to `planning` in the main checkout, then plans on a `plan/` branch and changes the ticket's text only when it has finished. Until then, nothing stops another session editing the same ticket (seen 2026-11-25 on `TASK-676`, where a triage session's edits on `main` forced the planner to redo its work twice).
 
 Rule: a ticket whose status is `planning` is claimed by the actor of its latest `→ planning` entry in `Task.attributed_transitions()` (`src/chitty/model.py`; it skips old date-only History lines, so a ticket with no attributed `→ planning` entry is unclaimed). A write by any other actor is refused, except a release (a move to `to-plan` with a non-blank note, for a claim left by a session that ended) and writes by the actor `human` (`chitty edit --human`), since the person decides.
 
@@ -19,7 +19,7 @@ Change:
 - Add a pure function to `src/chitty/model.py`: `claim_refusal(task_id, task, actor, releasing) -> str | None`, returning ``<ID> is being planned by <claimant>; leave it alone, or release it with `chitty edit <ID> -s to-plan --note <reason>` `` when the rule refuses, else `None`.
 - In `src/chitty/store.py`, raise `ChittyError` with that message at the top of `Repo._edit_stored`, before any other rule (so `-s done` or `-s review` on a claimed ticket gets this message, not another), with `releasing` true when `edit.status == "to-plan"` and the edit has a non-blank note; at the top of `Repo._set_archived` (archive and restore); and in `Repo.move` for the moved ticket itself (`releasing` is false for both). `Repo.edit_planning` reaches `_edit_stored` with the planner's branch copy, so the claimant's own branch edits pass.
 
-Out of scope, not refused: `renumber`, `renumber_provisional`, `chitty fix`, and reference rewrites in other tickets during `renumber` or `move` (all mechanical); `cold-read`; `chitty run`, which never selects a `planning` ticket; the plan guide (`TASK-WWNDDM`).
+Out of scope, not refused: `renumber`, `renumber_provisional`, `chitty fix`, and reference rewrites in other tickets during `renumber` or `move` (all mechanical); `cold-read`; `chitty run`, which never selects a `planning` ticket; the plan guide (`TASK-10033`).
 
 Tests:
 
@@ -40,3 +40,4 @@ Tests:
 - 2026-11-25T23:10:43Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:17Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:30Z golden-coral-stoat backlog → todo
+- 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-SYR88D

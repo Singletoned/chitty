@@ -20,7 +20,7 @@ Decided with the person, 2026-11-25:
 - `backlog` stays separate; planners take `to-plan` tickets first.
 - Existing `planning` tickets move to `to-plan` once, when repository setup upgrades.
 
-Children, in order: `TASK-B7CQGM` (add `to-plan`, send returns there), `TASK-SYR88D` (refuse other actors' writes to a `planning` ticket), `TASK-QZ7SD8` (migrate on setup upgrade), `TASK-WWNDDM` (plan guide). Separate but related: `TASK-10028` (rename `todo` to `to-do`) and `TASK-599` (`dropped`), which also change the status set; `TASK-340`, which this claim makes safer.
+Children, in order: `TASK-10029` (add `to-plan`, send returns there), `TASK-10032` (refuse other actors' writes to a `planning` ticket), `TASK-10031` (migrate on setup upgrade), `TASK-10033` (plan guide). Separate but related: `TASK-10028` (rename `todo` to `to-do`) and `TASK-599` (`dropped`), which also change the status set; `TASK-340`, which this claim makes safer.
 
 This ticket is done when its children are.
 

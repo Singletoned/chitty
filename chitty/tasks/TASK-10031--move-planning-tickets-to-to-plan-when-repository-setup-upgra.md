@@ -4,16 +4,16 @@ status: todo
 labels:
   - needs-minor
 depends_on:
-  - TASK-SYR88D
-  - TASK-B7CQGM
+  - TASK-10032
+  - TASK-10029
 parent: TASK-10026
 created: 2026-11-25
-provisional: true
+moved_from: TASK-QZ7SD8
 ---
 
 ## Description
 
-Part of `TASK-10026`, after `TASK-SYR88D`. Once `planning` means "a planner has it", every ticket left in `planning` from before the split would look claimed, by whichever session last moved it there, usually one long gone (on 2026-11-25 this repository had 20 `planning` tickets, one with an owner). They should become `to-plan`, once, without anyone running a command.
+Part of `TASK-10026`, after `TASK-10032`. Once `planning` means "a planner has it", every ticket left in `planning` from before the split would look claimed, by whichever session last moved it there, usually one long gone (on 2026-11-25 this repository had 20 `planning` tickets, one with an owner). They should become `to-plan`, once, without anyone running a command.
 
 Change, in `init_repo` in `src/chitty/store.py`, in the existing-config branch where `recorded_version` is read: when `recorded_version` differs from `CHITTY_VERSION` (the gate the workflow upgrade already uses) and is missing or not later than a new constant `LAST_SHARED_PLANNING_VERSION` in `src/chitty/config.py` (next to `LAST_RUNNER_DEFAULT_VERSION`, compared with `version_key` the same way), rewrite every unarchived ticket in each configured context whose status is `planning`: status `to-plan`, `owner` removed, and a History transition `planning → to-plan` by actor `chitty`. Add the rewritten files to `written`, so they land in the same `chitty: upgrade repository setup` commit. Set the constant to `__version__` in `src/chitty/__init__.py` on `main` when you start (`0.8.0` on 2026-11-25), since this branch must not change `__version__`.
 
@@ -36,3 +36,4 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 - 2026-11-25T23:07:42Z golden-coral-stoat: changed description, acceptance criteria
 - 2026-11-25T23:10:16Z golden-coral-stoat: changed dependencies, description
 - 2026-11-25T23:12:35Z golden-coral-stoat backlog → todo
+- 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-QZ7SD8

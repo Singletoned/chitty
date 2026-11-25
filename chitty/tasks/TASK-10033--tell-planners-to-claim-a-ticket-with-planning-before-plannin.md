@@ -5,15 +5,15 @@ labels:
   - untestable
 owner: untestable
 depends_on:
-  - TASK-SYR88D
+  - TASK-10032
 parent: TASK-10026
 created: 2026-11-25
-provisional: true
+moved_from: TASK-WWNDDM
 ---
 
 ## Description
 
-Part of `TASK-10026`, after `TASK-SYR88D` makes `planning` a claim. Planners need to know to take the claim first, to work on a branch, and to leave other planners' tickets alone.
+Part of `TASK-10026`, after `TASK-10032` makes `planning` a claim. Planners need to know to take the claim first, to work on a branch, and to leave other planners' tickets alone.
 
 In `src/chitty/roles/plan.md`, replace the bullet that starts "Keep a new ticket in `backlog` until you work on it" with:
 
@@ -27,3 +27,4 @@ This replaces two sentences with about one more line; it removes "Keep a new tic
 
 - 2026-11-25T23:08:02Z golden-coral-stoat → backlog
 - 2026-11-25T23:12:40Z golden-coral-stoat backlog → todo
+- 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-WWNDDM
