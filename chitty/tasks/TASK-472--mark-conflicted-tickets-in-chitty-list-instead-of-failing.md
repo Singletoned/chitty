@@ -1,22 +1,40 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: cold-read
-depends_on:
-  - TASK-378
+status: planning
+labels:
+  - bug
+priority: high
 parent: TASK-376
 created: 2026-11-20
 ---
 
 ## Description
 
-Owner decision 2026-11-20: once `TASK-378` reads each ticket from one source, a ticket whose source cannot be chosen (diverged local and remote branches, or edited on both its branch and `main` since they split) makes `chitty list` fail. Instead, `chitty list` should list every other ticket as usual and show the conflicted ticket with a marker saying it is conflicted, so the conflict stays visible without stopping the listing. Plan once `TASK-378` lands: choose the glyph and its precedence among the existing markers, what `--json` reports, and whether the runner skips conflicted tickets.
+When Chitty cannot choose a ticket's source, `chitty list`, `chitty next` and the runner fail for every ticket, printing only that one error. Seen 2026-11-25: `TASK-FER4EB` changed on both `task-fer4eb` and `main` (a hand edit on `main`, commit `19109451`), and `chitty list` printed `Error: ticket `TASK-FER4EB` changed on both `task-fer4eb` and `main`` and no tickets. TASK-602 will let `main` be written while a ticket branch also changes the ticket, so this state will be easier to reach.
 
-## Notes
+The two errors come from `ticket_source` in `src/chitty/ticket_source.py`: `ticket <id> has diverged refs: ...` and `ticket <id> changed on both <ref> and <main>`. Listing reaches them through `Repo._tasks_in_location` -> `_source_files` -> `_choose_source` (`src/chitty/store.py`).
 
-Triage 2026-11-25: merged TASK-10017. Seen on 2026-11-25: `TASK-FER4EB` changed on both `task-fer4eb` and `main` (a planner's hand edit on `main`, commit `19109451`, reverted in `334c2b4d`), and `chitty list` printed only that error and no tickets. Also suggested: `chitty edit` on `main` of a ticket that has its own branch could refuse, as it already does for numeric IDs, so the conflict cannot be made by hand.
+Change:
+
+- Raise both as a new `SourceConflict(ChittyError)` in `ticket_source.py`, with the same messages.
+- In `_tasks_in_location`, on `SourceConflict` keep the ticket, using its copy on the configured main branch, or the working tree's copy if `main` has none (if neither exists, raise as today), and set a new `StoredTask.conflict: str | None` to the error text.
+- `skip_reason` in `src/chitty/store.py` returns `🔀 <error text>` for a conflicted ticket before any other reason, so `list_marker` shows it and selection (`chitty next`, `chitty run`) skips it. Add `CONFLICT_GLYPH = "🔀"` beside the other glyphs in `src/chitty/selection.py`.
+- `chitty list --json` and the MCP `list` tool add `"conflict": "<error text>"` for such tickets only.
+- Commands on one ticket (`show`, `edit`, `note` and others that use `Repo.find`) still raise.
+
+No pure function suits: the behaviour is how real Git states reach the listing, so the property runs on real repositories.
+
+Out of scope: preventing the state (TASK-602 warns instead), byte-identical copies wrongly reported as changed on both (TASK-667), and marking tickets whose status comes from another branch (TASK-603).
+
+## Acceptance Criteria
+
+- [ ] A Hypothesis property test with real Git: make 1 to 4 tickets, and give each one of: no conflict, changes on both `task-<n>` and `main` since they split, or diverged `task-<n>` and `origin/task-<n>`. `chitty list` exits 0 and lists every ticket exactly once; exactly the conflicted ones show `🔀` with today's error text, and `chitty list --json` gives exactly those a `conflict` key. Fails today: `chitty list` exits 1 with only the error.
+- [ ] In that setup with one conflicted `todo` ticket of `high` priority and one plain `todo` ticket, `chitty next` names the plain ticket; `chitty show` of the conflicted one still fails with today's message. Fails today.
+- [ ] Regression tests: `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py` and `tests/test_authoritative_listing.py` pass; `make check` passes.
 
 ## History
 
 - 2026-11-20T11:10:11Z lively-bronze-crane → backlog
 - 2026-11-25T22:32:49Z calm-ochre-quail: changed notes
-- 2026-11-25T23:27:51Z calm-ochre-quail backlog → cold-read
+- 2026-11-25T23:27:43Z calm-ochre-quail: replaced notes; changed labels, priority, dependencies, description, acceptance criteria
+- 2026-11-25T23:27:43Z calm-ochre-quail backlog → planning
