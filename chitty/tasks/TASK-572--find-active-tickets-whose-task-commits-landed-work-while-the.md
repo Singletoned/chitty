@@ -8,7 +8,7 @@ created: 2026-11-22
 
 ## Description
 
-`TASK-358` has landed `TrailerCommit` in `src/chitty/git.py` (`trailer_commits`, which runs Git, is `TASK-YJ6VBS`; this ticket does not need it). Using it, add the pure rule that picks the tickets whose work is on `main` while they are not `done`. `TASK-571` then calls it from `chitty check`. Split from `TASK-358` on 2026-11-22.
+`TASK-358` has landed `TrailerCommit` in `src/chitty/git.py` (`trailer_commits`, which runs Git, is `TASK-10002`; this ticket does not need it). Using it, add the pure rule that picks the tickets whose work is on `main` while they are not `done`. `TASK-571` then calls it from `chitty check`. Split from `TASK-358` on 2026-11-22.
 
 Measured on `main` on 2026-11-22: about 340 ticket IDs have a non-`chitty: ` commit with a `Task:` trailer. Counting only commits that also change a path outside every ticket directory, and only active tickets, one is not `done` (`TASK-540`). Without the path rule, hand-written ticket-only commits (for example `206d7558`) count too; without the subject rule almost every ticket counts, because `chitty:` bookkeeping commits carry the trailer.
 

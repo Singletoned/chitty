@@ -4,13 +4,13 @@ status: planning
 depends_on:
   - TASK-358
   - TASK-572
-  - TASK-YJ6VBS
+  - TASK-10002
 created: 2026-11-22
 ---
 
 ## Description
 
-After `TASK-YJ6VBS` (`git.trailer_commits`, split from `TASK-358` on 2026-11-23) and `TASK-572` (`check.unfinished_landed`) land, make `chitty check` warn on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`). Split from `TASK-358` on 2026-11-22.
+After `TASK-10002` (`git.trailer_commits`, split from `TASK-358` on 2026-11-23) and `TASK-572` (`check.unfinished_landed`) land, make `chitty check` warn on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`). Split from `TASK-358` on 2026-11-22.
 
 Decisions:
 

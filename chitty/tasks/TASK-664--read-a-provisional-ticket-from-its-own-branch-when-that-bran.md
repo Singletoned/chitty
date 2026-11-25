@@ -13,7 +13,7 @@ A ticket with a provisional ID is always read from the working tree, even when i
 
 Seen twice:
 
-- 2026-11-23 21:01: `TASK-YJ6VBS` was `todo` on `main` and `review` on `task-yj6vbs`. Selection picked it for work, the claim read the branch copy and refused, and `chitty run --loop --mode work` stopped with `Error: moving review → doing requires --note with the reason` (log `.git/chitty/run/TASK-YJ6VBS-20261123210202964248Z.log`).
+- 2026-11-23 21:01: `TASK-10002` was `todo` on `main` and `review` on `task-yj6vbs`. Selection picked it for work, the claim read the branch copy and refused, and `chitty run --loop --mode work` stopped with `Error: moving review → doing requires --note with the reason` (log `.git/chitty/run/TASK-10002-20261123210202964248Z.log`).
 - 2026-11-24 09:39 to 16:06: `TASK-FER4EB` was `todo` on `main`. Each worker set it to `planning` on `task-fer4eb`, `main` still showed `todo`, and the runner picked it again: about 70 work sessions. On 2026-11-24 its `main` copy was set to `planning` by hand to stop the loop.
 
 Cause: `ticket_source` in `src/chitty/ticket_source.py` starts with `if provisional: return WORKING_TREE`. `Repo._choose_source` (`src/chitty/store.py`) passes `provisional` as true for any ID with a non-numeric number whose file is in the working tree or on `main`. That early return exists for a ticket created with a provisional ID on some other branch: it exists only in that working tree, and the normal rules would read `main`, where it is absent (`tests/test_source_copy.py::TestSourceCopy::test_provisional_is_read_from_the_id` covers this). It wrongly also skips the ticket's own branch.

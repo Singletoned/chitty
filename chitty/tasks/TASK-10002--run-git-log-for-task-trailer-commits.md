@@ -4,7 +4,7 @@ status: done
 depends_on:
   - TASK-358
 created: 2026-11-23
-provisional: true
+moved_from: TASK-YJ6VBS
 ---
 
 ## Description
@@ -61,3 +61,4 @@ Implemented byte-preserving Git log execution with real Git tests. make check pa
 - 2026-11-23T20:18:10Z golden-zinc-falcon doing → review
 - 2026-11-23T23:05:51Z friendly-coral-badger: changed notes; ticked acceptance criteria
 - 2026-11-23T23:05:51Z friendly-coral-badger review → done
+- 2026-11-25T18:32:36Z human: renumbered from TASK-YJ6VBS
