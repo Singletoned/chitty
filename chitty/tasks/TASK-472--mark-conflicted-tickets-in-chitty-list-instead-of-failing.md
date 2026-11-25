@@ -1,6 +1,6 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -38,3 +38,4 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 - 2026-11-25T22:32:49Z calm-ochre-quail: changed notes
 - 2026-11-25T23:27:43Z calm-ochre-quail: replaced notes; changed labels, priority, dependencies, description, acceptance criteria
 - 2026-11-25T23:27:43Z calm-ochre-quail backlog → planning
+- 2026-11-25T23:28:23Z calm-ochre-quail planning → cold-read
