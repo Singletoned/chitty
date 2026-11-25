@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-21
@@ -70,3 +70,4 @@ Shared the clean-worktree refusal with review transitions, added dirty and allow
 - 2026-11-25T21:47:52Z sunny-ebony-stoat: changed notes
 - 2026-11-25T21:48:11Z sunny-ebony-stoat: wrote the plan
 - 2026-11-25T21:52:00Z sunny-ebony-stoat: changed notes, summary; ticked acceptance criteria
+- 2026-11-25T21:54:03Z sunny-ebony-stoat doing → review
