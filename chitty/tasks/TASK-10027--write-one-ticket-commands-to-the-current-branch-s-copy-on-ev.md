@@ -37,6 +37,10 @@ Out of scope: the main branch, ticket branches and warnings instead of refusals 
 
 Add real-Git CLI and MCP regression tests, confirm failures, then route branch-local edits and archives through shared Repo methods while preserving main and ticket branch behaviour. Run formatting and checks, commit, and hand off for review.
 
+## Notes
+
+Regression tests failed before the fix: CLI note on plan/one and hotfix/x and MCP edit on hotfix/x all refused the main branch version.
+
 ## History
 
 - 2026-11-25T22:56:47Z calm-ochre-quail → planning
@@ -58,3 +62,4 @@ Add real-Git CLI and MCP regression tests, confirm failures, then route branch-l
 - 2026-11-25T23:07:15Z calm-ochre-quail planning → todo
 - 2026-11-25T23:24:56Z eager-russet-quail todo → doing
 - 2026-11-25T23:27:33Z eager-russet-quail: wrote the plan
+- 2026-11-25T23:28:08Z eager-russet-quail: changed notes
