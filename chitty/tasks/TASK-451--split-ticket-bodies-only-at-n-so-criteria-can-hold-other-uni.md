@@ -30,7 +30,7 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 
 ## Acceptance Criteria
 
-- [ ] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails on `main`
+- [ ] The property and both examples in `tests/test_criteria_line_breaks.py` pass, and each fails with the `model.py` change reverted
 - [ ] Regression tests: `a\nb` and `a\rb` are still refused with `acceptance criterion must be a single line`; `test_new_criterion_rejects_all_line_breaks` (narrowed to `\n` and `\r`) and `make check` pass
 
 ## Plan
@@ -108,3 +108,4 @@ Before the fix, all three new tests fail: parser rejects the split criterion, pr
 - 2026-11-25T21:11:31Z mellow-yellow-jay todo → doing
 - 2026-11-25T21:16:06Z mellow-yellow-jay: wrote the plan
 - 2026-11-25T21:17:00Z mellow-yellow-jay: changed notes
+- 2026-11-25T21:20:31Z daring-ebony-wren: changed acceptance criteria
