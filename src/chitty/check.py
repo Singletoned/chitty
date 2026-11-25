@@ -45,6 +45,9 @@ MARKDOWN_DELIMITERS = MarkdownIt("commonmark").disable("text_join")
 MARKDOWN_FIELDS: tuple[SectionName, ...] = ("Description", "Plan", "Notes", "Summary")
 DELIMITERS = "*_"
 MAX_CRITERIA = 5
+MAX_SPEC_WORDS = 500
+MAX_TODO_NOTES_WORDS = 200
+MAX_COLD_READS = 2
 
 
 def errors(problems: Sequence[Problem]) -> list[Problem]:
@@ -220,6 +223,27 @@ def check(
                                 "warning",
                             )
                         )
+                    status = task.frontmatter.status
+                    spec_words = len((task.section("Description") or "").split()) + sum(
+                        len(criterion.text.split()) for criterion in task.criteria
+                    )
+                    if status in {"planning", "todo"} and spec_words > MAX_SPEC_WORDS:
+                        problems.append(Problem(
+                            path, f"specification has {spec_words} words; simplify or split "
+                            f"tickets above {MAX_SPEC_WORDS} words", "warning"
+                        ))
+                    notes_words = len((task.section("Notes") or "").split())
+                    if status == "todo" and notes_words > MAX_TODO_NOTES_WORDS:
+                        problems.append(Problem(
+                            path, f"notes have {notes_words} words; clear resolved notes with "
+                            "--set-notes ''", "warning"
+                        ))
+                    cold_reads = sum(new == "cold-read" for _, new in task.transitions())
+                    if status in {"planning", "cold-read", "todo"} and cold_reads > MAX_COLD_READS:
+                        problems.append(Problem(
+                            path, f"{cold_reads} cold reads; simplify or split instead of another read",
+                            "warning"
+                        ))
                     task_id, _slug = ids.parse_filename(path.name)
                     expected_name = ids.filename(task_id, ids.slugify(task.frontmatter.title))
                     if path.name != expected_name:
