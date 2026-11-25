@@ -1,6 +1,6 @@
 ---
 title: On a `plan/` branch, write `note`, `archive` and MCP edits to the checkout's copy, as `edit` does
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -21,7 +21,7 @@ So a planner has to write from the main checkout, which commits on `main`. Seen 
 Change, keeping `cli.py` and `mcp.py` thin:
 
 - Add `Repo.edit_current(task_id, edit) -> tuple[Change, bool]`: on a `plan/` branch it returns `edit_planning(...)`; elsewhere `(edit(...), False)`. The `bool` is "a run holds the ticket's lock", as `edit_planning` returns today.
-- Add `Repo.archive_current(task_id) -> Change`: on a `plan/` branch it archives the working-tree copy after `_reject_planning_conflicts`, refusing as `edit_planning` does when there is no local copy; elsewhere it calls `archive`.
+- Add `Repo.archive_current(task_id) -> Change`: on a `plan/` branch it takes the working-tree copy (`_working_task`), refusing as `edit_planning` does when there is none, runs `_reject_planning_conflicts`, and moves that copy to the archive directory; `_set_archived` takes the `StoredTask` instead of calling `find` and `_require_current_version` for it. With `archive = "delete"` on a `plan/` branch it refuses (`archiving on a plan/ branch needs archive = "move"`), so `_delete_done` and its dependency cleanup are untouched. Elsewhere it calls `archive`.
 - CLI `edit` (when not `--human`, as today) and `note`, and MCP `edit` and `note`, call `edit_current`. CLI `archive <ID>` and MCP `archive` with an ID call `archive_current`. MCP `show` calls `find_for_show`. The CLI prints its existing lock warning for `edit` and `note`; MCP and `archive` do not warn.
 - `Repo.edit`, `Repo.archive` and `Repo.find` are unchanged, so the runner (`src/chitty/run.py`) and `--human` edits keep today's cross-branch behaviour.
 
@@ -43,3 +43,5 @@ Out of scope: branches other than `plan/`, and warnings instead of refusals (TAS
 - 2026-11-25T22:57:50Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T22:57:50Z calm-ochre-quail cold-read → planning
 - 2026-11-25T22:57:58Z calm-ochre-quail planning → cold-read
+- 2026-11-25T22:59:10Z calm-ochre-quail: changed description
+- 2026-11-25T22:59:10Z calm-ochre-quail cold-read → todo
