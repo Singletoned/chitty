@@ -1,6 +1,6 @@
 ---
 title: On a `plan/` branch, write `note`, `archive` and MCP edits to the checkout's copy, as `edit` does
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -42,3 +42,4 @@ Out of scope: branches other than `plan/`, and warnings instead of refusals (TAS
 - 2026-11-25T22:57:01Z calm-ochre-quail planning → cold-read
 - 2026-11-25T22:57:50Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T22:57:50Z calm-ochre-quail cold-read → planning
+- 2026-11-25T22:57:58Z calm-ochre-quail planning → cold-read
