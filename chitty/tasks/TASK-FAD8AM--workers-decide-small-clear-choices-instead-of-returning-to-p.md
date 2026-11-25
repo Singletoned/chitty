@@ -17,7 +17,10 @@ Suggestion: widen the omission exception. A worker decides when the ticket's int
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: already built. `src/chitty/roles/work.md` (Make decisions loudly) lets a worker decide a minor typo or miscount and record `Decided: ...`, and keeps planning for real blockers.
+
 ## History
 
 - 2026-11-25T22:28:17Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:18Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:07Z calm-ochre-quail: changed notes
