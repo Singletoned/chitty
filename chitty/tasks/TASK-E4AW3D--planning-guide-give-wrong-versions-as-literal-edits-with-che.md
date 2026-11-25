@@ -13,7 +13,10 @@ In echonomicon, TASK-213 returned to planning three times on 2026-11-24 (worker 
 
 Suggestion origin: echonomicon
 
+Triage 2026-11-25: obsolete. `chitty guide plan` no longer asks for wrong versions (`grep -ri "wrong version" src/chitty` finds nothing); mutation testing in review is TASK-594.
+
 ## History
 
 - 2026-11-25T22:28:23Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:25Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:13Z calm-ochre-quail: changed notes
