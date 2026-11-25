@@ -23,9 +23,12 @@ Duplicate of TASK-233 (a branch deleted during ticket discovery crashes the comm
 
 Triage 2026-11-24: not archived, because its target ticket has a branch with a held run lock; fold this into the target when planning it, then archive.
 
+Archived 2026-11-25: evidence added to TASK-233 (on branch task-233). The earlier reason for leaving this open was wrong: run locks are flock-based, and TASK-233's lock file was not held (pid 6392 dead).
+
 ## History
 
 - 2026-11-24T22:21:34Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:35Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:13Z zesty-coral-newt: changed labels, notes
 - 2026-11-24T22:41:02Z zesty-coral-newt: changed notes
+- 2026-11-25T20:45:24Z golden-coral-stoat: changed notes
