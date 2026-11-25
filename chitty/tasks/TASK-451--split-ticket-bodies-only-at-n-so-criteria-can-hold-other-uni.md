@@ -1,6 +1,6 @@
 ---
 title: Split ticket bodies only at `\n`, so criteria can hold other Unicode line separators
-status: cold-read
+status: planning
 labels:
   - bug
 priority: medium
@@ -16,15 +16,15 @@ Cause, in `src/chitty/model.py`: `parse` splits the whole file with `text.splitl
 Change, in `src/chitty/model.py` only:
 
 - `parse`: keep finding the frontmatter exactly as today, but split the body (everything after the closing `---`) only at `\n`, keeping the line endings, before passing it to `_split_sections`. Leave the rest of `parse` unchanged.
-- `_criterion_text`: strip first, then refuse only if the stripped text contains `\n` or `\r`, with the same message. So `a\u2028b` is stored as given and `a\u2028` is stored as `a` (Python counts these characters as whitespace). Update the `with_criteria` docstring to match.
+- `_criterion_text`: strip first, then refuse only if the stripped text contains `\n` or `\r`, with the same message. So `a\u2028b` is stored as given and `a\u2028` is stored as `a` (Python counts these characters as whitespace). Leading or trailing `\n` is stripped the same way, so `a\n` is stored as `a` (accepting unusual input over refusing it). Update the `with_criteria` docstring to match.
 
 A trial of exactly this change (2026-11-25) broke only `test_new_criterion_rejects_all_line_breaks` in `tests/test_model.py`; narrow it to `\n` and `\r`.
 
-Out of scope: frontmatter. Titles, labels and owners holding these characters keep today's behaviour (two earlier attempts that also changed frontmatter splitting exposed YAML and suggestion-inbox round-trip bugs; that is a separate ticket if wanted). Also out: History parsing (`transitions`, `timed_transitions`), `_text_lines`, `src/chitty/check.py`. A body line holding \u2028 before a heading marker is now one line, so the marker is not a heading; that matches CommonMark and is intended.
+Out of scope: frontmatter. Titles, labels and owners holding these characters keep today's behaviour (two earlier attempts that also changed frontmatter splitting exposed YAML and suggestion-inbox round-trip bugs; that is a separate ticket if wanted). Also out: History parsing (`transitions`, `timed_transitions`), `_text_lines`, `src/chitty/check.py`. Line numbers in parse errors keep counting frontmatter as today. A body line holding \u2028 before a heading marker is now one line, so the marker is not a heading; that matches CommonMark and is intended.
 
 Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `examples(...)` from `tests/__init__.py`:
 
-- Property: for a ticket drawn with `ticket_texts` from `tests/ticket_strategies.py` (filtered to tickets with criteria, as `tests/test_property_criterion_text.py` does), and a drawn text with no `\n` or `\r` that contains at least one of the other characters above and is non-empty after stripping: setting a drawn criterion to that text, then `render` and `parse`, gives `text.strip()` unticked there, and every other criterion keeps its text and tick.
+- Property: for a ticket drawn with `ticket_texts` from `tests/ticket_strategies.py` (filtered to tickets with criteria, as `tests/test_property_criterion_text.py` does), and a drawn text built from printable ASCII plus a module constant `OTHER_LINE_BREAKS` (the eight characters above), with at least one of those characters and non-empty after stripping: setting a drawn criterion to that text, then `render` and `parse`, gives `text.strip()` unticked there, and every other criterion keeps its text and tick.
 - Example: a file whose Acceptance Criteria section holds `- [ ] a\u2028b` parses to one criterion `a\u2028b`, and `render` returns the input byte for byte.
 - Example, in a class inheriting `CliTestCase` from `tests/test_cli.py`: `run_cli("add", "T", "-d", "x", "--ac", "one")`, then `run_cli("edit", "TASK-1", "--set-ac", "1", "a\u2028b")` exits 0, and `show TASK-1 --json` gives criterion text `a\u2028b`.
 
@@ -94,3 +94,5 @@ Tests, in a new `tests/test_criteria_line_breaks.py`, using Hypothesis with `exa
 - 2026-11-25T21:07:13Z daring-ebony-wren: changed acceptance criteria
 - 2026-11-25T21:07:31Z daring-ebony-wren: changed title
 - 2026-11-25T21:07:31Z daring-ebony-wren planning → cold-read
+- 2026-11-25T21:10:50Z daring-ebony-wren: changed description
+- 2026-11-25T21:10:50Z daring-ebony-wren cold-read → planning
