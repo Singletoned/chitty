@@ -34,6 +34,10 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 - [ ] In that setup with one conflicted `todo` ticket of `high` priority and one plain `todo` ticket, `chitty next` names the plain ticket; `chitty show` of the conflicted one still fails with today's message. Fails today.
 - [ ] Regression tests: the existing tests stay green, including `tests/test_property_ticket_source.py`, `tests/test_list_glyphs.py`, `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` (single-ticket commands keep their messages); `make check` passes.
 
+## Plan
+
+Add a specific source-conflict exception; recover only during listing from main or the working tree, propagate conflict into selection and serialized list results, and cover real Git conflicts and single-ticket failures with regression and property tests.
+
 ## History
 
 - 2026-11-20T11:10:11Z lively-bronze-crane → backlog
@@ -47,3 +51,4 @@ Out of scope: preventing the state (TASK-602 warns instead), byte-identical copi
 - 2026-11-25T23:31:26Z calm-ochre-quail cold-read → todo
 - 2026-11-25T23:31:45Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T23:37:55Z nimble-bronze-otter todo → doing
+- 2026-11-25T23:42:02Z nimble-bronze-otter: wrote the plan
