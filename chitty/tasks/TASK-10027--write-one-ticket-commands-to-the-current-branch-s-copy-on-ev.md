@@ -1,6 +1,6 @@
 ---
 title: Write one-ticket commands to the current branch's copy on every branch except `main`
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -52,3 +52,4 @@ Out of scope: the configured main branch, and warnings instead of refusals (both
 - 2026-11-25T22:59:30Z calm-ochre-quail: renumbered from TASK-YCGMCS
 - 2026-11-25T23:05:58Z calm-ochre-quail: changed title, parent, description, acceptance criteria
 - 2026-11-25T23:05:58Z calm-ochre-quail todo → planning
+- 2026-11-25T23:06:04Z calm-ochre-quail planning → cold-read
