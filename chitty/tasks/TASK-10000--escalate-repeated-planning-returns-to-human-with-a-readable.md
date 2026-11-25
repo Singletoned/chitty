@@ -1,6 +1,6 @@
 ---
 title: Escalate repeated planning returns to human with a readable summary
-status: doing
+status: review
 created: 2026-11-25
 moved_from: TASK-D92QA4
 ---
@@ -45,3 +45,4 @@ Repeated planning returns now escalate after three attempts since the last block
 - 2026-11-25T20:43:09Z witty-teal-urchin: wrote the plan
 - 2026-11-25T20:43:41Z witty-teal-urchin: changed notes
 - 2026-11-25T20:51:07Z witty-teal-urchin: changed summary
+- 2026-11-25T20:53:25Z witty-teal-urchin doing → review
