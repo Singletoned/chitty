@@ -21,8 +21,15 @@ Change:
 
 Out of scope: refusing other actors' writes to a `planning` ticket, migrating existing `planning` tickets, and `src/chitty/roles/plan.md` (later tickets under `TASK-10026`).
 
-Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `tests/test_run_return_to_planning.py`, the escalation tests for `PLANNING_RETURN_LIMIT`, and other tests that return a ticket with `-s planning`) to `to-plan`. In `tests/test_statuses_planning.py`, cover `to-plan` alongside `planning` and `cold-read`. Add to `tests/test_return_to_planning.py` a property test, using Hypothesis as the file already does: for a previous status drawn from `doing` and `review`, any note text and any reviewer, an edit to `planning` raises `ChittyError` mentioning `to-plan`. Add one example where a history with two `doing → planning` returns and one `doing → to-plan` return makes the next `to-plan` return escalate.
+Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `tests/test_run_return_to_planning.py`, `test_planning_returns_escalate_since_last_block` in `tests/test_check_edit.py`, `test_third_planning_return_reports_escalation` in `tests/test_cli.py`, and other tests that return a ticket with `-s planning`) to `to-plan`. In `tests/test_statuses_planning.py`, cover `to-plan` alongside `planning` and `cold-read`. Add to `tests/test_return_to_planning.py` a property test, using Hypothesis as the file already does: for a previous status drawn from `doing` and `review`, any note text and any reviewer, an edit to `planning` raises `ChittyError` mentioning `to-plan`. Add one example where a history with one `doing → planning` and one `doing → to-plan` return makes the next `to-plan` return escalate (the count includes the current return, so this is the third).
+
+## Acceptance Criteria
+
+- [ ] The new property test (an edit from `doing` or `review` to `planning` is refused) and the mixed-history escalation example pass, and each fails before the change. Regression tests: the re-pointed return and escalation tests named above
+- [ ] `tests/test_statuses_planning.py` covers `to-plan` in `chitty list` and MCP `list` defaults and in `chitty next` never picking it, and those cases fail before the change
+- [ ] `make check` passes
 
 ## History
 
 - 2026-11-25T23:05:55Z golden-coral-stoat → backlog
+- 2026-11-25T23:06:21Z golden-coral-stoat: changed description, acceptance criteria
