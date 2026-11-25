@@ -18,6 +18,7 @@ Change:
 - `check_edit` in `src/chitty/store.py`, replacing `planning` with `to-plan` as the return status in: `returning_to_planning` and its "requires --note" message; the `is_review_transition` set; the fail-verdict requirement in `_validate_review_verdict` (`edit.status in {"doing", "planning"}`); and the owner clearing and `PLANNING_RETURN_LIMIT` escalation. The return count adds `("doing", "to-plan")` and `("review", "to-plan")` and keeps the two `planning` pairs, so returns recorded before this change still count. `doing` or `review` → `planning` is refused: ``return <ID> to `to-plan`; `planning` means a planner has taken it``. In `cli.py` `edit`, the `escalated` check uses `to-plan` instead of `planning`.
 - `src/chitty/check.py`: the size and cold-read warnings that apply to `planning` also apply to `to-plan`.
 - `scripts/retro.py`: add `to-plan` to `FAILED_REVIEW_TARGETS`.
+- The status glyph and label rows in `README.md` and `docs/plan/cli.md` (`test_docs_list_both_statuses` in `tests/test_statuses_planning.py` reads them): add `📥 plan` for `to-plan` and change `planning` to `📝 plnng`, and update that test to match.
 
 Out of scope: guides, prompts and docs (`TASK-MHMNG8`); refusing other actors' writes to a `planning` ticket; migrating existing `planning` tickets.
 
@@ -37,3 +38,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:09:25Z golden-coral-stoat: changed acceptance criteria
 - 2026-11-25T23:09:42Z golden-coral-stoat: changed description
 - 2026-11-25T23:10:53Z golden-coral-stoat: changed description
+- 2026-11-25T23:12:14Z golden-coral-stoat: changed description
