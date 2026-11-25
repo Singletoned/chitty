@@ -189,3 +189,4 @@ Triage 2026-11-25: a case study, not a ticket; kept here as evidence. Its recomm
 - 2026-11-25T22:28:22Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:23Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:55Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:58Z calm-ochre-quail backlog → archived
