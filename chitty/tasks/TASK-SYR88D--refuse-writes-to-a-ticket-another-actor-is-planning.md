@@ -28,7 +28,7 @@ Tests:
 
 ## Acceptance Criteria
 
-- [ ] The property test in `tests/test_check_edit.py` and the CLI example in `tests/test_cli.py` pass, and each fails before the change
+- [ ] The property test on `claim_refusal` and the CLI example pass, and each fails before the change
 - [ ] `make check` passes
 
 ## History
@@ -36,3 +36,4 @@ Tests:
 - 2026-11-25T23:06:45Z golden-coral-stoat → backlog
 - 2026-11-25T23:06:57Z golden-coral-stoat: changed description, acceptance criteria
 - 2026-11-25T23:10:11Z golden-coral-stoat: changed description
+- 2026-11-25T23:10:13Z golden-coral-stoat: changed acceptance criteria
