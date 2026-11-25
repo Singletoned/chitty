@@ -22,3 +22,4 @@ Archived 2026-11-25: archiving from a plan/ worktree folded into TASK-602, which
 - 2026-11-24T22:21:26Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:38Z zesty-coral-newt: changed labels
 - 2026-11-25T20:46:08Z golden-coral-stoat: changed notes
+- 2026-11-25T20:46:15Z golden-coral-stoat backlog → archived
