@@ -1,6 +1,6 @@
 ---
 title: Choose and list tickets labelled bug first within each status
-status: planning
+status: todo
 labels:
   - needs-minor
 priority: high
@@ -37,8 +37,12 @@ Order of work: first add only the `labels` field to `TicketFacts` and pass it fr
 
 Planner, 2026-11-25: probed on a trial patch of `main` with the tests and change as described. Before the change: the property test fails (`TicketFacts` has no `labels`), `"bug before higher priority"` fails, and the list test gives `TASK-1, TASK-3, TASK-2, TASK-4, TASK-5`. The two regression cases failed too, but only because the failing case left its tickets behind; hence the `finally`. After the change all three tests pass. No other test changed result.
 
+Planner, 2026-11-25: the earlier probe note predates the `Near miss` ticket (`TASK-6`); with it, the expected order before the key change is `TASK-1, TASK-6, TASK-3, TASK-2, TASK-4, TASK-5`. Record the real run, not this.
+
 ## History
 
 - 2026-11-25T10:34:00Z sunny-hazel-gannet → planning
 - 2026-11-25T10:38:08Z sunny-hazel-gannet: changed description, notes
 - 2026-11-25T10:39:12Z sunny-hazel-gannet: changed description, acceptance criteria
+- 2026-11-25T10:40:12Z sunny-hazel-gannet: changed notes
+- 2026-11-25T10:40:12Z sunny-hazel-gannet planning → todo
