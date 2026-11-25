@@ -31,3 +31,4 @@ Out of scope: the `review` branch of `continuation_prompt`, the guides, and refu
 - 2026-11-25T22:27:38Z golden-coral-stoat: replaced notes; changed title, labels, owner, description
 - 2026-11-25T22:27:38Z golden-coral-stoat backlog → planning
 - 2026-11-25T22:27:40Z golden-coral-stoat planning → todo
+- 2026-11-25T22:34:31Z golden-coral-stoat todo → archived
