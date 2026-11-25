@@ -32,6 +32,7 @@ trial_dir=$(cd "$TRIAL_DIR" && pwd)
 pi_root=$repo/tmp/worker-trial/pi
 branch=$(printf '%s' "$ticket" | tr 'A-Z' 'a-z')
 dir=$trial_dir/runs/$variant--$branch
+round=$(basename "$trial_dir")  # in the project name, so rounds never share an inbox
 
 run='env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync'
 pi_args='-p --no-extensions --no-skills --skill ~/.pi/agent/skills/python-dev'
@@ -71,7 +72,7 @@ if [ -n "$start" ]; then
 fi
 git remote remove origin
 
-sed -i '' "s/^project = \"chitty\"/project = \"chitty-trial-$variant-$branch\"/" chitty.toml
+sed -i '' "s/^project = \"chitty\"/project = \"chitty-trial-$round-$variant-$branch\"/" chitty.toml
 [ "$(grep '^\[' chitty.toml | tail -1)" = '[agent_commands]' ] || {
     echo "the base's chitty.toml does not end with [agent_commands]" >&2; exit 1; }
 printf 'trial = "%s"\n' "$agent" >> chitty.toml

@@ -111,6 +111,10 @@ has none.
   matches the waiting shell's own command line and never ends.
 - **agy `-c`** continues the machine's most recent conversation, not the one for
   the directory; run one agy trial at a time.
+- **Stale inbox entries.** Each clone's project gets an inbox entry recording
+  its path. If a later run reuses the project name after that clone is deleted,
+  every `chitty` command fails with `Not a directory`. The project name now
+  includes the trial folder's name.
 - **agy polling.** agy runs long commands in the background and its model may
   poll them in a tight loop (see above). Count `manage_task` steps in its
   transcript before reading anything into its cost.
