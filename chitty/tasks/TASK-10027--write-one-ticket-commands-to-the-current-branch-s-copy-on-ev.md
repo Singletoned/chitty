@@ -33,6 +33,10 @@ Out of scope: the main branch, ticket branches and warnings instead of refusals 
 - [ ] The same `hotfix/x` setup through `chitty.mcp`: the `edit`, `note` and `archive` tools succeed and commit on that branch, and `show` returns the checkout's copy after the edit. Fails today.
 - [ ] Regression tests: the existing tests in `tests/test_planning_worktrees.py` pass, including `test_main_conflict`, `test_sibling_rename_conflict` and `test_no_local_copy_refuses_edit_but_show_falls_back`; `make check` passes.
 
+## Plan
+
+Add real-Git CLI and MCP regression tests, confirm failures, then route branch-local edits and archives through shared Repo methods while preserving main and ticket branch behaviour. Run formatting and checks, commit, and hand off for review.
+
 ## History
 
 - 2026-11-25T22:56:47Z calm-ochre-quail → planning
@@ -53,3 +57,4 @@ Out of scope: the main branch, ticket branches and warnings instead of refusals 
 - 2026-11-25T23:07:03Z calm-ochre-quail: changed description
 - 2026-11-25T23:07:15Z calm-ochre-quail planning → todo
 - 2026-11-25T23:24:56Z eager-russet-quail todo → doing
+- 2026-11-25T23:27:33Z eager-russet-quail: wrote the plan
