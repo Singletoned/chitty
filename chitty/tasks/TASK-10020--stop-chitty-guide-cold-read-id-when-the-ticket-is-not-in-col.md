@@ -26,6 +26,10 @@ Out of scope: warning `chitty show` readers about newer copies on other branches
 - [ ] A Hypothesis property test over every status in `src/chitty/model.py`'s status list: with one ticket in that status, `chitty guide cold-read <ID>` prints the cold-read guide when the status is `cold-read`, and otherwise exits 1 with `<ID> is <status> in this checkout, not cold-read`, printing no guide. Fails today: the guide prints for every status.
 - [ ] Regression tests: the existing guide tests pass, including `chitty guide cold-read` with no ID; `make check` passes.
 
+## Notes
+
+Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named the worktree, but the reader followed `.claude/agents/cold-reader.md` step 1, read `main`'s `backlog` copy, and reported "no Acceptance Criteria" and status `backlog`.
+
 ## History
 
 - 2026-11-25T22:28:28Z calm-ochre-quail → backlog
@@ -35,3 +39,4 @@ Out of scope: warning `chitty show` readers about newer copies on other branches
 - 2026-11-25T23:49:13Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
 - 2026-11-25T23:49:13Z calm-ochre-quail backlog → planning
 - 2026-11-25T23:49:23Z calm-ochre-quail planning → cold-read
+- 2026-11-25T23:49:48Z calm-ochre-quail: changed notes
