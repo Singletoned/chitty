@@ -34,6 +34,10 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 - [ ] The refused cases in `tests/test_leave_doing_clean.py` pass, and fail with the `store.py` change reverted
 - [ ] Regression tests: the allowed cases, and `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` with its fixture fix, pass; `make check` passes
 
+## Plan
+
+Inspect the existing guard and CLI fixtures, add the specified transition tests and confirm refusal tests fail without the guard, share the clean-worktree error message, fix the runner fixture, then format, check and hand off for review.
+
 ## Notes
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
@@ -58,3 +62,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-25T21:44:55Z daring-ebony-wren planning → todo
 - 2026-11-25T21:45:48Z sunny-ebony-stoat todo → doing
 - 2026-11-25T21:47:52Z sunny-ebony-stoat: changed notes
+- 2026-11-25T21:48:11Z sunny-ebony-stoat: wrote the plan
