@@ -23,6 +23,10 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT` or `chitty run` selection logic.
 - [ ] In `src/chitty/store.py`, `check_edit()` keeps `status="planning"` and `owner=""` below `PLANNING_RETURN_LIMIT` and escalates to `status="blocked"`, `owner="human"`, an escalation note, and `summary` (containing the return count and first non-empty line of incoming `(edit.note, *edit.notes)`, preserving a non-empty caller-supplied `summary`) at or above `PLANNING_RETURN_LIMIT`, resetting after any transition to `blocked`. Verified by Hypothesis property tests in `tests/test_check_edit.py` varying transition history, incoming status (`doing` or `review`), and caller-supplied `summary`.
 - [ ] In `src/chitty/store.py`, `check_edit()` sets `summary` the same way on repeated review-failure escalations (`REVIEW_FAILURE_LIMIT`), leaving `summary` unchanged below the limit and handling an empty incoming note on `done → doing` without crashing, and `src/chitty/cli.py` prints `escalated to human review` for escalated `planning` edits too. Verified by tests in `tests/test_check_edit.py` (and a CLI test for `planning` escalation).
 
+## Plan
+
+Add property and CLI tests for planning and review escalation, then implement shared escalation summaries and reset-aware planning counts; format, check, and hand off for review.
+
 ## History
 
 - 2026-11-25T18:20:06Z human → cold-read
@@ -30,3 +34,4 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT` or `chitty run` selection logic.
 - 2026-11-25T18:22:23Z human cold-read → todo
 - 2026-11-25T18:32:36Z human: renumbered from TASK-D92QA4
 - 2026-11-25T20:39:10Z witty-teal-urchin todo → doing
+- 2026-11-25T20:43:09Z witty-teal-urchin: wrote the plan
