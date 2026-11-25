@@ -16,7 +16,7 @@ review = true
 
 list_width = 80
 
-chitty_version = "0.7.1"
+chitty_version = "0.8.0"
 work_model = "openai-codex/gpt-6.1-terra" # default for work sessions
 review_model = "openai-codex/gpt-6.1-terra" # default for review sessions
 
