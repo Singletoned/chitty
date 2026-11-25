@@ -22,6 +22,10 @@ This replaces the current sentences rather than adding to them; the prompt stays
 
 Out of scope: the `review` branch of `continuation_prompt`, the guides, and refusing a return in code.
 
+## Notes
+
+Archived 2026-11-25 by the person's decision: returns of sound tickets to planning stopped on 2026-11-24 (none since, here or in echonomicon), the work guide already limits planning returns to real blockers, and TASK-10000 escalates repeats. Refile if it is suggested again.
+
 ## History
 
 - 2026-11-24T22:21:48Z zesty-coral-newt → backlog
@@ -32,3 +36,4 @@ Out of scope: the `review` branch of `continuation_prompt`, the guides, and refu
 - 2026-11-25T22:27:38Z golden-coral-stoat backlog → planning
 - 2026-11-25T22:27:40Z golden-coral-stoat planning → todo
 - 2026-11-25T22:34:31Z golden-coral-stoat todo → archived
+- 2026-11-25T22:36:08Z golden-coral-stoat: changed notes
