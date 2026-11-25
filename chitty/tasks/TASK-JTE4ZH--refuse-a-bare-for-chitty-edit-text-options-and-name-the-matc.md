@@ -1,6 +1,8 @@
 ---
-title: chitty edit --plan - stores a literal dash
+title: Refuse a bare `-` for `chitty edit` text options and name the matching `-file` option
 status: backlog
+labels:
+  - bug
 created: 2026-11-25
 provisional: true
 ---
@@ -17,3 +19,4 @@ Suggestion origin: chitty-trial-round2-claude-haiku-task-639
 
 - 2026-11-25T22:28:33Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:34Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:16Z calm-ochre-quail: changed title, labels
