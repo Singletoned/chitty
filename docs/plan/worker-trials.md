@@ -81,8 +81,20 @@ Conclusions: Pi 1.6.0 was the main cause; on Pi 1.5.2 both luna and terra
 finish. The lean prompt was no better than the baseline once Pi was fixed. For
 cost per finished ticket luna on Pi 1.5.2 was cheapest, then Codex + luna and
 Haiku (same per-token price as luna, but longer sessions), then terra; Codex +
-terra was fastest; agy cost the most by far (about 350 small steps per ticket,
-each re-reading 40M+ cached tokens in total).
+terra was fastest; agy cost the most by far.
+
+Why agy cost so much: on `TASK-451` and `TASK-651` about 60% of its ~350 steps
+(210 and 225) were `manage_task` status calls, polling a background `make check`
+or pytest every few seconds, sometimes over 120 in a row. Those polls were about
+70-75% of the cost, and they grew the context from about 140k to 250k tokens,
+which every later step re-read. On `TASK-664` it hardly polled (4 calls) and
+cost 0.51. Pi, Claude Code and Codex run commands in blocking calls, so they
+cannot fall into this. Gemini 3.8 Flash is also not a cheap model here: per
+token it costs 7.5 times luna or Haiku, and more than terra for cache reads.
+Even without the polling it would cost about twice Sonnet. agy has no model at
+luna's price; `gpt-oss-120b-medium` is the nearest, and a Gemini 4 model may
+take fewer steps. Its cost figures need no cache-storage fee: implicit caching
+has none.
 
 ## Pitfalls (each cost a rerun in round 1)
 
@@ -99,6 +111,12 @@ each re-reading 40M+ cached tokens in total).
   matches the waiting shell's own command line and never ends.
 - **agy `-c`** continues the machine's most recent conversation, not the one for
   the directory; run one agy trial at a time.
+- **agy polling.** agy runs long commands in the background and its model may
+  poll them in a tight loop (see above). Count `manage_task` steps in its
+  transcript before reading anything into its cost.
+- **agy cost matching** needs at least 10 mentions of the clone path in a
+  transcript, so it would miss a very short run; subagents, which agy did not
+  start in round 1, have their own transcripts and would also be missed.
 - **Codex** waits on stdin when it is not a terminal (`codex_agent.sh` closes it),
   and takes `-c` as a config override, so the wrapper maps the runner's `-c` to
   `codex exec resume --last`.

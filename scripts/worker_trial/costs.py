@@ -29,7 +29,7 @@ PRICES = {
     "claude-haiku-5-5": (0.10, 0.50, 0.125, 0.01),  # 5-minute cache writes
     "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.10),
     # Gemini Developer API standard tier, introductory rates to 2026-12-31
-    # (ai.google.dev/gemini-api/docs/pricing); cache storage fees not counted.
+    # (ai.google.dev/gemini-api/docs/pricing); implicit caching has no storage fee.
     "gemini-3.8-flash-medium": (0.75, 3.75, 0.0, 0.075),
 }
 CLAUDE_1H_WRITE = {"claude-haiku-5-5": 0.20, "claude-sonnet-5-5": 4.00}
