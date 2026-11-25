@@ -1,5 +1,5 @@
 ---
-title: Triage agents mistake leftover run lock files for held locks
+title: Stop leftover run lock files misleading agents into thinking a run is active
 status: backlog
 created: 2026-11-25
 provisional: true
@@ -17,3 +17,4 @@ Suggestion origin: chitty
 
 - 2026-11-25T22:28:30Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:31Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:25Z calm-ochre-quail: changed title
