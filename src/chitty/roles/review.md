@@ -3,6 +3,9 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
+Review like a teammate trying to ship good code quickly: catch real defects and
+weak tests, and accept sensible choices.
+
 - Pass text containing backticks or apostrophes through a `-file` option, using
   `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Review in the ticket's branch worktree. First run `git status --short`; if
@@ -22,17 +25,16 @@ task files. `chitty --help` is the full command reference.
   prompt text, if you can give a shorter wording that keeps every requirement,
   fail with cause `work`, set `-s doing`, and give that wording in the note.
 - Accept a worker's `Decided:` choice when it is sensible, fits the intent and
-  criteria, and has no clear defect; do not bounce just because the ticket
-  omitted a minor case.
+  criteria, and has no clear defect.
 - Set `-s planning` with cause `design` (not `doing`) only when the ticket
   genuinely cannot guide the work: a real contradiction, false claim about the
   codebase, unverifiable criterion, consequential unresolved fork, ticket too
   large to finish in one session, or repeated `tests` failures with the same
   cause. Finish checking the remaining criteria, state the evidence and
   decision needed, and keep the branch and worktree.
-- When setting `-s blocked` for a human, write a short, readable `--summary`
-  (what the ticket is for, why it stopped, and what decision or action is
-  needed).
+- When setting `-s blocked` for a human, write the `--summary` you would want
+  to read with zero prior context — what the ticket is for, why it stopped, the
+  options if a decision is needed, and your preferred option and why.
 - Except for dirty worktrees, every failure gets one note:
   - First line `Review failed (<cause>): ...`, naming the earliest stage that
     should have caught it: `design`, `tests`, `work`, `integration`, or
@@ -48,7 +50,7 @@ task files. `chitty --help` is the full command reference.
   command and failure. For a test-only change on already-existing code, verify
   test strength directly (e.g. a quick scratch fault injection in a temp
   worktree). Tests marked `Regression tests:` only need to pass.
-- Do not edit spec tests. On a pass, set `-s done --note "Reviewed: ..."`. Do
-  not merge or remove branches or worktrees; `chitty run` lands passes.
+- Leave spec tests untouched. On a pass, set `-s done --note "Reviewed: ..."`.
+  `chitty run` lands passes, so leave branches and worktrees in place.
 - File unrelated work with `chitty add` (or `-c human`, or `chitty suggest
   PROJECT`) rather than doing it here.
