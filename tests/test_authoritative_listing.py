@@ -70,7 +70,9 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
 
     def test_conflict_and_isolated_allocation(self):
         self.setup_changed_both()
-        for args in [("list", "--json"), ("archive",)]:
+        listed = self.json("list")
+        self.assertIn("changed on both", next(t for t in listed if t["id"] == "TASK-1")["conflict"])
+        for args in [("archive",)]:
             before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
             head = self.git("rev-parse", "HEAD")
             index = self.git("ls-files", "--stage")

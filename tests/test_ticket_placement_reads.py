@@ -59,8 +59,16 @@ def generated_mismatches(parent: Path, case) -> list[str]:
             mismatches.append(f"unexpected tasks error {exc}")
     else:
         actual = {(t.id.number, t.task.frontmatter.title, t.archived) for t in listed}
-        wanted = {(n, item.title, item.archived) for n, item in expected if item.title is not None}
-        if any(item.errors for _, item in expected) or actual != wanted:
+        wanted = {
+            (
+                n,
+                ("main-2" if placement in "km" else "main") if item.errors else item.title,
+                item.archived,
+            )
+            for (n, placement), (_, item) in zip(case, expected, strict=True)
+            if item.title is not None or item.errors
+        }
+        if actual != wanted:
             mismatches.append(f"tasks {actual!r} != {wanted!r}")
     return mismatches
 
@@ -97,7 +105,13 @@ def placement_mismatches(parent: Path) -> list[str]:
                         if text not in str(exc):
                             mismatches.append(f"{prefix}: {name} error missing {text!r}: {exc}")
                     continue
-                if errors:
+                if errors and name == "tasks" and placement in ("e", "k", "m"):
+                    assert isinstance(result, list)
+                    if len(result) != 1 or not all(
+                        text in (result[0].conflict or "") for text in errors
+                    ):
+                        mismatches.append(f"{prefix}: missing conflict {errors!r}")
+                elif errors:
                     mismatches.append(f"{prefix}: {name} did not raise ChittyError")
                 elif isinstance(result, StoredTask):
                     actual = (result.task.frontmatter.title, result.archived)
@@ -149,7 +163,14 @@ def own_worktree_mismatches(parent: Path) -> list[str]:
                         mismatches.append(f"{prefix}: {name} unexpected error: {exc}")
                     continue
                 if errors:
-                    mismatches.append(f"{prefix}: {name} did not raise {errors!r}")
+                    if name == "tasks" and placement in ("e", "k"):
+                        assert isinstance(result, list)
+                        if len(result) != 1 or not all(
+                            text in (result[0].conflict or "") for text in errors
+                        ):
+                            mismatches.append(f"{prefix}: missing conflict {errors!r}")
+                    else:
+                        mismatches.append(f"{prefix}: {name} did not raise {errors!r}")
                     continue
                 tasks = [result] if isinstance(result, StoredTask) else result
                 actual = [(task.task.frontmatter.title, task.archived) for task in tasks]
@@ -242,14 +263,18 @@ class TestTicketPlacementReads(RepoTestCase):
                         repo = Repo.open(linked)
                         task_id = TaskId("TASK", 5)
                         if expected.errors:
-                            for action in (
-                                lambda repo=repo, task_id=task_id: repo.find(task_id),
-                                lambda repo=repo: repo.tasks(repo.context("tasks"), "all"),
-                            ):
-                                with self.assertRaises(ChittyError) as caught:
-                                    action()
-                                for text in expected.errors:
-                                    self.assertIn(text, str(caught.exception))
+                            with self.assertRaises(ChittyError) as caught:
+                                repo.find(task_id)
+                            for text in expected.errors:
+                                self.assertIn(text, str(caught.exception))
+                            listed = [
+                                t
+                                for t in repo.tasks(repo.context("tasks"), "all")
+                                if t.id == task_id
+                            ]
+                            self.assertEqual(len(listed), 1)
+                            for text in expected.errors:
+                                self.assertIn(text, listed[0].conflict or "")
                         elif expected.title is None:
                             with self.assertRaisesRegex(ChittyError, "no task"):
                                 repo.find(task_id)

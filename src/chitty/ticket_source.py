@@ -8,6 +8,10 @@ from chitty.ids import TaskId
 WORKING_TREE = ""
 
 
+class SourceConflict(ChittyError):
+    """Ticket branches have conflicting sources."""
+
+
 def ticket_source(
     task_id: TaskId,
     provisional: bool,
@@ -48,7 +52,7 @@ def ticket_source(
     )
     if chosen_tip is None:
         names = ", ".join(f"`{ref}`" for ref in sorted(candidates))
-        raise ChittyError(f"ticket `{task_id}` has diverged refs: {names}")
+        raise SourceConflict(f"ticket `{task_id}` has diverged refs: {names}")
 
     matching = [ref for ref, tip in candidates.items() if tip == chosen_tip]
     local = branch_name if branch_name in matching else None
@@ -57,7 +61,7 @@ def ticket_source(
     else:
         chosen = min(matching, key=lambda ref: (ref.split("/", 1)[0], ref))
     if changed_on_both(chosen):
-        raise ChittyError(f"ticket `{task_id}` changed on both `{chosen}` and `{main_branch}`")
+        raise SourceConflict(f"ticket `{task_id}` changed on both `{chosen}` and `{main_branch}`")
     if current_branch == branch_name and local_tips.get(branch_name) == chosen_tip:
         return WORKING_TREE
     return chosen

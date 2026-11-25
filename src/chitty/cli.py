@@ -48,7 +48,7 @@ from chitty.model import (
 )
 from chitty.run import RunInterrupted, run_loop
 from chitty.run import run as run_next
-from chitty.selection import BROKEN_DEPENDENCY_GLYPH
+from chitty.selection import BROKEN_DEPENDENCY_GLYPH, CONFLICT_GLYPH
 from chitty.store import (
     summary_sections,
     Change,
@@ -520,8 +520,8 @@ def list_(
             - _columns(label_text)
         )
         click.echo(f"{line}  {_shorten(fm.title, room)}{label_text}")
-        if reason and reason.startswith(BROKEN_DEPENDENCY_GLYPH):
-            click.echo(f"warning: {reason.removeprefix(BROKEN_DEPENDENCY_GLYPH).strip()}", err=True)
+        if reason and reason.startswith((BROKEN_DEPENDENCY_GLYPH, CONFLICT_GLYPH)):
+            click.echo(f"warning: {reason.split(' ', 1)[1]}", err=True)
 
 
 def _terminal_columns() -> int | None:

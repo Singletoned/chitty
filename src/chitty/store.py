@@ -61,7 +61,7 @@ from chitty.selection import (
     mode_statuses,
 )
 from chitty.selection import skip_reason as pure_skip_reason
-from chitty.ticket_source import WORKING_TREE, ticket_source
+from chitty.ticket_source import WORKING_TREE, SourceConflict, ticket_source
 
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
@@ -147,6 +147,7 @@ class StoredTask:
     archived: bool
     task: Task
     branch: str | None = None
+    conflict: str | None = None
 
     @property
     def slug(self) -> str:
@@ -159,6 +160,7 @@ class StoredTask:
             "archived": self.archived,
             "path": str(self.path),
             **({"branch": self.branch} if self.branch else {}),
+            **({"conflict": self.conflict} if self.conflict is not None else {}),
             **self.task.as_dict(),
         }
 
@@ -403,7 +405,18 @@ class Repo:
         )
         result: list[StoredTask] = []
         for task_id in self.ticket_ids():
-            ref, copies = self._source_files(task_id)
+            conflict = None
+            try:
+                ref, copies = self._source_files(task_id)
+            except SourceConflict as error:
+                ref = self._main_branch()
+                copies = self._ref_ticket_files(ref, task_id)
+                if not copies:
+                    ref = WORKING_TREE
+                    copies = self._working_ticket_files(task_id)
+                if not copies:
+                    raise
+                conflict = str(error)
             if not any(path.parent == directory for path, _ in copies):
                 continue
             source = self._parse_source_copy(task_id, ref, copies)
@@ -416,6 +429,7 @@ class Repo:
                         archived,
                         source.task,
                         source.ref,
+                        conflict,
                     )
                 )
         self._task_locations[key] = result
@@ -1361,11 +1375,12 @@ class Repo:
         """Archive every non-archived done task in one finalization."""
         self._prepare_write()
         with self._all_or_nothing():
+            tasks = [task for context in self.contexts() for task in self.tasks(context, "active")]
+            for task in tasks:
+                if task.conflict is not None:
+                    raise SourceConflict(task.conflict)
             changes = tuple(
-                self._archive(task.id)
-                for context in self.contexts()
-                for task in self.tasks(context, "active")
-                if task.task.frontmatter.status == "done"
+                self._archive(task.id) for task in tasks if task.task.frontmatter.status == "done"
             )
             if changes:
                 paths = tuple(path for change in changes for path in change.paths)
@@ -2296,6 +2311,7 @@ def _selection_facts(
         locked,
         tuple(dependency_facts),
         tuple(fm.labels),
+        stored.conflict,
     )
 
 

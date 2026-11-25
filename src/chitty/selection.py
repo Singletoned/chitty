@@ -25,6 +25,7 @@ class TicketFacts:
     locked: bool
     dependencies: tuple[DependencyFact, ...] = ()
     labels: tuple[str, ...] = ()
+    conflict: str | None = None
 
 
 STATUSES = ("review", "doing", "todo")
@@ -45,6 +46,7 @@ def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
 
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 UNTESTABLE_OWNER = "untestable"
+CONFLICT_GLYPH = "🔀"
 DEPENDENCY_GLYPH = "🔗"
 BLOCKER_GLYPH = "🚧"
 BROKEN_DEPENDENCY_GLYPH = "💔"
@@ -82,6 +84,8 @@ def _id_key(value: str) -> TaskId:
 
 def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
     """Explain why an active ticket cannot be selected, if applicable."""
+    if fact.conflict is not None:
+        return f"{CONFLICT_GLYPH} {fact.conflict}"
     if fact.archived or fact.status not in STATUS_RANK:
         return None
     if fact.locked:
