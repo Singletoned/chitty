@@ -208,6 +208,15 @@ lines added in `src/` and `tests/`, as a share of the reference's.
   not worse by itself; the blind review (not yet run) is what would judge
   quality.
 
+**Who wrote the references.** All five reference commits were written by
+`gpt-6.1-terra` on Pi through `chitty run`, 21-23 November, and reviewed by a
+second terra session (see `~/.pi/agent/sessions/--Users-singletoned-src-singletoned-chitty-.worktrees-task-<N>--/`).
+The Pi version is not recorded. So closeness to the reference partly measures
+closeness to terra's style. It is not a neutral quality score, and the
+reference is not a gold standard: it missed the `TASK-639` invalidation gaps
+that the trial's terra found. A blind review should score each run against the
+ticket and a rubric, not against the reference.
+
 **Luna and terra on Pi, read side by side (2026-11-25).** Both changed the same
 code in nearly the same way on four of the five tickets; `TASK-515` is the same
 line for line. Where they differ, terra was better each time:
