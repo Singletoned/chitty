@@ -1,6 +1,6 @@
 ---
 title: "Cold-read guide: read a ticket as if its `depends_on` tickets have landed"
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -35,3 +35,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:21:25Z zesty-coral-newt: changed notes
 - 2026-11-24T22:47:44Z zesty-coral-newt: changed title, labels, owner, description
 - 2026-11-24T22:47:44Z zesty-coral-newt backlog → todo
+- 2026-11-25T23:45:26Z tidy-silver-puffin todo → doing
