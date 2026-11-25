@@ -24,3 +24,4 @@ Triage 2026-11-25: merged into TASK-472.
 - 2026-11-25T22:28:38Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:39Z calm-ochre-quail: changed notes
 - 2026-11-25T22:33:50Z calm-ochre-quail: changed notes
+- 2026-11-25T22:33:53Z calm-ochre-quail backlog → archived
