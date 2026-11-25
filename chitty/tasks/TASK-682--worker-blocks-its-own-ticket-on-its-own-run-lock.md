@@ -16,9 +16,12 @@ Suggestion origin: shelfpath
 
 Triage 2026-11-24, from TASK-669 (shelfpath): run locks were again left behind after workers exited (PIDs 33747, 6519 and 28502 dead). Related: TASK-234 (guide: leave a ticket alone while another run holds its lock).
 
+Archived 2026-11-25, already fixed: 7ed917e1 (2026-11-10, a day after the shelfpath report) marks a run lock as the worker's own in chitty show via CHITTY_ACTOR (locks.holder, field you). Locks are flock-held, so a dead PID never holds one; leftover lock files are inert.
+
 ## History
 
 - 2026-11-24T22:21:45Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:58Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:51Z zesty-coral-newt: changed labels
+- 2026-11-25T20:46:41Z golden-coral-stoat: changed notes
