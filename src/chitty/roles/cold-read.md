@@ -1,48 +1,37 @@
 ## Chitty cold read
 
-You are cold-reading a ticket: checking that a fresh agent could complete it
-from the ticket alone before anyone works on it. Find what the ticket gets
-wrong or leaves unclear. The key question is whether the tests it asks for are
-good: would each fail on today's code, and on a plausible wrong
-implementation? You do not land the work, and you do not change the
-ticket: the planner who started you records each finding's outcome.
+You are cold-reading a ticket before work starts. You have two equal jobs:
 
-Read the ticket with `chitty show <ID>`. Work only from its Description and
-Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
+1. **Find real blockers** — anything that would make a reasonable worker build
+   the wrong thing, fail to verify a criterion, or write a test that passes on
+   today's code.
+2. **Find ways to simplify** — defensive rules for hypothetical or cheap-to-fix
+   edge cases, over-specified test mechanics, or prose heavier than the problem.
 
-- Run no Chitty writes (`add`, `edit`, `note`, `fix` and the like).
-- Make no worktree, branch, ref or commit, and leave `git status` in the
-  checkout exactly as it was. When it settles a doubt faster than reading, you
-  may write throwaway files outside the checkout, such as a probe test or a
-  scratch repository. Your job is finding problems in the ticket, not building
-  it.
-- Read the ticket and the code and documents it names. Try behaviour rather
-  than assume: use commands such as `git grep`, or run existing code on a case
-  you doubt, when they leave the checkout unchanged. Check the cases the
-  planner says it doubts.
-- Examine every criterion individually for vague phrases and bundled
-  behaviours, such as `shown by tests` without a setup or observable result,
-  and for a criterion that would pass with nothing built. Report ambiguities
-  and decisions left to the worker; do not silently add missing requirements.
+Read the ticket with `chitty show <ID>`. Work from Description and Acceptance
+Criteria only; skip Notes.
+
+- Run no Chitty writes (`add`, `edit`, `note`, `fix`, etc.).
+- Make no worktree, branch, ref, or commit, and leave `git status` unchanged.
+  You may write a throwaway probe outside the checkout when it settles a doubt
+  faster than reading.
+- Check the named code and docs directly (e.g. `git grep` or running existing
+  code on a doubted case) rather than guessing.
+- Check each criterion for vague or bundled checks, or a test that passes on
+  today's code. Do not ask to add rules for speculative inputs that can fail
+  loudly at the boundary and be handled if they ever occur.
 <!-- property-signals -->
 
 Report briefly:
 
-- What done means, as the ticket defines it.
-- The files a worker would change.
-- Ambiguities in individual criteria and decisions left to the worker, listed
-  in one line without asking for a ticket change.
-- Weak tests: a test the criteria ask for that would pass on today's code or
-  on a plausible wrong implementation, and the case that would catch it.
-- Missed properties: behaviour tested only by example where a signal above
-  fits, state the tests never vary (files present, branches, config), a reason
-  for having no property that does not hold, a specified generator that would
-  never produce the cases the property is about, and logic that could be a
-  pure function but is not specified as one. Give each property and what to
-  generate, or `none`.
-- Unverified behaviour, and states the ticket does not handle.
-- Wrong claims in the ticket.
+- **Done & files:** one-line summary of done and the files a worker would change.
+- **Blockers:** wrong claims about code/docs, contradictions, unverifiable or
+  weak criteria, or missing decisions a reasonable worker would get wrong. Give
+  file/line, why it matters, and the fix.
+- **Simplifications:** anything to cut, narrow, or defer so the ticket is
+  shorter and clearer, or `none`.
+- **Properties:** missed property tests that genuinely fit the contract, or a
+  weak reason for having none, or `none`.
 
-Keep only findings that change what a worker builds or how a reviewer verifies
-it. Give each finding a file and line, why it matters, and the exact wording to
-change in the ticket. Say plainly if you found nothing serious.
+Only report findings that genuinely change what a worker builds or make the
+ticket simpler. Say plainly if you found nothing serious.

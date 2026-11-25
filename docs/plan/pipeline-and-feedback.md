@@ -6,8 +6,7 @@
   `review` → `done`; recoverable runner failures enter `error` and use an
   explicit repair run before returning to `review` or `blocked`.
 - Planning, cold reading, work and review use different sessions; nobody reviews
-  their own work. The sufficiency read is part of planning: the original planner
-  evaluates the independent cold read, rather than starting another session.
+  their own work.
 - Tickets that can't be tested get the label and owner `untestable`
   (decided 2026-11-16), and skip the cold read, work and review: a human has
   a strong agent do them. Wording in guides, docs and prompts, and content
@@ -20,38 +19,27 @@
 - The third `review → doing` failure since the ticket was last `blocked` blocks
   it for the human (`REVIEW_FAILURE_LIMIT`), to investigate the repeated failures.
 - A failed review of implementation against clear requirements returns to
-  `doing` for a fresh worker session. Apart from the small-omission exception
-  below, missing or contradictory requirements, an unresolved design decision,
-  a wrong claim about the code, files or other tickets, a criterion that cannot
-  be verified as written or would pass with nothing built, an unspecified test
-  needed to verify a stated criterion, or a ticket too large to finish in one
-  session returns to `planning`, from either `doing` or `review`. External
-  obstacles requiring help use `blocked` instead.
+  `doing` for a fresh worker session. Only genuine blockers return to
+  `planning` (contradictions, false claims about the codebase, an unverifiable
+  criterion, a consequential unresolved fork with competing alternatives, or a
+  ticket too large for one session). External obstacles requiring help use
+  `blocked`, with a short plain-English `Summary` for the human.
 - A return to planning requires one nonblank note explaining the discoveries,
-  why the ticket cannot guide the work, and the
-  decisions or corrections needed, with evidence for each. The first blocker
-  stops implementation, not investigation: before returning to `planning`,
-  finish reading the ticket and inspecting relevant code and tests. Report what
-  could not be checked and why; continue checking independent requirements
-  without speculating or expanding scope. Reviewers retain independence and
-  one verdict per criterion, with at least one fail when criteria exist.
-  Ownership is cleared; existing implementation, branch and worktree are
-  preserved. The run ends without landing or starting another worker.
-- A worker can resolve a small omission when the ticket and existing code or
-  tests point to one clear, cheap-to-reverse default. The choice must preserve
-  stated requirements and acceptance criteria and introduce no new user-visible
-  policy, command, or setting. Note `Decided: <case> -> <choice>, because <reason>`,
-  cite the precedent, and add a focused edge-case test where testable. Reviewers
-  check the choice, precedent, and test against that same boundary rather than
-  returning the ticket to planning just because it omitted the case. Neither
-  role invents or weakens a test needed to verify a stated criterion.
+  why the ticket cannot guide the work, and the decisions or corrections needed,
+  with evidence for each. Finish reading the ticket and inspecting relevant code
+  before returning; keep the branch and worktree.
+- Workers make decisions loudly: when a ticket leaves a small detail open, has
+  a minor typo or miscount, or has one sensible default with no obvious
+  competing alternative, the worker chooses it, records
+  `Decided: <case> -> <choice>, because <reason>`, adds a focused test where
+  useful, and keeps moving (widened 2026-11-25 after `echonomicon` `TASK-133`
+  and `TASK-213` bounced repeatedly over minor omissions and prose typos).
+  Reviewers accept sensible choices unless they violate requirements or cause a
+  defect.
 - Returned tickets appear in planning lists, not automatic work/review
-  selection. The planner resumes in the existing ticket worktree, revises or
-  splits the requirements, and follows the normal planning and cold-read
-  readiness steps before `todo`. The existing escalation counts only
-  `review → doing` failures. Repeated-cycle diagnosis is separate work across
-  the whole project pipeline: requirements, implementation, verification, review
-  or workflow may be responsible; repeated failures do not prove planning failed.
+  selection. The planner resumes in the existing ticket worktree, simplifies or
+  revises the ticket, and follows the normal planning and cold-read steps before
+  `todo`.
 - The earlier spec-first pipeline (separate `design`, `tests` and
   `review-ticket` stages, TASK-109) was dropped on 2026-11-11; git has it.
 
@@ -81,84 +69,58 @@
 ## Ready ticket
 
 A fresh agent can do it and know when to stop; another can check it without
-asking the first.
+asking the first. And a human can read it quickly without wading through history.
 
 - Criteria are executable: a test or command defines done.
 - Scope is stated, with an out-of-scope list.
-- Decisions are made: no "use your judgement".
+- Simple first, fail early: ground input contracts in the real source, reject
+  bad input loudly at the boundary, and do not specify handling for speculative
+  or cheap-to-fix edge cases.
 - Points at files, patterns and every caller the behaviour must hold on,
   rather than pasting them.
 - Does one thing: one to three criteria, a diff of a hundred or two lines. Five
   criteria or a few hundred lines is the limit; reaching it means split.
   (`TASK-126`, 16 criteria and about 1,000 lines, failed six reviews.)
-- Criteria state behaviour and leave cases to the tests, because a listed case
-  can always be read more strictly.
-- Text is concise: bullets, the current decision only. Git keeps the history.
+- Criteria state behaviour and properties, leaving generator recipes and fixture
+  wiring to the worker.
+- Text is short and current: rewrite cleanly instead of appending caveats, and
+  clear resolved notes (`--set-notes ''`) before `todo`. Git keeps the history.
 
 ## Cold read
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Every ticket gets a cold read. A fresh, cheap-model agent reads the ticket
-  and the code and documents it names, and reports ambiguities and decisions.
-  Its key question: are the tests the ticket asks for good, failing on today's
-  code and on a plausible wrong implementation? It makes no branch, ref or
-  commit and leaves `git status` unchanged, but may write throwaway files
-  outside the checkout, such as a probe test, when that settles a doubt
-  (decided 2026-11-18, loosening the read-only rule of 2026-11-16). Finding
-  problems, not building, is its purpose.
+- Every ticket gets a cold read (if a change is too small to justify a ticket
+  and cold read, do it directly on a `hotfix/` branch instead). A fresh,
+  cheap-model agent reads the ticket and the code and documents it names, with
+  two equal jobs: find real blockers (what would make a reasonable worker build
+  the wrong thing or write a weak test) and find ways to **simplify** (cut
+  defensive bloat, narrow contracts, drop over-specified test mechanics). It
+  makes no branch, ref or commit and leaves `git status` unchanged, but may
+  write throwaway probes outside the checkout when faster than reading.
 - The planner checks each claim about code, commands and tests against the
   source as it writes it, runs `chitty check` before starting a reader, and
-  plans one ticket at a time (2026-11-18). When the tested code already
-  exists, the ticket lists wrong versions for the worker to commit as tests
-  that assert each one fails (2026-11-20: hand runs recorded in notes were
-  skipped by workers twice on `TASK-471`; move checks from agents to
-  automation where safe), the planner runs each generator recipe against the real code before
-  the read, and distractor values are built from the drawn value. Property
-  tests are the exception (2026-11-23, from echonomicon, where 5 of 11 planned
-  wrong versions passed naive generators): the planner runs the generators
-  against each wrong version while planning and fixes any that let one pass, and
-  the worker re-runs them once against each wrong version and records the result
-  in a note. Committed hand-written wrong versions add clutter and drift. A
-  criterion may mark tests that pin kept behaviour as regression tests, which
-  must pass but need not fail without the change (2026-11-24, after `TASK-598`
-  failed review three times because such tests pass on the merge base).
-- These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
-  `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
-  revert was safe; the third-read split caught a claim written without
-  checking; asking whether the tests are good found unforced tie cases,
-  distractors equal to the ticket branch, and a criterion failing on `main`
-  for the wrong reason; a probe of about 20,000 cases per recipe agreed with
-  the implementation.
-- The original planning session then performs the sufficiency read on the
-  ticket text, named code and documents, and reader report. For each criterion
-  and the ticket as a whole, ask whether a plausible minimal implementation
-  could meet the criteria but still reasonably fail a good review.
-- Each gap needs a concrete counterexample, relevant varying inputs or state,
-  distinguishing verification and observable result, and proposed criterion
-  wording. Prefer general properties to accumulating examples; challenge
-  coverage of the agreed problem, not speculative features.
-- Before `todo`, resolve reader findings and sufficiency gaps by strengthening
-  or splitting the ticket, or explicitly rejecting findings as out of scope.
-  Write missing requirements into the ticket, not just the conversation. A
-  problem the read misses follows the expected route back to planning. A
-  stronger reader is optional for uncertainty or repeated work–review failures,
-  not mandatory.
+  plans one ticket at a time. A criterion may mark tests that pin kept behaviour
+  after `Regression tests:`, which must pass and need not fail without the
+  change.
+- **Dropped on 2026-11-25** (after `echonomicon` `TASK-133` grew to 2,080 words
+  over 9 cold reads for 30 lines of code, and `TASK-213` bounced 4 times over
+  prose edits):
+  - Prose "wrong versions", pre-running generators during planning, and
+    dictating generator recipes in ticket text. Reviewers check test strength
+    directly for test-only changes, and mutation testing belongs in tools.
+  - The separate sufficiency read (which duplicated the cold read with an
+    adversarial bias toward defensive bloat).
+  - Unbounded re-reading. Cold reads are capped at 1–2 rounds: one read is
+    enough when it finds no real blockers; run a second only after substantive
+    edits, and if a second read still finds serious problems, simplify, narrow,
+    or split instead of patching again.
+- Before `todo`, resolve findings by simplifying, narrowing, rejecting
+  speculative edge cases, or fixing real blockers — preferring changes that make
+  the ticket shorter. Clear stale notes before `todo`.
 - Workers and reviewers never cold-read.
 - A ticket reaches `todo` only after its findings have outcomes, because
   `chitty run` takes anything in `todo` (`TASK-147` was claimed mid-read).
-- Rounds: the ticket-state migration (2026-11-18, 29 tickets) took about 2.5
-  reads per ticket, two to four on most strong fixes and 13 across `TASK-378`
-  and its splits. Later rounds mostly found errors the fixes had introduced (a
-  command that does not exist, a wrong test base class, a spy on a function
-  the code calls legitimately), not misses by earlier readers. So check every
-  new claim about code, commands or tests against the source before rereading,
-  and split a ticket whose third read still finds problems rather than patching
-  it again.
-- Read-only reads (from 2026-11-16) cost about a third less each than the
-  earlier reads that wrote probe tests (Haiku, 79 reads against 78: about 12
-  turns each against 26), and still found design flaws. More rounds per ticket
-  used up the saving: cost per ticket stayed about the same.
 - In this repository readers run on Haiku, to show what a weak model struggles
   with. Planners in Claude Code start the `cold-reader` agent
   (`.claude/agents/cold-reader.md`) with only the ticket ID: it fetches

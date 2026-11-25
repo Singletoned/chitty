@@ -9,10 +9,9 @@
   - nothing lost or made (split, partition, move): counts and totals match;
   - claims over a set of inputs or states: all, every, each, any, always,
     never, except, unless, unique, sorted, at most;
-  - open inputs: free text, Unicode, dates and time zones, paths, user files,
-    nested data;
-  - parsers and validators: any input gives a result or a clear error, never
-    a crash;
+  - untrusted external inputs (user text, files, paths, dates/time zones,
+    network data) and boundary parsers or validators: valid input behaves
+    consistently and bad input fails loudly and early;
   - status changes and sequences of operations that must keep a rule;
   - limits: results stay in a range, or more input never gives less output;
   - a bug in an edge case (empty, zero, duplicate, boundary): the examples
