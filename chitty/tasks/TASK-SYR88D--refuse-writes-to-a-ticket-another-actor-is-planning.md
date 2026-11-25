@@ -1,6 +1,6 @@
 ---
 title: Refuse writes to a ticket another actor is planning
-status: backlog
+status: todo
 depends_on:
   - TASK-B7CQGM
 parent: TASK-10026
@@ -39,3 +39,4 @@ Tests:
 - 2026-11-25T23:10:13Z golden-coral-stoat: changed acceptance criteria
 - 2026-11-25T23:10:43Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:17Z golden-coral-stoat: changed description
+- 2026-11-25T23:12:30Z golden-coral-stoat backlog → todo
