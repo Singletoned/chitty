@@ -1,5 +1,5 @@
 ---
-title: Make the cold-reader subagent read the planner's branch copy
+title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
 status: backlog
 created: 2026-11-25
 provisional: true
@@ -13,7 +13,10 @@ provisional: true
 
 Suggestion origin: chitty
 
+Triage 2026-11-25: `.claude/agents/cold-reader.md` step 1 tells the reader to work in the main checkout, which causes this on a `plan/` branch. Related: TASK-602 (read tickets from the current branch).
+
 ## History
 
 - 2026-11-25T22:28:28Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:30Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:23Z calm-ochre-quail: changed title, notes
