@@ -20,7 +20,7 @@ Decided with the person, 2026-11-25:
 - `backlog` stays separate: suggestions nobody has decided to do. Planners take `to-plan` tickets before `backlog`.
 - `chitty fix` moves existing `planning` tickets with no owner to `to-plan`.
 
-To settle while planning, then split into several tickets: the status order and allowed moves in `src/chitty/model.py` and `store.py` (`returning_to_planning`, `TASK-10000`'s repeated-return count), the migration, the guides and runner prompts, how a planner's claim commit on `main` fits `TASK-340`, and planning it together with `TASK-599` (`dropped`) and the `to-do` rename (`TASK-KD5X8V`), since all three change the status set.
+To settle while planning, then split into several tickets: the status order and allowed moves in `src/chitty/model.py` and `store.py` (`returning_to_planning`, `TASK-10000`'s repeated-return count), the migration, the guides and runner prompts, how a planner's claim commit on `main` fits `TASK-340`, and planning it together with `TASK-599` (`dropped`) and the `to-do` rename (`TASK-10028`), since all three change the status set.
 
 ## History
 

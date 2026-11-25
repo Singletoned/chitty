@@ -4,7 +4,7 @@ status: backlog
 labels:
   - needs-minor
 created: 2026-11-25
-provisional: true
+moved_from: TASK-KD5X8V
 ---
 
 ## Description
@@ -16,3 +16,4 @@ To settle while planning: `chitty fix` migrating existing ticket files in every 
 ## History
 
 - 2026-11-25T23:00:35Z golden-coral-stoat → backlog
+- 2026-11-25T23:00:53Z golden-coral-stoat: renumbered from TASK-KD5X8V
