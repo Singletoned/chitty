@@ -44,6 +44,8 @@ Suggestion origin: chitty
 
 Planner, 2026-11-25: probed on a trial patch of `main` (the change and both tests as described). Before the change both new tests fail; after it, `tests/test_property_ticket_source.py` and `tests/test_source_copy.py` pass (23 tests), including the three regression tests. No other test changed result.
 
+Both added tests were run before the source fix and failed: property counterexample showed provisional selecting working tree instead of remote branch; source-copy regression failed reading the main copy. After implementing the no-candidates-only fallback, focused suite passed (23 passed) and make check passed (1180 passed).
+
 ## History
 
 - 2026-11-24T22:21:27Z zesty-coral-newt → backlog
@@ -58,3 +60,4 @@ Planner, 2026-11-25: probed on a trial patch of `main` (the change and both test
 - 2026-11-25T10:34:24Z sunny-hazel-gannet planning → todo
 - 2026-11-25T10:35:02Z lively-pearl-lapwing todo → doing
 - 2026-11-25T10:38:26Z lively-pearl-lapwing: wrote the plan
+- 2026-11-25T10:41:40Z lively-pearl-lapwing: changed notes
