@@ -1,6 +1,6 @@
 ---
 title: Name uncommitted worktree changes, not `main`, when the pre-check fails
-status: planning
+status: todo
 priority: high
 created: 2026-11-24
 ---
@@ -14,7 +14,7 @@ Change, in `_run_check` in `src/chitty/run.py` only:
 - Before calling `run_logged`, read `git.uncommitted_paths(branch_repo.root)`. Read it before the check runs, because a check may write files of its own. (The runner's own ticket edits are already committed: `chitty run` requires `autocommit = true`.)
 - If the check exits non-zero and that list is not empty, append `; the worktree had uncommitted changes before the check: <paths>` to `detail` (each path in backticks, joined by `, `, as `_block_dirty_review` lists them), in every mode and status, and do not append the `no work yet` clause, which today is added in a separate `if`. Otherwise `detail` is unchanged.
 
-Out of scope: committing or removing leftover changes, the timeout and command-not-found paths, passing checks, and the handoff refusal for a dirty worktree (`TASK-689`).
+Out of scope: committing or removing leftover changes, the timeout and command-not-found paths, passing checks, and the handoff refusal for a dirty worktree (`TASK-10025`).
 
 Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_records_error_on_branch` (no property: two fixed cases, a clean and a dirty worktree, the clean one already tested). New `test_run_check_failure_names_uncommitted_worktree_changes`: use `write_failing_checker` and `commit_ticket("Todo", "todo")`, then `git worktree add -b task-1 .worktrees/task-1 main` (the runner reuses an existing worktree for the branch), write an untracked `left.py` there, and `run_cli("run")`. Assert the ticket is `error` and its Notes contain `uncommitted changes` and `` `left.py` `` and not `no work yet`.
 
@@ -32,3 +32,5 @@ Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_rec
 - 2026-11-25T22:32:44Z calm-ochre-quail: changed notes
 - 2026-11-25T22:35:05Z golden-coral-stoat: replaced notes; changed title, description, acceptance criteria
 - 2026-11-25T22:35:05Z golden-coral-stoat backlog → planning
+- 2026-11-25T22:35:54Z golden-coral-stoat: changed description
+- 2026-11-25T22:35:54Z golden-coral-stoat planning → todo
