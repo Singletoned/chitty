@@ -39,6 +39,8 @@ Capture expected ticket discovery before mutating refs, add a property test prov
 
 The new snapshot property fails before the fix: deleted refs cause git ls-tree to fail, and moved refs return the new title instead of the captured title.
 
+With only the split-change fix reverted, the deleted conflicting branch example also fails at git merge-base; restoring it passes.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -69,3 +71,4 @@ The new snapshot property fails before the fix: deleted refs cause git ls-tree t
 - 2026-11-25T21:24:56Z honest-zinc-vole todo → doing
 - 2026-11-25T21:28:42Z honest-zinc-vole: wrote the plan
 - 2026-11-25T21:29:32Z honest-zinc-vole: changed notes
+- 2026-11-25T21:33:45Z honest-zinc-vole: changed notes
