@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on long tickets, bulky `todo` notes, and repeated cold reads
-status: todo
+status: doing
 created: 2026-11-25
 moved_from: TASK-WQSEDK
 ---
@@ -25,3 +25,4 @@ Out of scope: changing `chitty check` exit codes, adding warnings to `chitty edi
 - 2026-11-25T18:19:10Z human: changed description, acceptance criteria
 - 2026-11-25T18:19:10Z human cold-read → todo
 - 2026-11-25T18:32:36Z human: renumbered from TASK-WQSEDK
+- 2026-11-25T20:54:43Z golden-maroon-urchin todo → doing
