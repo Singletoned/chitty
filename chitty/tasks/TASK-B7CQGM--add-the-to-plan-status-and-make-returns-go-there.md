@@ -15,7 +15,7 @@ Part of `TASK-10026`. Today `planning` means both "waiting for a planner" and "a
 Change:
 
 - `src/chitty/model.py`: add `to-plan` to `STATUSES` after `backlog`, to `Frontmatter.status`, and first in `DEFAULT_LIST_STATUSES`. Glyph `📥`, label `plan`; `planning` keeps `📝` and its label becomes `plnng` (labels are padded to 5 in `chitty list`). Add `to-plan` to the `Status` literal in `src/chitty/mcp.py`; update the default-status lists in the `list` description in `mcp.py` and the `--status` help in `src/chitty/cli.py`.
-- `check_edit` in `src/chitty/store.py`, replacing `planning` with `to-plan` as the return status in: `returning_to_planning` and its "requires --note" message; the `is_review_transition` set; the fail-verdict requirement in `_validate_review_verdict` (`edit.status in {"doing", "planning"}`); and the owner clearing and `PLANNING_RETURN_LIMIT` escalation. The return count adds `("doing", "to-plan")` and `("review", "to-plan")` and keeps the two `planning` pairs, so returns recorded before this change still count. `doing` or `review` → `planning` is refused: `return <ID> to \`to-plan\`; \`planning\` means a planner has taken it`. In `cli.py` `edit`, the `escalated` check uses `to-plan` instead of `planning`.
+- `check_edit` in `src/chitty/store.py`, replacing `planning` with `to-plan` as the return status in: `returning_to_planning` and its "requires --note" message; the `is_review_transition` set; the fail-verdict requirement in `_validate_review_verdict` (`edit.status in {"doing", "planning"}`); and the owner clearing and `PLANNING_RETURN_LIMIT` escalation. The return count adds `("doing", "to-plan")` and `("review", "to-plan")` and keeps the two `planning` pairs, so returns recorded before this change still count. `doing` or `review` → `planning` is refused: ``return <ID> to `to-plan`; `planning` means a planner has taken it``. In `cli.py` `edit`, the `escalated` check uses `to-plan` instead of `planning`.
 - `src/chitty/check.py`: the size and cold-read warnings that apply to `planning` also apply to `to-plan`.
 - `scripts/retro.py`: add `to-plan` to `FAILED_REVIEW_TARGETS`.
 
@@ -36,3 +36,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:09:23Z golden-coral-stoat: changed title, description
 - 2026-11-25T23:09:25Z golden-coral-stoat: changed acceptance criteria
 - 2026-11-25T23:09:42Z golden-coral-stoat: changed description
+- 2026-11-25T23:10:53Z golden-coral-stoat: changed description
