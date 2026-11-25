@@ -25,3 +25,4 @@ Archived 2026-11-25, already fixed: 7ed917e1 (2026-11-10, a day after the shelfp
 - 2026-11-24T22:39:58Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:51Z zesty-coral-newt: changed labels
 - 2026-11-25T20:46:41Z golden-coral-stoat: changed notes
+- 2026-11-25T20:46:52Z golden-coral-stoat backlog → archived
