@@ -73,6 +73,8 @@ Planning: this ticket is too large for one session: it combines a new configurat
 
 Please split into reviewable dependent tickets: (1) configuration and model validation, including malformed frontmatter and line-break property; (2) shared write/check validation and CLI/MCP integration; (3) configured ordering and display, including the ranking property, existing-order updates, and plan docs. Specify the intermediate behavior and dependency ordering so each can pass `make check` and land independently; in particular decide how unconfigured names behave between the model and write/check tickets. Preserve the baseline-failure requirements for each ticket. No implementation or regression tests were written; baseline and final checks have not been run. The existing plan is only an outline, not completed work.
 
+Planner, 2026-11-25: `TASK-692` (bugs first) adds a `"bug" not in labels` key between status and priority in `selection.choose` and `store.ordered`, the same keys this ticket changes. Whichever lands second must keep both; re-check the anchors when re-planning.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -111,3 +113,4 @@ Please split into reviewable dependent tickets: (1) configuration and model vali
 - 2026-11-23T20:08:38Z eager-ebony-quail: wrote the plan
 - 2026-11-23T20:09:16Z eager-ebony-quail: changed owner, notes
 - 2026-11-23T20:09:16Z eager-ebony-quail doing → planning
+- 2026-11-25T10:38:24Z sunny-hazel-gannet: changed notes
