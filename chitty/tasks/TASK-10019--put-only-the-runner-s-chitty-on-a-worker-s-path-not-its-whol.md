@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: backlog
+status: planning
 labels:
   - bug
 priority: high
@@ -10,15 +10,20 @@ moved_from: TASK-SSVZJ6
 
 ## Description
 
-Found in the worker trials on 2026-11-25. `chitty run` puts the runner's own `.venv/bin` (the main checkout's) first on the agent's `PATH` (`src/chitty/run.py` around lines 580 and 631). That install is editable and points at the main checkout's `src/`. So when a worker in `.worktrees/task-N` runs a bare `pytest` or `python`, it imports `main`'s code, not the worktree's. `make check` is not affected, because the Makefile sets `UV_PROJECT_ENVIRONMENT` to the worktree's own `.venv`.
+`chitty run` puts the runner's whole `.venv/bin` first on the agent's `PATH`, so agents call the runner's `chitty` (often ahead of the released one). It does this twice in `src/chitty/run.py`: in review preparation (around line 577) and before work sessions (around line 627). That install is editable and points at the runner checkout's `src/`, so a worker in `.worktrees/task-<n>` that runs a bare `pytest` or `python` imports that checkout's code, not its worktree's. `make check` is not affected, because it uses the worktree's own `.venv`.
 
-What happened in a trial: luna (Pi 1.5.2) ran bare `pytest` against a `NotImplementedError` placeholder, as `TASK-512` asked. pytest resolved to another checkout's `.venv`, whose code already held the landed feature, so the five properties passed. Luna then returned the ticket to `planning`, claiming the properties don't fail without the change. Run with the worktree's code, they fail (9 errors).
+Seen 2026-11-25 in a worker trial: a worker ran bare `pytest` against a placeholder as its ticket asked, got the runner checkout's code, where the feature had already landed, saw the properties pass, and wrongly sent the ticket back to `planning`. With the worktree's code they fail.
 
-Options: put only the runner's `chitty` executable on `PATH` (for example a directory holding just a `chitty` link) rather than the whole `.venv/bin`; or tell workers in the work guide to run tests through the project's own commands. The first removes the trap without relying on the agent.
+Change: one helper in `run.py`, used at both places, that makes a directory holding only a `chitty` symbolic link to the runner's `chitty`, under the Git common directory (beside the run locks, `.git/chitty/run/`; for example `.git/chitty/bin/`), replacing an existing link, and puts that directory first on the agent's `PATH` instead of `.venv/bin`. Keep today's `runner chitty executable not found` error.
 
-## Notes
+No property test: a fixed environment change, shown by one example per agent mode.
 
-Suggestion origin: chitty
+Out of scope: work guide advice about bare `pytest` (the trap goes away instead).
+
+## Acceptance Criteria
+
+- [ ] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python` from its own environment: `chitty` resolves to a link to the runner's `chitty` (`Path(sys.executable).parent / "chitty"`), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: both resolve into the runner's `.venv/bin`.
+- [ ] Regression tests: the existing `chitty run` tests pass, including `runner chitty executable not found` handling; `make check` passes.
 
 ## History
 
@@ -26,3 +31,5 @@ Suggestion origin: chitty
 - 2026-11-25T22:28:27Z calm-ochre-quail: changed notes
 - 2026-11-25T22:34:11Z calm-ochre-quail: changed title, labels, priority
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-SSVZJ6
+- 2026-11-25T23:48:15Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
+- 2026-11-25T23:48:15Z calm-ochre-quail backlog → planning
