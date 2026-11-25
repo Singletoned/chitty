@@ -34,6 +34,10 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 - [ ] The refused cases in `tests/test_leave_doing_clean.py` pass, and fail with the `store.py` change reverted
 - [ ] Regression tests: the allowed cases, and `test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation` with its fixture fix, pass; `make check` passes
 
+## Notes
+
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-21T07:57:53Z nimble-umber-gannet → backlog
@@ -53,3 +57,4 @@ Tests: CLI examples in a new `tests/test_leave_doing_clean.py`, class inheriting
 - 2026-11-25T21:44:52Z daring-ebony-wren cold-read → planning
 - 2026-11-25T21:44:55Z daring-ebony-wren planning → todo
 - 2026-11-25T21:45:48Z sunny-ebony-stoat todo → doing
+- 2026-11-25T21:47:52Z sunny-ebony-stoat: changed notes
