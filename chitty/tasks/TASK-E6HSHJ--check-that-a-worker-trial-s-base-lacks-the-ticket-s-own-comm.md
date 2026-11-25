@@ -1,6 +1,7 @@
 ---
 title: Check that a worker trial's base lacks the ticket's own commits
 status: backlog
+priority: low
 created: 2026-11-25
 provisional: true
 ---
@@ -17,7 +18,10 @@ Suggested: whatever prepares a trial should start from the commit before the tic
 
 Suggestion origin: chitty-trial-claude-sonnet-task-664
 
+Triage 2026-11-25: `scripts/worker_trial/find_base.sh` already finds the commit before the first `Task: <ID>` commit, and `docs/plan/worker-trials.md` says to pass a fixed base. What is left: the trial setup refusing a base that already holds the ticket's own commit, and resetting criteria and notes.
+
 ## History
 
 - 2026-11-25T22:28:46Z calm-ochre-quail → backlog
 - 2026-11-25T22:28:48Z calm-ochre-quail: changed notes
+- 2026-11-25T22:34:28Z calm-ochre-quail: changed priority, notes
