@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -16,7 +16,7 @@ Cause, in `src/chitty/store.py`: `Repo._branch_tips()` and `Repo._main_tip()` ca
 - `Repo._ref_files` calls `git.files_at(self.root, ref, ...)`.
 - `changed_on_both`, inside `Repo._choose_source`, calls `git.changed_since_split(self.root, ref, main_ref, paths)` and the reverse.
 
-Fix: pass the captured commit IDs instead. In `_ref_files`, read each ref at its commit from `_branch_tips()`, and `main` at `_main_tip()`, keeping the ref name as the dictionary key. In `changed_on_both`, pass `tips[ref]` and `main_tip` in place of `ref` and `main_ref`. Do not change `git.files_at` or `git.changed_since_split` (they accept any commit-ish). Catch no errors and add no fallback to reading by name.
+Fix: pass the captured commit IDs instead. In `_ref_files`, read each ref at its commit from `_branch_tips()`, and `main` at `_main_tip()`, keeping the ref name as the dictionary key. In `changed_on_both`, pass `tips[ref]` and `main_tip` in place of `ref` and `main_ref`. `tips[ref]` is always present: `ticket_source` only chooses refs drawn from `tips`, and `changed_on_both` returns early when `main_tip` is `None`. Do not change `git.files_at` or `git.changed_since_split` (they accept any commit-ish). Catch no errors and add no fallback to reading by name.
 
 A trial of exactly this fix (2026-11-25) broke only `test_ref_reads_once_and_cached` in `tests/test_ticket_ids.py`, which expects `files_at` to get ref names; change it to expect those refs' commit IDs (`git rev-parse <ref>`). An earlier attempt that changed more than this broke 25 tests, so if many tests fail, compare with the two edits above.
 
@@ -24,11 +24,11 @@ Decided: a command uses the refs captured at its start, so a branch deleted duri
 
 Out of scope: `full_ref` mapping, `git.main_files` and `_main_files_for` (`main` is not deleted), `_reject_planning_conflicts` (already reads by commit ID), `src/chitty/run.py`.
 
-Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inheriting `RepoTestCase` from `tests/support.py`, with `examples(...)` from `tests/__init__.py`. Vary a few tickets: whether each is on `main`, whether it has a `task-<n>` branch that changes it or changes something else, whether `main` later changes it too, and what happens to its branch during the command (nothing, deleted, or moved by a new commit). Patch `git.branch_tips` (`unittest.mock.patch.object`) so that, on its first call, it returns the real tips and then applies the deletions and moves. Property: a `Repo` opened under that patch gives the same `ticket_ids()`, and for each ticket the same `source_of`, `source_copy` title, or `ChittyError` text, as a `Repo` opened before the changes. Add `@example`s covering a deleted branch-only ticket, a moved branch, and a ticket changed on both `main` and a deleted branch (this one reaches `changed_since_split`).
+Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inheriting `RepoTestCase` from `tests/support.py`, with `examples(...)` from `tests/__init__.py`. Vary a few tickets: whether each is on `main`, whether it has a `task-<n>` branch that changes it or changes something else, whether `main` later changes it too, and what happens to its branch during the command (nothing, deleted, or moved by a new commit). First compute the expected results with a plain `Repo`: `ticket_ids()`, and for each ticket its `source_of`, `source_copy` title, or `ChittyError` text, stored before anything changes (a `Repo` reads lazily). Then patch `git.branch_tips` (`unittest.mock.patch.object`) with a function that calls the original, saved before patching, and on its first call only applies the deletions (`git update-ref -d refs/heads/task-<n>`, since `git branch -D` refuses a branch checked out elsewhere) and moves before returning. Property: a new `Repo` under that patch gives the expected results. (`_reject_planning_conflicts` calls `git.branch_tips` uncached and sees the changed refs; that does not affect these results.) Add `@example`s covering a deleted branch-only ticket, a moved branch, and a ticket changed on both `main` and a deleted branch (this one reaches `changed_since_split`).
 
 ## Acceptance Criteria
 
-- [ ] The property in `tests/test_ref_snapshot.py`, with its `@example`s, passes and fails on `main`
+- [ ] The property in `tests/test_ref_snapshot.py`, with its `@example`s, passes, and fails with the `store.py` fix reverted
 - [ ] Regression tests: `test_ref_reads_once_and_cached` expects commit IDs and passes; `make check` passes
 
 ## History
@@ -55,3 +55,5 @@ Test: a Hypothesis property in a new `tests/test_ref_snapshot.py`, class inherit
 - 2026-11-25T20:44:32Z golden-coral-stoat: changed notes
 - 2026-11-25T21:15:32Z daring-ebony-wren: replaced notes; changed owner, description, acceptance criteria; wrote the plan
 - 2026-11-25T21:15:32Z daring-ebony-wren planning → cold-read
+- 2026-11-25T21:19:25Z daring-ebony-wren: changed description, acceptance criteria
+- 2026-11-25T21:19:25Z daring-ebony-wren cold-read → planning
