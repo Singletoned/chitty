@@ -1,6 +1,6 @@
 ---
 title: Read a provisional ticket from its own branch when that branch is ahead of main
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -61,3 +61,4 @@ Both added tests were run before the source fix and failed: property counterexam
 - 2026-11-25T10:35:02Z lively-pearl-lapwing todo → doing
 - 2026-11-25T10:38:26Z lively-pearl-lapwing: wrote the plan
 - 2026-11-25T10:41:40Z lively-pearl-lapwing: changed notes
+- 2026-11-25T10:45:21Z lively-pearl-lapwing doing → review
