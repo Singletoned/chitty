@@ -21,3 +21,4 @@ Archived 2026-11-25: folded into TASK-602, whose warnings name other branches th
 - 2026-11-24T22:21:40Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:41Z zesty-coral-newt: changed notes
 - 2026-11-25T20:46:23Z golden-coral-stoat: changed notes
+- 2026-11-25T20:46:32Z golden-coral-stoat backlog → archived
