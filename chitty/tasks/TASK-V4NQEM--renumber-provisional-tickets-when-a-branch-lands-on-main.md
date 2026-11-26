@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets when a branch lands on `main`
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-26
@@ -37,3 +37,4 @@ Plan and hotfix branches landed by hand get the same steps when TASK-340 adds `c
 - 2026-11-26T17:48:35Z calm-ochre-quail backlog → cold-read
 - 2026-11-26T17:49:57Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:49:57Z calm-ochre-quail cold-read → todo
+- 2026-11-26T17:54:27Z youthful-white-puffin todo → doing
