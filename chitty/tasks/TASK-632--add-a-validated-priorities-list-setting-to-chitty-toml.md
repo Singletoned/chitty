@@ -30,6 +30,10 @@ Out of scope: everything that uses the setting (TASK-10037, TASK-10038), and `ch
 - [ ] The default, refusal and line-break property tests in `tests/test_priorities_config.py` pass, and each refusal fails on `main` (record it in a note)
 - [ ] `docs/plan/config.md` has the `priorities` line; `make check` passes
 
+## Plan
+
+Add focused configuration tests first and verify the default and every refusal fail before implementation. Add the default and field validator, document the setting, then format, run make check, and hand off for review.
+
 ## Notes
 
 Split 2026-11-26 at the last worker request: ordering, model and display moved to TASK-10037, write and check validation to TASK-10038.
@@ -82,3 +86,4 @@ Split 2026-11-26 at the last worker request: ordering, model and display moved t
 - 2026-11-26T11:44:51Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T11:44:55Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:15:37Z kind-coral-falcon todo → doing
+- 2026-11-26T13:19:37Z kind-coral-falcon: wrote the plan
