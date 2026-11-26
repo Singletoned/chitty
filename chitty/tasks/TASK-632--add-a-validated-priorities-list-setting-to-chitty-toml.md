@@ -1,6 +1,6 @@
 ---
 title: Add a validated `priorities` list setting to `chitty.toml`
-status: cold-read
+status: planning
 parent: TASK-607
 created: 2026-11-23
 ---
@@ -20,8 +20,8 @@ Docs: in `docs/plan/config.md`, next to the `# job_order` line, add `# prioritie
 Tests, in a new `tests/test_priorities_config.py`, calling `RepoConfig.model_validate` (or `load_repo_config` on a written `chitty.toml`) and asserting each message as a substring of the error:
 
 - The default is `["high", "medium", "", "low"]`.
-- Each of these is refused with its message: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`, `["a\nb", ""]`, `["a\rb", ""]`.
-- Property, with Hypothesis (the repository's property tool, `examples(50)` from `tests/__init__.py`): a name of one to five `string.ascii_letters` with one character from `"\n\r\x0b\x0c\x1c\x1d\x1e\x85  "` inserted at a drawn position gives `[name, ""]`, which is refused with the line-break message.
+- Each of these is refused with its message: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`.
+- Property, with Hypothesis (the repository's property tool, `examples(50)` from `tests/__init__.py`): a name of one to five `string.ascii_letters` with one character from `"\n\r\x0b\x0c\x1c\x1d\x1e\x85  "` inserted at a drawn position gives `[name, ""]`, which is refused with the shared one-line message above. On `main`, `RepoConfig` forbids extra keys, so every refusal fails there with `extra_forbidden` instead of its message, and the default test fails with `AttributeError`.
 
 Out of scope: everything that uses the setting (TASK-10037, TASK-10038), and `chitty init` writing it.
 
@@ -78,3 +78,5 @@ Split 2026-11-26 at the last worker request: ordering, model and display moved t
 - 2026-11-26T11:41:50Z brisk-bronze-adder to-plan → planning
 - 2026-11-26T11:42:12Z brisk-bronze-adder: replaced notes; changed title, labels, owner, description, acceptance criteria; wrote the plan
 - 2026-11-26T11:42:12Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T11:44:51Z brisk-bronze-adder: changed description
+- 2026-11-26T11:44:51Z brisk-bronze-adder cold-read → planning
