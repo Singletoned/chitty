@@ -313,6 +313,10 @@ class Task:
             {"index": index, "checked": c.checked, "text": c.text}
             for index, c in enumerate(self.criteria, start=1)
         ]
+        data["questions"] = [
+            {"index": index, "checked": q.checked, "text": q.text, "answer": q.answer}
+            for index, q in enumerate(self.questions, start=1)
+        ]
         data["plan"] = self.section(PLAN)
         data["notes"] = self.section(NOTES)
         data["summary"] = self.section(SUMMARY)

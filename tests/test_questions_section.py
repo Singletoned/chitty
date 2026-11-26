@@ -1,13 +1,82 @@
+import string
 import unittest
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from chitty import model
 from chitty.ids import TaskId
 from chitty.renumbering import rewrite_task
+from tests import examples
 
 BASE = "---\ntitle: Test\nstatus: todo\ncreated: 2026-01-01\n---\n\n## Description\n\nTest.\n\n"
 
 
+words = st.lists(
+    st.text(alphabet=string.ascii_letters, min_size=1, max_size=12), min_size=1, max_size=3
+).map(" ".join)
+indent = st.sampled_from(("  ", "    ", "\t"))
+
+
+@st.composite
+def question_bodies(draw):
+    count = draw(st.integers(min_value=1, max_value=5))
+    items = []
+    expected = []
+    for index in range(1, count + 1):
+        tick = draw(st.sampled_from((" ", "x", "X")))
+        text = draw(words)
+        lines = [f"- [{tick}] {text}\n"]
+        if draw(st.booleans()):
+            continuation = draw(words)
+            lines.append(f"{draw(indent)}{continuation}\n")
+            text += " " + continuation
+        answer = None
+        if draw(st.booleans()):
+            lines.append("\n" * draw(st.integers(min_value=1, max_value=2)))
+            answer_lines = draw(st.lists(words, min_size=1, max_size=2))
+            for line in answer_lines:
+                lines.append(f"{draw(indent)}{line}\n")
+            answer = " ".join(answer_lines)
+        items.append("".join(lines))
+        expected.append({"index": index, "checked": tick != " ", "text": text, "answer": answer})
+    body = items[0]
+    for item in items[1:]:
+        body += "\n" * draw(st.integers(min_value=1, max_value=2)) + item
+    if draw(st.booleans()):
+        body += "\n"
+    return body, expected
+
+
 class TestQuestionsSection(unittest.TestCase):
+    def test_as_dict(self):
+        text = (
+            BASE + "## Questions\n\n- [x] Which database?\n\n"
+            "  Postgres, because we already run it.\n\n- [ ] Who owns the migration?\n"
+        )
+        self.assertEqual(
+            model.parse(text).as_dict()["questions"],
+            [
+                {
+                    "index": 1,
+                    "checked": True,
+                    "text": "Which database?",
+                    "answer": "Postgres, because we already run it.",
+                },
+                {"index": 2, "checked": False, "text": "Who owns the migration?", "answer": None},
+            ],
+        )
+        self.assertEqual(model.parse(BASE).as_dict()["questions"], [])
+
+    @settings(max_examples=examples(50))
+    @given(question_bodies())
+    def test_generated_questions(self, generated):
+        body, expected = generated
+        text = BASE + "## Questions\n\n" + body
+        task = model.parse(text)
+        self.assertEqual(task.render(), text)
+        self.assertEqual(task.as_dict()["questions"], expected)
+
     def test_items_and_round_trip(self):
         text = BASE + "## Questions\n\n- [x] Which database?\n\n- [ ] Who owns the migration?\n"
         task = model.parse(text)
