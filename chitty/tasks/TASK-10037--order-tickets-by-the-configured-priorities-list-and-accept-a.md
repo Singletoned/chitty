@@ -11,7 +11,7 @@ created: 2026-11-26
 
 ## Description
 
-Part of TASK-607. TASK-632 adds the `priorities` setting to `RepoConfig` (`src/chitty/config.py`), highest first, with `""` placing tickets that have no priority, and default `["high", "medium", "", "low"]`. This ticket makes the model accept any priority name and orders tickets by the configured list. Write and check validation is TASK-PC; until it lands, `chitty add -p` and `chitty edit -p` still accept only the built-in names.
+Part of TASK-607. TASK-632 adds the `priorities` setting to `RepoConfig` (`src/chitty/config.py`), highest first, with `""` placing tickets that have no priority, and default `["high", "medium", "", "low"]`. This ticket makes the model accept any priority name and orders tickets by the configured list. Write and check validation is TASK-10038; until it lands, `chitty add -p` and `chitty edit -p` still accept only the built-in names.
 
 Model (`src/chitty/model.py`): `Frontmatter.priority` becomes `str | None` and refuses an empty string with `priority must not be empty; remove the key instead`. `PRIORITIES` stays, as the built-in names.
 
@@ -33,7 +33,7 @@ Tests, in `tests/test_priorities_config.py` (created by TASK-632), with `RepoTes
 
 Each new test except the property fails on `main`: there, custom names do not parse, and no priority ties `medium`.
 
-Out of scope: refusing unconfigured names on write or in `chitty check`, CLI and MCP option types (TASK-PC), and how custom names display (TASK-633).
+Out of scope: refusing unconfigured names on write or in `chitty check`, CLI and MCP option types (TASK-10038), and how custom names display (TASK-633).
 
 ## Acceptance Criteria
 
@@ -43,3 +43,4 @@ Out of scope: refusing unconfigured names on write or in `chitty check`, CLI and
 ## History
 
 - 2026-11-26T11:40:35Z brisk-bronze-adder → planning
+- 2026-11-26T11:41:17Z brisk-bronze-adder: changed description
