@@ -1,6 +1,6 @@
 ---
 title: Accept any configured priority name in ticket frontmatter
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -41,3 +41,4 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 - 2026-11-26T11:47:55Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T11:48:00Z brisk-bronze-adder: changed description
 - 2026-11-26T11:48:00Z brisk-bronze-adder planning → todo
+- 2026-11-26T14:35:35Z plucky-maroon-urchin todo → doing
