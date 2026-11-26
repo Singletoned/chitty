@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: doing
+status: review
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -122,3 +122,4 @@ Implemented question item parsing, continuations and exact validation errors whi
 - 2026-11-26T13:07:03Z lively-dusky-quail: wrote the plan
 - 2026-11-26T13:07:31Z lively-dusky-quail: changed notes
 - 2026-11-26T13:11:14Z lively-dusky-quail: changed summary
+- 2026-11-26T13:14:22Z lively-dusky-quail doing → review
