@@ -42,6 +42,10 @@ Add a CLI regression test and verify it fails; implement shared configurable ran
 
 Before the fix, the default CLI ordering regression failed: actual high, unset, medium, low; expected high, medium, unset, low.
 
+## Summary
+
+List and next selection now use configured priority order, including unlisted names last. Added CLI regression and independent ordering properties; make check passes.
+
 ## History
 
 - 2026-11-26T11:40:35Z brisk-bronze-adder → planning
@@ -53,3 +57,4 @@ Before the fix, the default CLI ordering regression failed: actual high, unset, 
 - 2026-11-26T14:07:07Z witty-white-kestrel todo → doing
 - 2026-11-26T14:11:14Z witty-white-kestrel: wrote the plan
 - 2026-11-26T14:11:56Z witty-white-kestrel: changed notes
+- 2026-11-26T14:18:43Z witty-white-kestrel: changed summary
