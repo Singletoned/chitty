@@ -44,6 +44,10 @@ Before the fix, the boundary test failed with TypeError and the CLI regression l
 
 Decided: the existing guide-generalness test rejects the required example TASK-4 -> permit the explicit generic example while continuing to reject other ticket IDs, because it is an illustrative foreign citation, not a repository-specific instruction. Initial make check otherwise passed 1247 tests.
 
+## Summary
+
+Foreign-qualified citations are omitted from promotion listings using the local project registry; renumbering remains registry-independent. Added property, boundary and CLI regression coverage and planner guidance. Both bug regressions failed before the fix; make check passes.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
@@ -61,3 +65,4 @@ Decided: the existing guide-generalness test rejects the required example TASK-4
 - 2026-11-26T12:16:43Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:17:15Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:22:10Z vivid-indigo-gannet: changed notes
+- 2026-11-26T12:24:45Z vivid-indigo-gannet: changed summary
