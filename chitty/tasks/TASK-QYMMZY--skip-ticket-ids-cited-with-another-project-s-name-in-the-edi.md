@@ -1,6 +1,6 @@
 ---
 title: Skip ticket IDs cited with another project's name in the `edit -s todo` listing
-status: review
+status: done
 labels:
   - bug
 depends_on:
@@ -44,6 +44,10 @@ Before the fix, the boundary test failed with TypeError and the CLI regression l
 
 Decided: the existing guide-generalness test rejects the required example TASK-4 -> permit the explicit generic example while continuing to reject other ticket IDs, because it is an illustrative foreign citation, not a repository-specific instruction. Initial make check otherwise passed 1247 tests.
 
+Reviewed:
+1: pass - make check passes; property and boundary tests on merge-base with branch tests fail with TypeError for the missing foreign keyword.
+2: pass - make check passes (1250 tests); CLI test on merge-base with branch tests fails because TASK-9 is listed. Existing regression tests pass.
+
 ## Summary
 
 Foreign-qualified citations are omitted from promotion listings using the local project registry; renumbering remains registry-independent. Added property, boundary and CLI regression coverage and planner guidance. Both bug regressions failed before the fix; make check passes.
@@ -67,3 +71,5 @@ Foreign-qualified citations are omitted from promotion listings using the local 
 - 2026-11-26T12:22:10Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:24:45Z vivid-indigo-gannet: changed summary
 - 2026-11-26T12:27:09Z vivid-indigo-gannet doing → review
+- 2026-11-26T12:40:10Z vivid-teal-stoat: changed notes
+- 2026-11-26T12:40:10Z vivid-teal-stoat review → done
