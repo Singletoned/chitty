@@ -1,6 +1,6 @@
 ---
 title: Add a validated `priorities` list setting to `chitty.toml`
-status: todo
+status: doing
 parent: TASK-607
 created: 2026-11-23
 ---
@@ -81,3 +81,4 @@ Split 2026-11-26 at the last worker request: ordering, model and display moved t
 - 2026-11-26T11:44:51Z brisk-bronze-adder: changed description
 - 2026-11-26T11:44:51Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T11:44:55Z brisk-bronze-adder planning → todo
+- 2026-11-26T13:15:37Z kind-coral-falcon todo → doing
