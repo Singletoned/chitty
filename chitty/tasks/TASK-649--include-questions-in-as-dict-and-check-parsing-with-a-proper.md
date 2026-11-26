@@ -37,6 +37,8 @@ Add example and generated round-trip serialization tests, verify both fail on th
 
 Second cold read (2026-11-23): nothing serious. Its baseline point repeats one already settled (the Description names the baseline, and `depends_on: TASK-629` stops early starts); added the word generator for continuation and answer lines, an optional trailing blank line, and tick independence.
 
+Baseline: test_as_dict and test_generated_questions both failed with KeyError: 'questions' before the serialization change.
+
 ## History
 
 - 2026-11-23T19:43:19Z friendly-coral-badger → planning
@@ -50,3 +52,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline point repeats one a
 - 2026-11-26T11:27:40Z brisk-bronze-adder: changed dependencies
 - 2026-11-26T14:22:23Z youthful-yellow-wren todo → doing
 - 2026-11-26T14:26:41Z youthful-yellow-wren: wrote the plan
+- 2026-11-26T14:27:09Z youthful-yellow-wren: changed notes
