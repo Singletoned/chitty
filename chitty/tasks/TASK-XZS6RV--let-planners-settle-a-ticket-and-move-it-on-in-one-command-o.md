@@ -1,6 +1,6 @@
 ---
 title: Let planners settle a ticket and move it on in one command, or guide them to chain steps
-status: backlog
+status: to-plan
 created: 2026-11-26
 provisional: true
 ---
@@ -20,7 +20,11 @@ Options:
 
 Suggestion origin: chitty
 
+Decided (the person, 2026-11-26): edit -s todo and -s cold-read run the per-ticket checks of chitty check and refuse on errors; the plan guide also says to chain dependent Chitty commands with &&.
+
 ## History
 
 - 2026-11-26T10:54:53Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:57Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:16Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:16Z calm-ochre-quail backlog → to-plan
