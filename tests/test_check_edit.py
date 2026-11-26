@@ -36,6 +36,32 @@ def tasks(draw, statuses=STATUSES):
 
 
 class TestCheckEdit(unittest.TestCase):
+    @given(
+        TEXT.filter(lambda value: value != "human"),
+        TEXT,
+        st.sampled_from(("planning", "backlog", "todo")),
+        st.booleans(),
+    )
+    def test_planning_claim(self, claimant, other, status, releasing):
+        from chitty.model import claim_refusal
+
+        if other in (claimant, "human"):
+            other = claimant + "other"
+        task = make_task(status, [], None, [])
+        unclaimed = task.with_history(datetime(2026, 1, 1, tzinfo=UTC), claimant, "todo", "doing")
+        claimed = unclaimed.with_history(
+            datetime(2026, 1, 1, tzinfo=UTC), claimant, "backlog", "planning"
+        )
+        for actor in (claimant, other, "human"):
+            self.assertIsNone(claim_refusal("TASK-1", unclaimed, actor, releasing))
+            result = claim_refusal("TASK-1", claimed, actor, releasing)
+            if status == "planning" and actor == other and not releasing:
+                self.assertIsNotNone(result)
+                assert result is not None
+                self.assertIn(f"being planned by {claimant}", result)
+            else:
+                self.assertIsNone(result)
+
     @given(tasks(statuses=st.just("todo")))
     def test_claim_edit_is_accepted_for_every_todo_task(self, task):
         self.assertEqual(check_edit(task, claim_edit(), "fresh-reviewer").status, "doing")

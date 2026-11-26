@@ -599,6 +599,21 @@ class Task:
 # -- parsing --------------------------------------------------------------
 
 
+def claim_refusal(task_id: str, task: Task, actor: str, releasing: bool) -> str | None:
+    """Explain a conflicting planning claim, if this write is not permitted."""
+    if task.frontmatter.status != "planning" or actor == "human" or releasing:
+        return None
+    for _, claimant, _, status in reversed(task.attributed_transitions()):
+        if status == "planning":
+            if claimant != actor:
+                return (
+                    f"{task_id} is being planned by {claimant}; leave it alone, or release it "
+                    f"with `chitty edit {task_id} -s to-plan --note <reason>`"
+                )
+            break
+    return None
+
+
 def parse(text: str) -> Task:
     """Parse task text, preserving its layout and section order.
 

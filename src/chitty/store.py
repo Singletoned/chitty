@@ -47,6 +47,7 @@ from chitty.model import (
     FieldValue,
     Task,
     TaskError,
+    claim_refusal,
     new_task,
     parse,
 )
@@ -1032,6 +1033,11 @@ class Repo:
 
     def _edit_stored(self, stored: StoredTask, edit: Edit) -> Change:
         task_id = stored.id
+        releasing = edit.status == "to-plan" and any(
+            note and note.strip() for note in (edit.note, *edit.notes)
+        )
+        if refusal := claim_refusal(str(task_id), stored.task, actor(), releasing):
+            raise ChittyError(refusal)
         if stored.context not in self.config.contexts:
             raise ChittyError(f"cannot write ticket in unconfigured context {stored.context!r}")
         previous_status = stored.task.frontmatter.status
@@ -1473,6 +1479,8 @@ class Repo:
         """Give a task the next ID in another context and rewrite references to it."""
         self._prepare_write()
         stored = self.find(task_id)
+        if refusal := claim_refusal(str(stored.id), stored.task, actor(), False):
+            raise ChittyError(refusal)
         self._require_current_version(stored)
         if target.name == stored.context:
             raise ChittyError(f"{task_id} is already in context {target.name!r}")
@@ -1624,6 +1632,8 @@ class Repo:
 
     def _set_archived(self, stored: StoredTask, archived: bool) -> Change:
         task_id = stored.id
+        if refusal := claim_refusal(str(task_id), stored.task, actor(), False):
+            raise ChittyError(refusal)
         if stored.archived == archived:
             state = "archived" if archived else "not archived"
             raise ChittyError(f"{task_id} is already {state}")

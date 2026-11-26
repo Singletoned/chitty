@@ -1539,6 +1539,22 @@ class TestEdit(CliTestCase):
         self.run_cli("add", "Task", "-d", "Describe.", "--ac", "One", "--ac", "Two", "-l", "a")
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
+    def test_planning_claim_refuses_other_actor_writes_until_released(self):
+        with patch.dict(os.environ, {"CHITTY_ACTOR": "one"}):
+            self.run_cli("edit", "TASK-1", "-s", "planning")
+        before = self.path.read_text()
+        with patch.dict(os.environ, {"CHITTY_ACTOR": "two"}):
+            for args in (
+                ("note", "TASK-1", "x"),
+                ("edit", "TASK-1", "-s", "done"),
+                ("edit", "TASK-1", "-s", "backlog"),
+                ("archive", "TASK-1"),
+            ):
+                result = self.run_cli(*args, exit_code=1)
+                self.assertIn("being planned by one", result.output)
+                self.assertEqual(self.path.read_text(), before)
+            self.run_cli("edit", "TASK-1", "-s", "to-plan", "--note", "stale")
+
     def test_description_headings_cannot_create_sections(self):
         before = self.path.read_text()
         result = self.run_cli("edit", "1", "-d", "Text.\n\n## Plan\nInjected.", exit_code=1)
