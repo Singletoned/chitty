@@ -1,6 +1,6 @@
 ---
 title: Make `make check` sync this worktree's own venv and refuse a symlinked one
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-21
@@ -62,3 +62,4 @@ Before the fix, the scratch symlink check ran uv and changed the linked venv lis
 - 2026-11-26T18:42:02Z mellow-silver-eel: wrote the plan
 - 2026-11-26T18:49:59Z mellow-silver-eel: changed notes
 - 2026-11-26T19:00:02Z mellow-silver-eel: changed summary
+- 2026-11-26T19:05:05Z mellow-silver-eel doing → review
