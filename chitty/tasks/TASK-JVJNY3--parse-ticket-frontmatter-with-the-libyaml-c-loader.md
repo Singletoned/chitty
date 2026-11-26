@@ -1,6 +1,6 @@
 ---
 title: Parse ticket frontmatter with the libyaml C loader
-status: doing
+status: review
 priority: high
 created: 2026-11-26
 provisional: true
@@ -46,3 +46,4 @@ Uses the libyaml safe loader when available, retaining string-only resolution an
 - 2026-11-26T23:19:47Z nimble-violet-crane: changed notes
 - 2026-11-26T23:23:59Z nimble-violet-crane: changed notes
 - 2026-11-26T23:28:20Z nimble-violet-crane: changed summary
+- 2026-11-26T23:30:56Z nimble-violet-crane doing → review
