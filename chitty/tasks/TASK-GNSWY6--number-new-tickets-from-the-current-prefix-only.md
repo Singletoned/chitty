@@ -1,8 +1,6 @@
 ---
 title: Number new tickets from the current prefix only
-status: cold-read
-depends_on:
-  - TASK-MQ87S9
+status: todo
 parent: TASK-W74AVC
 created: 2026-11-26
 provisional: true
@@ -20,13 +18,15 @@ In `_used_numbers`, count only files whose ID prefix is the context's current `p
 
 ### Out of scope
 
-Reading old-prefix tickets (sibling ticket); random-ID contexts.
+Reading old-prefix tickets (sibling ticket). The filter applies to random-ID contexts too, which is correct: a random ID collides only on its full prefix and number.
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_old_prefixes.py` (no Git is needed), with tickets `TASK-1` to `TASK-3` and the `tasks` context then changed to `prefix = "TK"` and `old_prefixes = ["TASK"]`: `chitty add New -d Text.` creates `TK-1`, and a second add creates `TK-2`. Fails without the change (today `TK-4`).
-- [ ] In `tests/test_renumber_provisional.py`, on `main` with the same setup and one provisional `TK-` ticket (`provisional: true` written into its file directly), bare `chitty renumber` gives it `TK-1`. Fails without the change. Regression tests: the existing numbering and renumbering tests pass. `make check` passes.
+- [ ] In `tests/test_old_prefixes.py` (create it or add to it; no Git is needed), with tickets `TASK-1` to `TASK-3` and the `tasks` context then changed in `chitty.toml` to `prefix = "TK"` (no `old_prefixes` needed): `chitty add New -d Text.` creates `TK-1`, and a second add creates `TK-2`. Fails without the change (today `TK-4`).
+- [ ] In `tests/test_renumber_provisional.py`, outside Git with the same setup and one provisional ticket file `TK-AAAAAA--alpha.md` (`provisional: true`, as `TestRenumberOutsideGit.setUp` writes `TASK-AAAAAA`), bare `chitty renumber` gives it `TK-1`. Fails without the change. Regression tests: the existing numbering and renumbering tests pass. `make check` passes.
 
 ## History
 
 - 2026-11-26T17:52:22Z calm-ochre-quail → cold-read
+- 2026-11-26T17:54:10Z calm-ochre-quail: changed dependencies, description, acceptance criteria
+- 2026-11-26T17:54:10Z calm-ochre-quail cold-read → todo
