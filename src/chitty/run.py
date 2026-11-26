@@ -1506,6 +1506,7 @@ def _run_check(
 ) -> RunResult | None:
     """Validate the prepared worktree before spending an agent or review session."""
     print(f"{action.id}: running check in {display_path(branch_repo.root, main_root)}...", file=sys.stderr)
+    uncommitted = git.uncommitted_paths(branch_repo.root)
     try:
         returncode = run_logged("check", command, branch_repo.root, timeout)
     except CommandTimedOut as error:
@@ -1522,7 +1523,10 @@ def _run_check(
     if returncode == 0:
         return None
     detail = f"check exited with status {returncode}; output in `.chitty/check.log`"
-    if (
+    if uncommitted:
+        listed = ", ".join(f"`{path}`" for path in uncommitted)
+        detail += f"; the worktree had uncommitted changes before the check: {listed}"
+    elif (
         action.mode == "work"
         and selected_status == "todo"
         and not _branch_has_work(branch_repo.root, branch_repo.config.main_branch)

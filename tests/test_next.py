@@ -1405,6 +1405,22 @@ class TestNext(CliTestCase):
         changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
         self.assertEqual(changed_paths, [relative_ticket_path])
 
+    def test_run_check_failure_names_uncommitted_worktree_changes(self):
+        self.write_failing_checker()
+        self.commit_ticket("Todo", "todo")
+        self.git("worktree", "add", "-b", "task-1", ".worktrees/task-1", "main")
+        (self.root / ".worktrees/task-1/left.py").write_text("unfinished = True\n")
+
+        self.run_cli("run")
+
+        repo = Repo.open(self.root)
+        task = repo.find(repo.resolve("TASK-1")).task
+        self.assertEqual(task.frontmatter.status, "error")
+        notes = task.section("Notes") or ""
+        self.assertIn("uncommitted changes", notes)
+        self.assertIn("`left.py`", notes)
+        self.assertNotIn("no work yet", notes)
+
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
         checker = self.root / "check.py"
