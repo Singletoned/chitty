@@ -1,6 +1,8 @@
 ---
 title: Mentions of another repository's ticket IDs are listed as this repository's tickets
 status: backlog
+labels:
+  - bug
 created: 2026-11-26
 provisional: true
 ---
@@ -15,7 +17,10 @@ Suggest one rule for "is this a reference to a ticket here": skip an ID preceded
 
 Suggestion origin: chitty
 
+Same root cause as TASK-YST8KG (every mention counts as a local ticket); plan the two together.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:47Z calm-ochre-quail: changed notes
+- 2026-11-26T10:56:51Z calm-ochre-quail: changed labels, notes
