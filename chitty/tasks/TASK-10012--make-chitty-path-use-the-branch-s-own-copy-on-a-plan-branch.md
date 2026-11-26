@@ -1,6 +1,6 @@
 ---
 title: Make `chitty path` use the branch's own copy on a `plan/` branch, as `show` does
-status: cold-read
+status: planning
 labels:
   - bug
 depends_on:
@@ -35,3 +35,4 @@ Out of scope: ticket branches (TASK-10040 changes `find_for_show` there, and `pa
 - 2026-11-26T18:08:00Z brisk-bronze-adder backlog → planning
 - 2026-11-26T18:08:04Z brisk-bronze-adder: replaced notes; changed title, description, acceptance criteria
 - 2026-11-26T18:08:04Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T18:09:17Z brisk-bronze-adder cold-read → planning
