@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` without erroring the ticket when `main` fails its check
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -39,3 +39,4 @@ Rerunning a flaky check (TASK-496); timeouts, missing check commands, review tic
 - 2026-11-26T11:19:32Z calm-ochre-quail to-plan → cold-read
 - 2026-11-26T11:21:11Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:21:11Z calm-ochre-quail cold-read → todo
+- 2026-11-26T12:47:15Z friendly-white-raven todo → doing
