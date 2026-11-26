@@ -1,6 +1,6 @@
 ---
 title: Renumber any ticket to the next number and rewrite references to it
-status: todo
+status: doing
 labels:
   - bug
 depends_on:
@@ -43,3 +43,4 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 - 2026-11-26T11:20:52Z calm-ochre-quail: changed acceptance criteria
 - 2026-11-26T11:22:30Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:22:30Z calm-ochre-quail cold-read → todo
+- 2026-11-26T11:55:31Z zesty-zinc-puffin todo → doing
