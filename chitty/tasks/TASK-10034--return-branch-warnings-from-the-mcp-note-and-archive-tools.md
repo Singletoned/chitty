@@ -1,6 +1,6 @@
 ---
 title: Return branch warnings from the MCP `note` and `archive` tools
-status: cold-read
+status: planning
 depends_on:
   - TASK-602
   - TASK-10040
@@ -30,3 +30,4 @@ Test, in `tests/test_planning_worktrees.py`, reusing `test_main_conflict`'s setu
 - 2026-11-26T18:13:23Z brisk-bronze-adder backlog → planning
 - 2026-11-26T18:13:55Z brisk-bronze-adder: replaced notes; changed title, dependencies, description, acceptance criteria
 - 2026-11-26T18:13:55Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T18:16:25Z brisk-bronze-adder cold-read → planning
