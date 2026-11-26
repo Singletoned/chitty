@@ -235,7 +235,11 @@ def edit(
         summary=summary,
         override_review_independence=override_review_independence,
     )
-    return repo.edit_current(repo.resolve(id), changes)[0].task.as_dict()
+    change = repo.edit_current(repo.resolve(id), changes)[0]
+    result = change.task.as_dict()
+    if change.warnings:
+        result["warnings"] = list(change.warnings)
+    return result
 
 
 @_tool("note", "Append text as a paragraph to a task's Notes section.")

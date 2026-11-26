@@ -183,6 +183,7 @@ class Change:
     tasks: tuple[StoredTask, ...]
     actor: str | None = None
     previous_status: str | None = None
+    warnings: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -1633,10 +1634,16 @@ class Repo:
         if not change.paths:
             return change
         existing = [path for path in change.paths if path.exists()]
-        if self.config.autoformat or self.config.autocommit:
+        status = change.task.task.frontmatter.status
+        checked_move = (
+            change.previous_status is not None
+            and change.previous_status != status
+            and status in {"cold-read", "todo"}
+        )
+        if self.config.autoformat or self.config.autocommit or checked_move:
             # check imports store for scan and domain types, so this intentional
             # local import keeps the dependency one-directional at module load.
-            from chitty.check import errors, fix
+            from chitty.check import check, errors, fix
 
             directories = tuple(context.directory.resolve() for context in self.contexts())
             task_paths = [
@@ -1647,12 +1654,19 @@ class Repo:
             # The task file is temporarily dirty until its autocommit below;
             # validate content here, but leave worktree cleanliness to `chitty check`.
             if task_paths:
-                _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
+                if self.config.autoformat or self.config.autocommit:
+                    _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
+                else:
+                    problems = check(self, self.contexts(), task_paths, include_worktree_state=False)
                 if blocking := errors(problems):
                     details = "\n".join(str(problem) for problem in blocking)
                     raise ChittyError(
                         f"cannot finalize task write with unresolved problems:\n{details}"
                     )
+                if checked_move:
+                    change = replace(change, warnings=tuple(
+                        str(problem) for problem in problems if problem.severity != "error"
+                    ))
         if self.config.autoformat:
             formatter.run(self.root, self.config.autoformat, existing)
         if self.config.autocommit:

@@ -881,6 +881,9 @@ def edit(
                 os.environ["CHITTY_ACTOR"] = previous_actor
     escalated = status in {"doing", "to-plan"} and change.task.task.frontmatter.status == "blocked"
     _report(change, as_json, "escalated to human review" if escalated else "updated")
+    if not as_json:
+        for warning in change.warnings:
+            click.echo(warning)
     if (
         not as_json
         and change.previous_status != "todo"

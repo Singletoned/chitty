@@ -37,8 +37,8 @@ guide or prompt text says what it cuts to make room, or why they should grow.
 - Cold-read every ticket. If a change is too small to justify a ticket and cold
   read, do it directly (e.g. on a `hotfix/` branch) rather than ticketing it.
 - Plan one ticket at a time. Check every claim about code, commands, tests, or
-  other tickets against the source as you write it, and run `chitty check` on
-  the ticket file before starting a reader.
+  other tickets against the source as you write it; moving a ticket to `cold-read`
+  or `todo` shows its `chitty check` warnings.
 - Start a fresh cheap-model reader with `chitty guide cold-read <ID>`, naming
   what you doubt.
 - Cap cold reads at **1–2 rounds**: one read is enough if it finds no real

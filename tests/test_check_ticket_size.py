@@ -123,7 +123,8 @@ class TestTicketSizeWarnings(RepoTestCase):
         reads = [p for p in warnings if "cold reads;" in p.message]
         self.assertEqual(
             bool(spec),
-            status in {"to-plan", "planning", "todo"} and description_words + criterion_words > 500,
+            status in {"to-plan", "planning", "cold-read", "todo"}
+            and description_words + criterion_words > 500,
         )
         self.assertEqual(bool(notes), status == "todo" and notes_words > 200)
         self.assertEqual(

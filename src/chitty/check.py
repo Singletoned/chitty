@@ -236,7 +236,7 @@ def check(
                         problems.append(Problem(path, f"priority {priority!r} is not configured"))
                     problems += _markdown_warnings(path, task)
                     if (
-                        task.frontmatter.status in {"to-plan", "planning", "todo"}
+                        task.frontmatter.status in {"to-plan", "planning", "cold-read", "todo"}
                         and len(task.criteria) > MAX_CRITERIA
                     ):
                         problems.append(
@@ -251,7 +251,7 @@ def check(
                     spec_words = len((task.section("Description") or "").split()) + sum(
                         len(criterion.text.split()) for criterion in task.criteria
                     )
-                    if status in {"to-plan", "planning", "todo"} and spec_words > MAX_SPEC_WORDS:
+                    if status in {"to-plan", "planning", "cold-read", "todo"} and spec_words > MAX_SPEC_WORDS:
                         problems.append(Problem(
                             path, f"specification has {spec_words} words; simplify or split "
                             f"tickets above {MAX_SPEC_WORDS} words", "warning"

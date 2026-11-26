@@ -99,10 +99,10 @@ asking the first. And a human can read it quickly without wading through history
   makes no branch, ref or commit and leaves `git status` unchanged, but may
   write throwaway probes outside the checkout when faster than reading.
 - The planner checks each claim about code, commands and tests against the
-  source as it writes it, runs `chitty check` before starting a reader, and
-  plans one ticket at a time. A criterion may mark tests that pin kept behaviour
-  after `Regression tests:`, which must pass and need not fail without the
-  change.
+  source as it writes it, and plans one ticket at a time. Moving to `cold-read`
+  or `todo` checks the ticket and shows warnings. A criterion may mark tests
+  that pin kept behaviour after `Regression tests:`, which must pass and need
+  not fail without the change.
 - **Dropped on 2026-11-25** (after `echonomicon` `TASK-133` grew to 2,080 words
   over 9 cold reads for 30 lines of code, and `TASK-213` bounced 4 times over
   prose edits):
