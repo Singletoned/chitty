@@ -28,8 +28,8 @@ Tests:
 
 ## Acceptance Criteria
 
-- [ ] The property test on `claim_refusal` and the CLI example pass, and each fails before the change
-- [ ] `make check` passes
+- [x] The property test on `claim_refusal` and the CLI example pass, and each fails before the change
+- [x] `make check` passes
 
 ## Plan
 
@@ -38,6 +38,10 @@ Add failing property and CLI tests for planning claims, implement the pure claim
 ## Notes
 
 Before the fix, the property failed because claim_refusal did not exist and the CLI test failed because another actor could add a note.
+
+## Summary
+
+Added a pure planning-claim rule and enforced it for edits, moves, archives and restores. Property and CLI tests failed before the fix and pass afterward; make check passes.
 
 ## History
 
@@ -52,3 +56,4 @@ Before the fix, the property failed because claim_refusal did not exist and the 
 - 2026-11-26T02:18:50Z sunny-umber-jay todo → doing
 - 2026-11-26T02:21:31Z sunny-umber-jay: wrote the plan
 - 2026-11-26T02:22:01Z sunny-umber-jay: changed notes
+- 2026-11-26T02:25:03Z sunny-umber-jay: changed summary; ticked acceptance criteria
