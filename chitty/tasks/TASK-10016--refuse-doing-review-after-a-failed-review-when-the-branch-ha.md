@@ -1,6 +1,6 @@
 ---
 title: Refuse `doing -> review` after a failed review when the branch has no new code commit
-status: doing
+status: review
 priority: medium
 created: 2026-11-25
 moved_from: TASK-QD8H6G
@@ -53,3 +53,4 @@ Reject repeat review on the ticket branch unless a non-bookkeeping branch commit
 - 2026-11-26T01:30:38Z rosy-jade-marten: changed notes
 - 2026-11-26T01:31:02Z rosy-jade-marten: changed notes
 - 2026-11-26T01:37:52Z rosy-jade-marten: changed summary
+- 2026-11-26T01:40:14Z rosy-jade-marten doing → review
