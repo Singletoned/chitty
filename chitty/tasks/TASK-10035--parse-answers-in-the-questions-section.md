@@ -46,6 +46,10 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 - [ ] The answer, refusal, formatter and renumbering tests pass; each answer and refusal test fails before the change, with the failure recorded in a note
 - [ ] `make check` passes
 
+## Plan
+
+Add focused parsing, refusal, round-trip, formatter and renumbering tests; record their failures before implementing answer-paragraph tracking in the questions parser. Format, run make check, and hand off for review.
+
 ## History
 
 - 2026-11-26T11:27:21Z brisk-bronze-adder → planning
@@ -55,3 +59,4 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 - 2026-11-26T11:30:04Z brisk-bronze-adder planning → todo
 - 2026-11-26T11:30:23Z brisk-bronze-adder: changed description
 - 2026-11-26T13:54:31Z upbeat-zinc-wren todo → doing
+- 2026-11-26T13:58:30Z upbeat-zinc-wren: wrote the plan
