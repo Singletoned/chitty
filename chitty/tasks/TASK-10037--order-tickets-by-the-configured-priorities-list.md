@@ -1,6 +1,6 @@
 ---
 title: Order tickets by the configured `priorities` list
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -58,3 +58,4 @@ List and next selection now use configured priority order, including unlisted na
 - 2026-11-26T14:11:14Z witty-white-kestrel: wrote the plan
 - 2026-11-26T14:11:56Z witty-white-kestrel: changed notes
 - 2026-11-26T14:18:43Z witty-white-kestrel: changed summary
+- 2026-11-26T14:21:09Z witty-white-kestrel doing → review
