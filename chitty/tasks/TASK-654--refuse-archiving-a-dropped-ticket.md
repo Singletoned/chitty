@@ -1,6 +1,6 @@
 ---
 title: Refuse archiving a `dropped` ticket
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-599
@@ -37,3 +37,4 @@ Out of scope: `chitty edit` rules for dropping (`TASK-652`), `chitty add` (`TASK
 - 2026-11-26T19:01:13Z zesty-ginger-newt planning → cold-read
 - 2026-11-26T19:05:32Z zesty-ginger-newt: changed description
 - 2026-11-26T19:05:32Z zesty-ginger-newt cold-read → planning
+- 2026-11-26T19:05:43Z zesty-ginger-newt planning → todo
