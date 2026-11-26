@@ -1,6 +1,8 @@
 ---
 title: make check fails with misleading pyright errors when a worktree .venv is stale
 status: backlog
+labels:
+  - bug
 created: 2026-11-26
 provisional: true
 ---
@@ -13,7 +15,10 @@ Seen 2026-11-26 in `.worktrees/task-10033`: a `.venv` created earlier had an old
 
 Suggestion origin: chitty
 
+Related: TASK-500 (a worktree whose `.venv` is a symlink to the main checkout's). Syncing dependencies in `make check` must not repoint a shared venv, so the two fixes should be decided together.
+
 ## History
 
 - 2026-11-26T18:06:07Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:09Z calm-ochre-quail: changed notes
+- 2026-11-26T18:07:25Z calm-ochre-quail: changed labels, notes
