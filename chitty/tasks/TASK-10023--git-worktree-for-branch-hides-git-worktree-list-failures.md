@@ -29,6 +29,10 @@ Inspect all callers, add a failing non-repository example, propagate the Git err
 
 The new non-repository test failed before the fix with ChittyError not raised, then passed. Checked all six call sites: runner roots are Git checkouts; store calls only reach branch lookup after discovering a Git branch. None needs a fallback.
 
+## Summary
+
+Git worktree listing failures now propagate instead of appearing as a missing worktree. Added a non-repository regression test; make check passes.
+
 ## History
 
 - 2026-11-25T22:28:20Z calm-ochre-quail → backlog
@@ -42,3 +46,4 @@ The new non-repository test failed before the fix with ChittyError not raised, t
 - 2026-11-26T00:51:53Z youthful-amber-falcon todo → doing
 - 2026-11-26T00:56:02Z youthful-amber-falcon: wrote the plan
 - 2026-11-26T00:56:23Z youthful-amber-falcon: changed notes
+- 2026-11-26T00:59:50Z youthful-amber-falcon: changed summary
