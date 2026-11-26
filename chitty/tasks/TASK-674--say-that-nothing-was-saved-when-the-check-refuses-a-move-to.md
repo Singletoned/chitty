@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: planning
+status: to-plan
 labels:
   - bug
 created: 2026-11-24
@@ -43,6 +43,8 @@ Suggestion origin: chitty
 
 Implementation cannot proceed safely because the prior session overwrote `src/chitty/store.py` with an empty file. Restoring the committed version removes that accidental damage, but loses the unfinished implementation. No ticket defect is evident; decision needed: confirm the restored baseline and resume implementation in a fresh session, or provide recovery guidance if there were intended uncommitted changes. No tests were run.
 
+Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
+
 ## History
 
 - 2026-11-24T22:21:37Z zesty-coral-newt → backlog
@@ -63,3 +65,5 @@ Implementation cannot proceed safely because the prior session overwrote `src/ch
 - 2026-11-24T23:25:25Z calm-white-raven: wrote the plan
 - 2026-11-24T23:25:59Z calm-white-raven: changed owner, notes
 - 2026-11-24T23:25:59Z calm-white-raven doing → planning
+- 2026-11-26T11:36:50Z brisk-bronze-adder: changed notes
+- 2026-11-26T11:36:50Z brisk-bronze-adder planning → to-plan
