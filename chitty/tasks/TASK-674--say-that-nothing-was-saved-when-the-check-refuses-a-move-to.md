@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-24
@@ -30,8 +30,8 @@ Saving any part of a refused edit; running `setup` automatically; refusals outsi
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
-- [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
+- [x] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
+- [x] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
 ## Plan
 
@@ -42,6 +42,10 @@ Add focused refusal tests and confirm they fail; wrap review gate errors with th
 Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/store.py` by accident; this worktree is clean at the committed version, so start from it. No ticket defect was found.
 
 Before the fix, all seven focused refusal tests failed because the unsaved-edit sentence was absent.
+
+Reviewed: Review gate errors preserve the original message and explain that the edit was not saved; setup guidance is limited to failed checks.
+1: pass - make check passed; the seven focused tests applied to the merge base failed with the missing unsaved-edit sentence, including both review transitions.
+2: pass - make check passed; the focused tests cover setup present and absent and other refusal types. Disabling the setup hint in a temporary worktree made test_failure fail on the missing hint.
 
 ## Summary
 
@@ -77,3 +81,5 @@ Review gate refusals now say the edit was not saved; failed checks also suggest 
 - 2026-11-26T11:46:52Z plucky-bronze-quail: changed notes
 - 2026-11-26T11:51:13Z plucky-bronze-quail: changed summary
 - 2026-11-26T11:54:14Z plucky-bronze-quail doing → review
+- 2026-11-26T12:01:51Z mellow-yellow-urchin: changed notes; ticked acceptance criteria
+- 2026-11-26T12:01:51Z mellow-yellow-urchin review → done
