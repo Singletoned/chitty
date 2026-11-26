@@ -40,6 +40,10 @@ Split 2026-11-26 at the last worker request: ordering, model and display moved t
 
 Before implementation, .venv/bin/pytest -q tests/test_priorities_config.py failed all six tests: default raised AttributeError and each refusal, including the line-break property, reported extra_forbidden rather than the requested message.
 
+## Summary
+
+Added the priorities configuration default and validation, documented the setting, and verified all requested tests fail before the implementation and pass with make check.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -90,3 +94,4 @@ Before implementation, .venv/bin/pytest -q tests/test_priorities_config.py faile
 - 2026-11-26T13:15:37Z kind-coral-falcon todo → doing
 - 2026-11-26T13:19:37Z kind-coral-falcon: wrote the plan
 - 2026-11-26T13:20:04Z kind-coral-falcon: changed notes
+- 2026-11-26T13:24:21Z kind-coral-falcon: changed summary
