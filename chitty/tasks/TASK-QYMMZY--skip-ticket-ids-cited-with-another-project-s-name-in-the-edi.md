@@ -32,6 +32,10 @@ Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TA
 - [ ] In `tests/test_promote_references.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) builds text from the same parts and `SEPARATORS` as the existing tests, putting a foreign name (drawn to match `PROJECT_NAME_RE` in `src/chitty/config.py`, in any case), then one space and optionally a backtick, before some of the references. `ticket_references(text, PREFIXES, foreign=names)` returns exactly the other references, in order and without repeats; with `foreign=()` it returns what it returns today. A fixed case: with `foreign=("other",)`, `x_other TASK-9` still returns `TASK-9`. Fails without the change (by `TypeError` today, since the keyword does not exist).
 - [ ] A new test in `tests/test_promote_references_cli.py`, which alone registers `other` with `register_project("other", <a temporary directory>)`, replaces `TASK-1`'s Description from `setUp` with ``See other `TASK-9` and TASK-2.`` and its criterion with `Done.`, then runs `chitty edit TASK-1 -s todo`: the output lists `TASK-2 doing Second task` and has no line for `TASK-9`. Fails without the change. Regression tests: the existing tests in both files pass unchanged apart from `foreign=()`. `make check` passes.
 
+## Plan
+
+Add property and CLI regression tests, verify they fail, then filter foreign-qualified references only in the planner listing; preserve deterministic renumbering and update planner guidance.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
@@ -45,3 +49,4 @@ Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TA
 - 2026-11-26T11:19:56Z calm-ochre-quail: changed dependencies, description, acceptance criteria
 - 2026-11-26T11:19:56Z calm-ochre-quail cold-read → todo
 - 2026-11-26T12:12:20Z vivid-indigo-gannet todo → doing
+- 2026-11-26T12:16:09Z vivid-indigo-gannet: wrote the plan
