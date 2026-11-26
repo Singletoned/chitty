@@ -34,6 +34,10 @@ The cold-read guide's handling of `depends_on` (TASK-661), and making `edit -s t
 
 Update two bullets in `src/chitty/roles/plan.md`: allow `todo` with `depends_on` alone when the dependency pins the contract (returning to `to-plan` with a note only while vague, consistent with `TASK-10029`/`TASK-10032`/`TASK-10033`), and add chaining dependent Chitty commands with `&&` after the status-in-same-edit sentence. Keep wording concise and general, and verify with `make check` via `chitty edit -s review`.
 
+## Notes
+
+Decided: "Keep it in `planning`" in the ticket draft -> "return it to `to-plan`", because `TASK-10029` and `TASK-10032` (now on `main`) made `planning` an exclusive planner claim and `to-plan` the waiting status, matching `TASK-10033`. Note that `TASK-10033` (also in review) edits the same two bullets in `src/chitty/roles/plan.md`.
+
 ## History
 
 - 2026-11-26T10:54:38Z calm-ochre-quail → backlog
@@ -45,3 +49,4 @@ Update two bullets in `src/chitty/roles/plan.md`: allow `todo` with `depends_on`
 - 2026-11-26T11:12:45Z calm-ochre-quail: changed description
 - 2026-11-26T18:18:04Z calm-russet-badger: wrote the plan
 - 2026-11-26T18:18:04Z calm-russet-badger todo → doing
+- 2026-11-26T18:22:34Z calm-russet-badger: changed notes
