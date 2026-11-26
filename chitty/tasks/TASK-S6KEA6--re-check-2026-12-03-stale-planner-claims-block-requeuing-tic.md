@@ -1,5 +1,5 @@
 ---
-title: Stale planner claims block requeuing tickets that workers handed back
+title: "Re-check 2026-12-03: stale planner claims block requeuing tickets that workers handed back"
 status: backlog
 labels:
   - bug
@@ -25,3 +25,4 @@ Decided (the person, 2026-11-26): wait and see; probably a glitch from the move 
 - 2026-11-26T18:06:14Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:28Z calm-ochre-quail: changed labels, notes
 - 2026-11-26T18:17:06Z calm-ochre-quail: changed notes
+- 2026-11-26T18:17:35Z calm-ochre-quail: changed title
