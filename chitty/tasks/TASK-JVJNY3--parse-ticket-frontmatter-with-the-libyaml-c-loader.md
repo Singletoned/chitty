@@ -1,6 +1,6 @@
 ---
 title: Parse ticket frontmatter with the libyaml C loader
-status: todo
+status: doing
 priority: high
 created: 2026-11-26
 provisional: true
@@ -27,3 +27,4 @@ Out of scope: the rest of `parse` (pydantic validation, sections, history).
 - 2026-11-26T21:56:05Z youthful-lilac-heron → cold-read
 - 2026-11-26T22:00:03Z youthful-lilac-heron: changed description, acceptance criteria
 - 2026-11-26T22:01:16Z youthful-lilac-heron cold-read → todo
+- 2026-11-26T23:15:17Z nimble-violet-crane todo → doing
