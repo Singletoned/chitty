@@ -47,6 +47,8 @@ Add a pure, sorted warning builder in config and emit its results after init; fi
 
 Requeued 2026-11-26: the last worker returned it over tool failures, not a ticket defect. Ideas from TASK-659 not in scope here: runner error detail for agents that exit within seconds (compare TASK-466, TASK-445), and the repeated re-run `chitty init` warning after an upgrade.
 
+Before implementation, both new tests failed: the property found commands={a: 0} against an empty stub, and init emitted no warning. Decided: blank named commands produce no warning, because the Tests section and acceptance criterion explicitly exclude all blank commands.
+
 ## History
 
 - 2026-11-24T22:21:38Z zesty-coral-newt → backlog
@@ -67,3 +69,4 @@ Requeued 2026-11-26: the last worker returned it over tool failures, not a ticke
 - 2026-11-26T11:37:29Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:27:58Z tidy-umber-newt todo → doing
 - 2026-11-26T13:32:14Z tidy-umber-newt: wrote the plan
+- 2026-11-26T13:32:54Z tidy-umber-newt: changed notes
