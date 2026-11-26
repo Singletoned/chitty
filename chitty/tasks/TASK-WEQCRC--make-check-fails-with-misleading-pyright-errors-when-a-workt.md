@@ -17,8 +17,11 @@ Suggestion origin: chitty
 
 Related: TASK-500 (a worktree whose `.venv` is a symlink to the main checkout's). Syncing dependencies in `make check` must not repoint a shared venv, so the two fixes should be decided together.
 
+Merged into TASK-500, which now covers both the stale extra and the symlinked venv.
+
 ## History
 
 - 2026-11-26T18:06:07Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:09Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:25Z calm-ochre-quail: changed labels, notes
+- 2026-11-26T18:16:33Z calm-ochre-quail: changed notes
