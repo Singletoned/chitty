@@ -46,6 +46,12 @@ Verify the existing CLI change against the ticket; add property and usage tests,
 
 Requeued 2026-11-26: the last worker returned it with no ticket defect. Commit `21e82d38` on this branch has an untested start on `cli.py`; check it against the Description and write the tests.
 
+Temporarily restored the pre-change note command: the property failed on the unrecognized file option and both usage-error cases failed on their messages. Restored the implementation; make check passed.
+
+## Summary
+
+Verified the existing note file-input implementation and added property, literal dash, and usage-error tests. make check passed.
+
 ## History
 
 - 2026-11-24T22:21:50Z zesty-coral-newt → backlog
@@ -69,3 +75,4 @@ Requeued 2026-11-26: the last worker returned it with no ticket defect. Commit `
 - 2026-11-26T11:36:36Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:41:41Z kind-fawn-wren todo → doing
 - 2026-11-26T13:45:45Z kind-fawn-wren: wrote the plan
+- 2026-11-26T13:50:50Z kind-fawn-wren: changed notes, summary
