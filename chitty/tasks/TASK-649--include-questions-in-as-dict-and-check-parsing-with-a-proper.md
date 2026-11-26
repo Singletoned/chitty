@@ -1,6 +1,6 @@
 ---
 title: Include `## Questions` in `as_dict` and check parsing with a property test
-status: review
+status: done
 depends_on:
   - TASK-629
   - TASK-10035
@@ -39,6 +39,10 @@ Second cold read (2026-11-23): nothing serious. Its baseline point repeats one a
 
 Baseline: test_as_dict and test_generated_questions both failed with KeyError: 'questions' before the serialization change.
 
+Reviewed:
+1: pass - Both tests pass in make check. Applied the test diff to a temporary merge-base worktree and ran pytest on test_as_dict and test_generated_questions with baseline src on PYTHONPATH; both failed with KeyError: 'questions'.
+2: pass - make check: 1282 passed, 684 subtests passed; ruff and pyright passed.
+
 ## Summary
 
 Added question serialization and example and property tests covering parsing and round trips. Both new tests failed with the expected KeyError before the change; make check passes.
@@ -59,3 +63,5 @@ Added question serialization and example and property tests covering parsing and
 - 2026-11-26T14:27:09Z youthful-yellow-wren: changed notes
 - 2026-11-26T14:30:46Z youthful-yellow-wren: changed summary; ticked acceptance criteria
 - 2026-11-26T14:34:21Z youthful-yellow-wren doing → review
+- 2026-11-26T14:41:45Z vivid-amber-gannet: changed notes
+- 2026-11-26T14:41:45Z vivid-amber-gannet review → done
