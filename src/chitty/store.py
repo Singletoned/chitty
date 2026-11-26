@@ -25,6 +25,7 @@ from chitty.config import (
     CHITTY_VERSION,
     CONFIG_NAME,
     INITIAL_CONFIG,
+    LAST_SHARED_PLANNING_VERSION,
     RepoConfig,
     check_setup_version,
     find_root,
@@ -33,6 +34,7 @@ from chitty.config import (
     runner_required_message,
     search_root,
     validate_repo_config,
+    version_key,
 )
 from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket, ProvisionalOffMain
 from chitty.ids import TaskId
@@ -2263,6 +2265,21 @@ def init_repo(
             )
             recorded_version = settings.get("chitty_version")
             if recorded_version != CHITTY_VERSION:
+                if recorded_version is None or version_key(recorded_version) <= version_key(
+                    LAST_SHARED_PLANNING_VERSION
+                ):
+                    repo = Repo(directory, config)
+                    for context in repo.contexts():
+                        for path, problem in scan(context, False, allow_any_prefix=True):
+                            if problem:
+                                raise ChittyError(f"{path}: {problem}")
+                            task = parse(path.read_text())
+                            if task.frontmatter.status == "planning":
+                                originals[path] = _file_state(path)
+                                task = task.with_field("status", "to-plan").with_field("owner", None)
+                                task = task.with_history(datetime.now(UTC), "chitty", "planning", "to-plan")
+                                path.write_text(task.render())
+                                written.append(path)
                 updated = add_runner_workflow(
                     updated,
                     recorded_version if isinstance(recorded_version, str) else None,

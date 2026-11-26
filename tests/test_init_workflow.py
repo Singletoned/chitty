@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import tomllib
+from datetime import date
 from pathlib import Path
 from unittest import mock
 
@@ -14,7 +15,8 @@ from chitty import store as store_module
 from chitty.cli import cli
 from chitty.config import resolve_workflow
 from chitty.errors import ChittyError
-from chitty.store import add_runner_workflow
+from chitty.model import new_task, parse
+from chitty.store import add_runner_workflow, init_repo
 from tests.support import CONFIG, RepoTestCase
 
 VERSIONS = st.one_of(
@@ -100,6 +102,64 @@ class TestAddRunnerWorkflow(RepoTestCase):
         result = add_runner_workflow(text, "0.4.2", False)
         self.assertEqual(result, text + '\nworkflow = "runner"\n')
         self.assertEqual(tomllib.loads(result)["workflow"], "runner")
+
+
+class TestSharedPlanningUpgrade(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "-b", "main")
+        self.git("config", "user.name", "Test")
+        self.git("config", "user.email", "test@example.com")
+        self.planning = self.ticket("tasks", "TASK-1--planning.md", "planning", "planner")
+        self.todo = self.ticket("human", "HUMAN-1--todo.md", "todo", None)
+        self.archived = self.ticket("tasks/archive", "TASK-2--archived.md", "planning", "planner")
+
+    def git(self, *args):
+        return subprocess.run(
+            ["git", *args], cwd=self.root, check=True, capture_output=True, text=True
+        ).stdout
+
+    def ticket(self, context, name, status, owner):
+        path = self.root / "chitty" / context / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        task = new_task(
+            name, date(2026, 1, 1), "Description", (), {"status": status, "owner": owner}
+        )
+        path.write_text(task.render())
+        return path
+
+    def commit_version(self, version):
+        config = self.root / "chitty.toml"
+        config.write_text(CONFIG.replace(config_module.CHITTY_VERSION, version))
+        self.git("add", ".")
+        self.git("commit", "-m", "initial setup")
+
+    def test_old_setup_migrates_active_planning_and_commits_it(self):
+        self.commit_version("0.7.1")
+        untouched = self.todo.read_bytes(), self.archived.read_bytes()
+        written = init_repo(self.root, False, "chitty: upgrade repository setup")
+        task = parse(self.planning.read_text())
+        self.assertEqual(task.frontmatter.status, "to-plan")
+        self.assertIsNone(task.frontmatter.owner)
+        self.assertRegex(task.section("History") or "", r"chitty planning → to-plan")
+        self.assertEqual((self.todo.read_bytes(), self.archived.read_bytes()), untouched)
+        self.assertIn(self.planning, written)
+        self.assertIn(
+            str(self.planning.relative_to(self.root)), self.git("log", "-1", "--name-only")
+        )
+
+    def test_second_upgrade_changes_nothing(self):
+        self.commit_version("0.7.1")
+        init_repo(self.root, False, "chitty: upgrade repository setup")
+        before = self.planning.read_bytes(), self.git("rev-parse", "HEAD")
+        self.assertEqual(init_repo(self.root, False, "chitty: upgrade repository setup"), [])
+        self.assertEqual((self.planning.read_bytes(), self.git("rev-parse", "HEAD")), before)
+
+    def test_current_version_does_not_migrate(self):
+        self.commit_version(config_module.CHITTY_VERSION)
+        before = self.planning.read_bytes()
+        init_repo(self.root, False, "chitty: upgrade repository setup")
+        self.assertEqual(self.planning.read_bytes(), before)
 
 
 class TestUpgradeWorkflow(RepoTestCase):
