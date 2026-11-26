@@ -38,6 +38,8 @@ Add focused configuration tests first and verify the default and every refusal f
 
 Split 2026-11-26 at the last worker request: ordering, model and display moved to TASK-10037, write and check validation to TASK-10038.
 
+Before implementation, .venv/bin/pytest -q tests/test_priorities_config.py failed all six tests: default raised AttributeError and each refusal, including the line-break property, reported extra_forbidden rather than the requested message.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -87,3 +89,4 @@ Split 2026-11-26 at the last worker request: ordering, model and display moved t
 - 2026-11-26T11:44:55Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:15:37Z kind-coral-falcon todo → doing
 - 2026-11-26T13:19:37Z kind-coral-falcon: wrote the plan
+- 2026-11-26T13:20:04Z kind-coral-falcon: changed notes
