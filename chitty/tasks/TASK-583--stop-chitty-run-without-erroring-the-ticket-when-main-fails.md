@@ -36,6 +36,10 @@ Rewrite both no-work check failure tests and confirm they fail, then restore the
 
 Both rewritten no-work tests failed against the original implementation: run exited 0 and moved the ticket to error instead of exiting 1.
 
+## Summary
+
+Stop the run and restore the branch ticket to todo when a nonzero check fails before any work; retain other failure handling. Updated runner documentation and regression tests. Both rewritten tests failed before the fix; make check passes.
+
 ## History
 
 - 2026-11-22T13:19:33Z friendly-jade-stoat → todo
@@ -50,3 +54,4 @@ Both rewritten no-work tests failed against the original implementation: run exi
 - 2026-11-26T12:47:15Z friendly-white-raven todo → doing
 - 2026-11-26T12:51:32Z friendly-white-raven: wrote the plan
 - 2026-11-26T12:52:12Z friendly-white-raven: changed notes
+- 2026-11-26T12:59:23Z friendly-white-raven: changed summary
