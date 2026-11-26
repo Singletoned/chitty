@@ -1,6 +1,6 @@
 ---
 title: Read stdin for a bare `-` in text options that have a `-file` twin
-status: review
+status: done
 labels:
   - bug
   - needs-minor
@@ -31,6 +31,11 @@ Normalize bare dashes to stdin file inputs before validation, preserving mutual 
 
 Before the fix, the new property test stored a literal dash instead of stdin and the conflict cases did not report stdin conflicts. The initial suggest test also exposed a test fixture project-name issue, corrected to use an explicit path.
 
+Reviewed: The implementation normalizes supported text options before stdin conflict checks and preserves the existing file-twin behavior.
+1: pass - make check passes the Hypothesis comparisons for all listed options; applying the test diff at the merge base and running pytest on test_arbitrary_stdin_matches_file_twin and test_suggest_bare_stdin fails with literal '-' versus stdin.
+2: pass - make check passes test_bare_stdin_conflicts; at the merge base all three conflict cases fail with exit 1 instead of the required exit 2.
+3: pass - make check passed: 1207 tests and 640 subtests, including existing file and stdin tests.
+
 ## Summary
 
 Bare dashes in supported text options now read stdin, with repeated notes counted in stdin conflict checks. Property tests compare file twins across arbitrary text; conflict and mutual-exclusion tests cover errors. Verified the new behavior failed before the fix and make check passes.
@@ -52,3 +57,5 @@ Bare dashes in supported text options now read stdin, with repeated notes counte
 - 2026-11-26T00:17:09Z zesty-fawn-toad: changed notes
 - 2026-11-26T00:24:08Z zesty-fawn-toad: changed summary; ticked acceptance criteria
 - 2026-11-26T00:26:28Z zesty-fawn-toad doing → review
+- 2026-11-26T00:34:51Z able-bronze-kestrel: changed notes
+- 2026-11-26T00:34:51Z able-bronze-kestrel review → done
