@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -22,8 +22,8 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 
 ## Acceptance Criteria
 
-- [ ] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python`: the `chitty` path is a symbolic link (`os.path.islink`) whose `os.path.realpath` is the runner's `chitty` (`Path(sys.executable).parent / "chitty"`, resolved), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: all three resolve into the runner's `.venv/bin`, and `chitty` is not a link.
-- [ ] Regression tests: the existing `chitty run` tests pass, including `runner chitty executable not found` handling; `make check` passes.
+- [x] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python`: the `chitty` path is a symbolic link (`os.path.islink`) whose `os.path.realpath` is the runner's `chitty` (`Path(sys.executable).parent / "chitty"`, resolved), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: all three resolve into the runner's `.venv/bin`, and `chitty` is not a link.
+- [x] Regression tests: the existing `chitty run` tests pass, including `runner chitty executable not found` handling; `make check` passes.
 
 ## Plan
 
@@ -32,6 +32,10 @@ Add integration coverage for work and review agent PATH resolution, verify it fa
 ## Notes
 
 Regression test failed before the fix for both work and review: the resolved chitty was not a symbolic link.
+
+Reviewed:
+1: pass - make check passes the work and review PATH test; applying that test at the merge base and running pytest with PYTHONPATH pointing to the base src fails both modes with islink False.
+2: pass - make check: 1203 passed, 634 subtests passed, including existing runner tests and missing executable handling.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Work and review agents receive a temporary PATH directory containing only a syml
 - 2026-11-26T00:01:24Z calm-umber-adder: changed notes
 - 2026-11-26T00:08:17Z calm-umber-adder: changed summary
 - 2026-11-26T00:10:28Z calm-umber-adder doing → review
+- 2026-11-26T00:17:20Z able-yellow-puffin: changed notes; ticked acceptance criteria
+- 2026-11-26T00:17:20Z able-yellow-puffin review → done
