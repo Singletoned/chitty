@@ -1,6 +1,6 @@
 ---
 title: Make `make check` sync this worktree's own venv and refuse a symlinked one
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-21
@@ -46,3 +46,4 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 - 2026-11-26T18:16:11Z calm-ochre-quail backlog → cold-read
 - 2026-11-26T18:18:58Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T18:18:58Z calm-ochre-quail cold-read → todo
+- 2026-11-26T18:38:04Z mellow-silver-eel todo → doing
