@@ -15,7 +15,7 @@ Today `Repo._commit` (`src/chitty/store.py`) already runs `check.fix` on the wri
 
 ### Change
 
-- In `Repo._commit`, a change is a checked move when `change.previous_status is not None` (only `_edit_stored` sets it; `add`, `archive`, `move` and `renumber` leave it `None`) and differs from the new status, which is `cold-read` or `todo`. For a checked move, take the problems for the written task files from the existing `fix` call when it runs (`autoformat` or `autocommit` set), and otherwise from `check(self, self.contexts(), task_paths, include_worktree_state=False)`, which has no side effects; refuse on errors with the same message as today. Put the warnings (problems that are not errors) on the result as a new `Change` field `warnings: tuple[str, ...]`, each `str(problem)`, in the order returned. Other writes keep `warnings` empty.
+- In `Repo._commit`, a change is a checked move when `change.previous_status is not None` (only `_edit_stored` sets it; `add`, `archive`, `move` and `renumber` leave it `None`) and differs from the new status, which is `cold-read` or `todo`. For a checked move, get the problems for the written task files from `check(self, self.contexts(), task_paths, include_worktree_state=False)`, which has no side effects, even when the `fix` call also runs: `fix` skips a ticket whose source is another ref (it warned `skipped: read from main` for a numbered ticket edited on a `plan/` branch on 2026-11-26), and those are the edits that most need checking. Refuse on errors with the same message as today. Put the warnings (problems that are not errors) on the result as a new `Change` field `warnings: tuple[str, ...]`, each `str(problem)`, in the order returned. Other writes keep `warnings` empty.
 - In `src/chitty/check.py`, include `cold-read` in the statuses that get the acceptance-criteria and specification-length warnings, so a planner sees them before a reader starts.
 - `edit` in `src/chitty/cli.py` prints each warning on its own line after the `updated ...` line (not with `--json`). `edit` in `src/chitty/mcp.py` adds `"warnings": [...]` to its result when there are any.
 - In `src/chitty/roles/plan.md`, replace "and run `chitty check` on the ticket file before starting a reader" with "; moving a ticket to `cold-read` or `todo` shows its `chitty check` warnings". The guide gets a few words shorter.
@@ -63,3 +63,4 @@ Checked moves to cold-read or todo now refuse errors and surface warnings in CLI
 - 2026-11-26T15:42:08Z rosy-pearl-toad doing → review
 - 2026-11-26T15:48:11Z sunny-maroon-crane: changed notes; ticked acceptance criteria
 - 2026-11-26T15:48:11Z sunny-maroon-crane review → done
+- 2026-11-26T17:47:31Z calm-ochre-quail: changed description
