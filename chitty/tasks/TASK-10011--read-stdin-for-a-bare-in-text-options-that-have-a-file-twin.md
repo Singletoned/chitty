@@ -19,9 +19,9 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test (`examples(...)` as elsewhere): for any text `t`, `chitty edit <ID> --plan -` with `t` on stdin stores the same Plan as `--plan-file -` with `t`; likewise for `--description`, `--summary`, `--set-notes` and `--note` on `edit`, `--description` and `--note` on `add`, and `--description` on `suggest`. Fails today: a literal `-` is stored.
-- [ ] Two stdin reads in one command fail with `only one file option can read stdin: <names>`, naming the `-file` options: `--plan - --note -` names `--plan-file` and `--note-file`; `--plan - --note-file -` the same; `--note - --note -` fails too. Fails today: the dashes are stored.
-- [ ] Regression tests: existing `-file` and stdin tests pass; `make check` passes.
+- [x] A Hypothesis property test (`examples(...)` as elsewhere): for any text `t`, `chitty edit <ID> --plan -` with `t` on stdin stores the same Plan as `--plan-file -` with `t`; likewise for `--description`, `--summary`, `--set-notes` and `--note` on `edit`, `--description` and `--note` on `add`, and `--description` on `suggest`. Fails today: a literal `-` is stored.
+- [x] Two stdin reads in one command fail with `only one file option can read stdin: <names>`, naming the `-file` options: `--plan - --note -` names `--plan-file` and `--note-file`; `--plan - --note-file -` the same; `--note - --note -` fails too. Fails today: the dashes are stored.
+- [x] Regression tests: existing `-file` and stdin tests pass; `make check` passes.
 
 ## Plan
 
@@ -30,6 +30,10 @@ Normalize bare dashes to stdin file inputs before validation, preserving mutual 
 ## Notes
 
 Before the fix, the new property test stored a literal dash instead of stdin and the conflict cases did not report stdin conflicts. The initial suggest test also exposed a test fixture project-name issue, corrected to use an explicit path.
+
+## Summary
+
+Bare dashes in supported text options now read stdin, with repeated notes counted in stdin conflict checks. Property tests compare file twins across arbitrary text; conflict and mutual-exclusion tests cover errors. Verified the new behavior failed before the fix and make check passes.
 
 ## History
 
@@ -46,3 +50,4 @@ Before the fix, the new property test stored a literal dash instead of stdin and
 - 2026-11-26T00:11:43Z zesty-fawn-toad todo → doing
 - 2026-11-26T00:15:38Z zesty-fawn-toad: wrote the plan
 - 2026-11-26T00:17:09Z zesty-fawn-toad: changed notes
+- 2026-11-26T00:24:08Z zesty-fawn-toad: changed summary; ticked acceptance criteria
