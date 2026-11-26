@@ -1,6 +1,6 @@
 ---
 title: Count cold reads only since the ticket's last title change
-status: cold-read
+status: todo
 created: 2026-11-26
 provisional: true
 ---
@@ -15,8 +15,8 @@ In echonomicon on 2026-11-25, `TASK-235` was cold-read once, split (half moved t
 
 Add a pure function `cold_reads_since_retitle(history: str) -> int` in `src/chitty/check.py`, and use it in `check` in place of the current count; the threshold (`MAX_COLD_READS`) and message stay. It reads the History section text line by line:
 
-- A transition line is one `HISTORY_LINE_RE` (`src/chitty/model.py`) fully matches; it counts when its `new` is `cold-read`.
-- An event line is `- <timestamp> <actor>: <actions>`, as `Task.with_history_event` writes it. Its actions are joined with `; ` (`HISTORY_ACTION_SEPARATOR`), and a `changed a, b` action lists the changed fields with `, `. An event whose `changed` list includes `title` resets the count to 0.
+- A transition line is one `HISTORY_LINE_RE` (`src/chitty/model.py`) fully matches, including old date-only lines; it counts when its `new` is `cold-read`.
+- An event line is one `HISTORY_EVENT_RE` fully matches, as `Task.with_history_event` writes it. Split its `action` on `; ` (`HISTORY_ACTION_SEPARATOR`); a part `changed a, b` lists the changed fields, split on `, `. An event with `title` as one of those fields, matched exactly, resets the count to 0. Actor names containing `: ` are out of scope, as for every History reader.
 
 An edit that changes both title and status writes the event line first, then the transition, so a read started in the same edit as a retitle counts.
 
@@ -37,3 +37,5 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 - 2026-11-26T11:11:13Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:13:33Z calm-ochre-quail: replaced notes; changed title, description, acceptance criteria
 - 2026-11-26T11:13:33Z calm-ochre-quail to-plan → cold-read
+- 2026-11-26T11:14:31Z calm-ochre-quail: changed description
+- 2026-11-26T11:14:31Z calm-ochre-quail cold-read → todo
