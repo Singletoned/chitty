@@ -3,6 +3,7 @@ title: Include `## Questions` in `as_dict` and check parsing with a property tes
 status: todo
 depends_on:
   - TASK-629
+  - TASK-10035
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -42,3 +43,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline point repeats one a
 - 2026-11-23T19:47:03Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:47:03Z friendly-coral-badger cold-read → planning
 - 2026-11-23T19:47:07Z friendly-coral-badger planning → todo
+- 2026-11-26T11:27:40Z brisk-bronze-adder: changed dependencies
