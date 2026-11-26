@@ -26,14 +26,14 @@ Format (the layout that both the pinned prettier and mdformat leave unchanged):
 Rules, in `_parse_questions`:
 
 - An answer is one paragraph: indented lines (first character a space or tab) after an item and one or more blank lines, up to the next item or the end of the section, joined with a space and stripped of their indent. Whitespace-only lines count as blank.
-- After an answer, a further indented paragraph raises `TaskError` `question <n>: an answer must be one paragraph`. An indented line whose stripped text matches `LIST_MARKER_RE` raises `question <n>: nested lists are not allowed`.
+- After an answer, a further indented paragraph raises `TaskError` `question <n>: an answer must be one paragraph`.
 - The tick and the answer are independent: `[x]` with no answer and `[ ]` with an answer both parse.
 
 Tests, added to `tests/test_questions_section.py`:
 
 - The example above gives `(Question(True, "Which database?", "Postgres, because we already run it."), Question(False, "Who owns the migration?", None))`, and `render()` returns the text unchanged.
 - `- [ ] Q\n\n  Part one\n\tpart two\n` gives answer `"Part one part two"`; a `"   "` line in place of the blank line gives the same.
-- The two refusals, with their exact messages.
+- The one-paragraph refusal, with its exact message.
 - In `tests/test_formatters.py`, add `task = task.with_section(QUESTIONS, <the example section body>)` inside `sample()`, next to its existing `with_section("Plan", ...)` call, so the prettier and mdformat tests cover it.
 - Renumbering: `parse` the text `"---\ntitle: T\nstatus: todo\ncreated: 2026-11-23\n---\n\n## Description\n\nD.\n\n## Acceptance Criteria\n\n- [ ] A\n\n## Questions\n\n- [ ] Does TASK-7 block TASK-70?\n\n  Yes, see TASK-7.\n"` and call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Its `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)`. (`rewrite_task` loops over `SECTION_ORDER`, which includes `QUESTIONS` after TASK-629, and rewrites every section except History and Acceptance Criteria; this checks it reaches answers.)
 
@@ -53,3 +53,4 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 - 2026-11-26T11:29:54Z brisk-bronze-adder: changed description
 - 2026-11-26T11:29:54Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T11:30:04Z brisk-bronze-adder planning → todo
+- 2026-11-26T11:30:23Z brisk-bronze-adder: changed description
