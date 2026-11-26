@@ -1,6 +1,6 @@
 ---
 title: A stale inbox repo path makes every command fail with Not a directory
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -33,3 +33,4 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 - 2026-11-26T00:21:46Z calm-ochre-quail backlog → planning
 - 2026-11-26T00:21:51Z calm-ochre-quail planning → cold-read
 - 2026-11-26T00:22:59Z calm-ochre-quail cold-read → todo
+- 2026-11-26T00:40:30Z zesty-jade-wren todo → doing
