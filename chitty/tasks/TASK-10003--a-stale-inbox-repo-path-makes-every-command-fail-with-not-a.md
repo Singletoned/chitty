@@ -20,8 +20,8 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 
 ## Acceptance Criteria
 
-- [ ] A test (inheriting `RepoTestCase`) records a project's inbox `repo` file as a directory that no longer exists, then runs `chitty inbox --pull` in a repository with that project name: it exits 0, the `repo` file now holds this repository's resolved path, and stderr has `warning: project <name> was registered to <old path>, which no longer exists; registered <new path> instead`. Fails today with `Not a directory: <old path>`.
-- [ ] Regression tests: a recorded path that still exists and belongs to another repository still refuses with `is registered to`; `tests/test_inbox.py` and `tests/test_property_inbox.py` pass; `make check` passes.
+- [x] A test (inheriting `RepoTestCase`) records a project's inbox `repo` file as a directory that no longer exists, then runs `chitty inbox --pull` in a repository with that project name: it exits 0, the `repo` file now holds this repository's resolved path, and stderr has `warning: project <name> was registered to <old path>, which no longer exists; registered <new path> instead`. Fails today with `Not a directory: <old path>`.
+- [x] Regression tests: a recorded path that still exists and belongs to another repository still refuses with `is registered to`; `tests/test_inbox.py` and `tests/test_property_inbox.py` pass; `make check` passes.
 
 ## Plan
 
@@ -30,6 +30,10 @@ Add CLI regression tests for stale and live inbox owners, demonstrate the stale 
 ## Notes
 
 Before the fix, the stale-registration CLI test failed with Not a directory; the existing-other-repository regression passed.
+
+## Summary
+
+Replace stale inbox repository registrations with the current resolved root and a stderr warning; preserve refusal for existing different repositories. The stale CLI regression failed before the fix, and both inbox suites and make check pass.
 
 ## History
 
@@ -44,3 +48,4 @@ Before the fix, the stale-registration CLI test failed with Not a directory; the
 - 2026-11-26T00:40:30Z zesty-jade-wren todo → doing
 - 2026-11-26T00:44:07Z zesty-jade-wren: wrote the plan
 - 2026-11-26T00:44:38Z zesty-jade-wren: changed notes
+- 2026-11-26T00:48:17Z zesty-jade-wren: changed summary; ticked acceptance criteria
