@@ -1,6 +1,6 @@
 ---
 title: Let only real tickets raise the next number when renumbering
-status: cold-read
+status: todo
 labels:
   - bug
 created: 2026-11-26
@@ -16,7 +16,7 @@ On 2026-11-25 `chitty renumber` on `main` gave this repository's provisional tic
 ### Change
 
 - `plan_renumbering(used, provisional, *, avoid)` gets a required keyword argument `avoid: Mapping[str, set[int]]`: numbers mentioned in text. It still starts after `max(used)` per prefix (0 when none), counts up, and skips any number in `used` or `avoid`. Mentions never raise the start.
-- In `_plan_provisional_renumbering`, `used` keeps the file numbers and `self.ticket_ids()` (real tickets on disk and on branches); the numbers from `ids.ticket_references` over file text go into a separate `avoid` mapping instead. A mention of a number that is not a real ticket therefore never gets that number reused, as today.
+- In `_plan_provisional_renumbering` (the `plan_renumbering` call in `src/chitty/store.py`), `used` stays as today (`_used_numbers`, including deleted numbers, plus `self.ticket_ids()`); the numbers from `ids.ticket_references` over file text go into a separate `avoid` mapping instead. A mention of a number that is not a real ticket therefore never gets that number reused, as today.
 
 ### Out of scope
 
@@ -24,8 +24,8 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_property_renumbering.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) of `plan_renumbering` draws `used` and `avoid` number sets for one prefix (with `avoid` numbers both below and above `max(used)`, including very large ones such as 9999) and 1 to 5 provisional IDs. The new numbers are distinct and above `max(used)` (or from 1 when `used` is empty), none is in `used` or `avoid`, they follow the sorted provisional IDs in increasing order, and every number from `max(used) + 1` up to the largest new number is either new or in `avoid`. Fails without the change, because `avoid` does not exist and mentions raise the start today.
-- [ ] In `tests/test_renumber_provisional.py`, on `main`, with ticket `TASK-1` whose Description mentions `TASK-9999` and `TASK-2`, and one provisional ticket, `chitty renumber` gives the provisional ticket `TASK-3`, not `TASK-10000` (today) or `TASK-2`. Fails without the change. Regression tests: the existing renumbering tests pass after passing `avoid={}` where they call `plan_renumbering`. `make check` passes.
+- [ ] In `tests/test_property_renumbering.py`, a Hypothesis property test of `plan_renumbering` draws `used` and `avoid` number sets for one prefix (with `avoid` numbers both below and above `max(used)`, including very large ones such as 9999) and 1 to 5 provisional IDs. The new numbers are distinct and above `max(used)` (or from 1 when `used` is empty), none is in `used` or `avoid`, they follow the sorted provisional IDs in increasing order, and every number from `max(used) + 1` up to the largest new number is either new or in `avoid`. That file already defines its own `examples` decorator, so import the example-count helper as `from tests import examples as example_count` and use `@settings(max_examples=example_count(N))`. A fixed case, `used={1}`, `avoid={9999}`, one provisional ID, gives number 2; it fails today because mentions raise the start.
+- [ ] In `tests/test_renumber_provisional.py`, on `main`, with real ticket `TASK-1` whose Description mentions `TASK-9999` and `TASK-2` (written into its file directly, as the existing fixtures cannot add that text) and one provisional ticket, `chitty renumber` gives the provisional ticket `TASK-3`, not `TASK-10000` (today) or `TASK-2`. Fails without the change. Regression tests: the existing renumbering tests pass after passing `avoid={}` at each `plan_renumbering` call. `make check` passes.
 
 ## History
 
@@ -36,3 +36,5 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 - 2026-11-26T11:11:25Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:16:15Z calm-ochre-quail: replaced notes; changed title, description, acceptance criteria
 - 2026-11-26T11:16:15Z calm-ochre-quail to-plan → cold-read
+- 2026-11-26T11:17:28Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-26T11:17:28Z calm-ochre-quail cold-read → todo
