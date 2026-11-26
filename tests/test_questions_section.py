@@ -1,13 +1,18 @@
+import json
+import os
 import string
 import unittest
 
+from click.testing import CliRunner
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty import model
+from chitty.cli import cli
 from chitty.ids import TaskId
 from chitty.renumbering import rewrite_task
 from tests import examples
+from tests.support import RepoTestCase
 
 BASE = "---\ntitle: Test\nstatus: todo\ncreated: 2026-01-01\n---\n\n## Description\n\nTest.\n\n"
 
@@ -46,6 +51,60 @@ def question_bodies(draw):
     if draw(st.booleans()):
         body += "\n"
     return body, expected
+
+
+class TestShowQuestions(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        previous = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, previous)
+        self.path = self.root / "chitty/tasks/TASK-1--test.md"
+        self.path.parent.mkdir(parents=True)
+
+    def show(self, *args):
+        result = CliRunner().invoke(cli, ["show", "TASK-1", *args], catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0, result.output)
+        return result.output
+
+    def test_show_questions(self):
+        self.path.write_text(
+            BASE + "## Acceptance Criteria\n\n- [ ] Done\n\n"
+            "## Questions\n\n- [x] Which database?\n\n"
+            "  Postgres, because we already run it.\n\n- [ ] Who owns the migration?\n\n"
+            "## Plan\n\nNext.\n"
+        )
+        lines = self.show().splitlines()
+        start = lines.index("## Questions")
+        self.assertEqual(
+            lines[start : start + 5],
+            [
+                "## Questions",
+                "",
+                "1. [x] Which database?",
+                "   Postgres, because we already run it.",
+                "2. [ ] Who owns the migration?",
+            ],
+        )
+        self.assertFalse(lines[start + 5].startswith(" "))
+        self.assertLess(lines.index("## Acceptance Criteria"), start)
+        self.assertLess(start, lines.index("## Plan"))
+        self.assertEqual(
+            json.loads(self.show("--json"))["questions"],
+            [
+                {
+                    "index": 1,
+                    "checked": True,
+                    "text": "Which database?",
+                    "answer": "Postgres, because we already run it.",
+                },
+                {"index": 2, "checked": False, "text": "Who owns the migration?", "answer": None},
+            ],
+        )
+
+    def test_show_without_questions(self):
+        self.path.write_text(BASE)
+        self.assertNotIn("## Questions", self.show().splitlines())
 
 
 class TestQuestionsSection(unittest.TestCase):

@@ -42,6 +42,7 @@ from chitty.model import (
     FIELD_ORDER,
     PRIORITIES,
     PRIORITY_GLYPHS,
+    QUESTIONS,
     SECTION_ORDER,
     STATUS_GLYPHS,
     STATUS_LABELS,
@@ -716,6 +717,13 @@ def _format(stored: StoredTask) -> str:
                 f"{n}. [{'x' if c.checked else ' '}] {c.text}"
                 for n, c in enumerate(criteria, start=1)
             )
+        elif name == QUESTIONS:
+            question_lines: list[str] = []
+            for n, question in enumerate(stored.task.questions, start=1):
+                question_lines.append(f"{n}. [{'x' if question.checked else ' '}] {question.text}")
+                if question.answer is not None:
+                    question_lines.append(f"   {question.answer}")
+            content = "\n".join(question_lines)
         else:
             content = stored.task.section(name)
         if content:
