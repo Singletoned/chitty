@@ -1,6 +1,6 @@
 ---
 title: Name uncommitted worktree changes, not `main`, when the pre-check fails
-status: todo
+status: doing
 priority: high
 created: 2026-11-24
 ---
@@ -34,3 +34,4 @@ Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_rec
 - 2026-11-25T22:35:05Z golden-coral-stoat backlog → planning
 - 2026-11-25T22:35:54Z golden-coral-stoat: changed description
 - 2026-11-25T22:35:54Z golden-coral-stoat planning → todo
+- 2026-11-26T01:16:50Z able-umber-wren todo → doing
