@@ -1,0 +1,40 @@
+---
+title: Skip ticket IDs cited with another project's name in the `edit -s todo` listing
+status: cold-read
+labels:
+  - bug
+created: 2026-11-26
+provisional: true
+---
+
+## Description
+
+### Why
+
+On 2026-11-26, after `chitty edit -s todo`, Chitty listed `TASK-217 done ...` and `TASK-164 done ...` for a ticket whose Description cited "echonomicon `TASK-217`" and "echonomicon `TASK-164`": unrelated tickets in this repository. A planner skimming that list can take one for a real dependency or a done duplicate. Decided (the person, 2026-11-26): skip an ID preceded by a project name, and tell planners to cite other repositories that way.
+
+### Change
+
+- `ids.ticket_references(text, prefixes, *, foreign)` in `src/chitty/ids.py` gets a required keyword argument `foreign: Collection[str]`, project names. A match is skipped when the text just before it, ignoring one backtick, ends with one of those names (compared case-insensitively) followed by one space, with no letter, digit or hyphen just before the name.
+- `Repo.referenced_tasks` (`src/chitty/store.py`, the listing `chitty edit -s todo` prints) passes `config.registered_projects()` minus `self.config.project`. The registry is per machine, which is fine for a listing that only informs the planner.
+- The renumbering call in `_plan_provisional_renumbering` passes `foreign=()`, so renumbering stays the same on every machine.
+- In `src/chitty/roles/plan.md`, in the bullet that begins "Put paths, globs, commands, IDs, and code in backticks", add: "Cite another project's ticket with its name first, for example `other TASK-4`." About 12 more words; nothing cut, because a misread citation costs a wrong dependency or archive.
+
+### Out of scope
+
+Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TASK-YST8KG).
+
+## Acceptance Criteria
+
+- [ ] In `tests/test_promote_references.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) builds text from the same parts and `SEPARATORS` as the existing tests, putting a name from a drawn set of foreign names (any case), then a space and optionally a backtick, before some of the references. `ticket_references(text, PREFIXES, foreign=names)` returns exactly the other references, in order and without repeats; with `foreign=()` it returns what it returns today. Fails without the change.
+- [ ] In `tests/test_promote_references_cli.py`, after `register_project("other", <a temporary directory>)`, a `planning` ticket whose Description says `See other TASK-2 and TASK-2.`... is not used; instead its Description says ``See other `TASK-9`.`` and its criterion mentions `TASK-2`: `chitty edit TASK-1 -s todo` lists `TASK-2 doing Second task` and does not list `TASK-9`. Fails without the change. Regression tests: the existing tests in both files pass after passing `foreign=()` where they call `ticket_references`. `make check` passes.
+
+## History
+
+- 2026-11-26T10:54:44Z calm-ochre-quail → backlog
+- 2026-11-26T10:54:47Z calm-ochre-quail: changed notes
+- 2026-11-26T10:56:51Z calm-ochre-quail: changed labels, notes
+- 2026-11-26T11:11:27Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:27Z calm-ochre-quail backlog → to-plan
+- 2026-11-26T11:18:12Z calm-ochre-quail: replaced notes; changed title, description, acceptance criteria
+- 2026-11-26T11:18:12Z calm-ochre-quail to-plan → cold-read
