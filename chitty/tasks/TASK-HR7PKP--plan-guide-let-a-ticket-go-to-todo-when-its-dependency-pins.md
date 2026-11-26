@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: let a ticket go to `todo` when its dependency pins the contract"
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -38,6 +38,10 @@ Update two bullets in `src/chitty/roles/plan.md`: allow `todo` with `depends_on`
 
 Decided: "Keep it in `planning`" in the ticket draft -> "return it to `to-plan`", because `TASK-10029` and `TASK-10032` (now on `main`) made `planning` an exclusive planner claim and `to-plan` the waiting status, matching `TASK-10033`. Note that `TASK-10033` (also in review) edits the same two bullets in `src/chitty/roles/plan.md`.
 
+Reviewed: diff changes two bullets in `src/chitty/roles/plan.md`. The rebase onto `main` after `TASK-10033` conflicted in both bullets; the reviewer resolved it by keeping `TASK-10033`'s claim bullet with the `&&` sentence added, and this ticket's `chitty edit -s todo` bullet.
+1: pass - the `chitty edit -s todo` bullet lets a ticket go to `todo` with `depends_on` alone when the dependency pins names, signatures and formats, and holds it back only while the contract is vague, naming the ticket that must settle it. The `Decided:` change of `planning` to `to-plan` matches `TASK-10032`/`TASK-10033`; accepted.
+2: pass - "Chain dependent Chitty commands with `&&` so a refusal stops the rest." follows "Change status in the same edit as the text it depends on."; wording is general.
+
 ## Summary
 
 Updated two bullets in `src/chitty/roles/plan.md`:
@@ -63,3 +67,5 @@ Branch `task-hr7pkp` (worktree `.worktrees/task-hr7pkp`). `make check` passed vi
 - 2026-11-26T18:22:34Z calm-russet-badger: changed notes
 - 2026-11-26T18:34:21Z calm-russet-badger: changed owner, summary
 - 2026-11-26T18:34:21Z calm-russet-badger doing → review
+- 2026-11-26T20:12:47Z intrepid-russet-falcon: changed notes
+- 2026-11-26T20:12:47Z intrepid-russet-falcon review → done
