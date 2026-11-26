@@ -43,6 +43,10 @@ Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/stor
 
 Before the fix, all seven focused refusal tests failed because the unsaved-edit sentence was absent.
 
+## Summary
+
+Review gate refusals now say the edit was not saved; failed checks also suggest the configured setup command. Seven focused tests failed before the fix and pass afterwards; make check passes.
+
 ## History
 
 - 2026-11-24T22:21:37Z zesty-coral-newt → backlog
@@ -71,3 +75,4 @@ Before the fix, all seven focused refusal tests failed because the unsaved-edit 
 - 2026-11-26T11:41:15Z plucky-bronze-quail todo → doing
 - 2026-11-26T11:45:49Z plucky-bronze-quail: wrote the plan
 - 2026-11-26T11:46:52Z plucky-bronze-quail: changed notes
+- 2026-11-26T11:51:13Z plucky-bronze-quail: changed summary
