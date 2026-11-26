@@ -198,6 +198,12 @@ class TestIsRepository(RepoTestCase):
         subprocess.run(["git", "init", "--quiet"], cwd=self.root, check=True)
 
 
+class TestWorktreeForBranch(RepoTestCase):
+    def test_non_repository_surfaces_git_failure(self):
+        with self.assertRaisesRegex(ChittyError, "git worktree list"):
+            git.worktree_for_branch(self.root, "task-1")
+
+
 class TestRebaseOnto(RepoTestCase):
     def setUp(self):
         super().setUp()

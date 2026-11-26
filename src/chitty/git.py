@@ -596,10 +596,7 @@ def current_branch(root: Path) -> str | None:
 
 def worktree_for_branch(root: Path, branch: str) -> Path | None:
     """Return the worktree that has a local branch checked out, if any."""
-    try:
-        lines = _git(root, "worktree", "list", "--porcelain").splitlines()
-    except ChittyError:
-        return None
+    lines = _git(root, "worktree", "list", "--porcelain").splitlines()
     worktree: Path | None = None
     for line in lines:
         if line.startswith("worktree "):
