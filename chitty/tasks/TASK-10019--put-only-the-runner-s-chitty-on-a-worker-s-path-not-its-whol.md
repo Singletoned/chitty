@@ -25,6 +25,10 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - [ ] A runner test with a fake work agent that records `command -v chitty`, `command -v pytest` and `command -v python`: the `chitty` path is a symbolic link (`os.path.islink`) whose `os.path.realpath` is the runner's `chitty` (`Path(sys.executable).parent / "chitty"`, resolved), and `pytest` and `python` do not resolve into the runner's `.venv/bin`. The same for a review agent. Fails today: all three resolve into the runner's `.venv/bin`, and `chitty` is not a link.
 - [ ] Regression tests: the existing `chitty run` tests pass, including `runner chitty executable not found` handling; `make check` passes.
 
+## Plan
+
+Add integration coverage for work and review agent PATH resolution, verify it fails first, then share a temporary symlink directory across each agent session and run formatting and checks.
+
 ## History
 
 - 2026-11-25T22:28:25Z calm-ochre-quail → backlog
@@ -40,3 +44,4 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 - 2026-11-25T23:50:41Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-25T23:50:41Z calm-ochre-quail cold-read → todo
 - 2026-11-25T23:56:37Z calm-umber-adder todo → doing
+- 2026-11-26T00:00:41Z calm-umber-adder: wrote the plan
