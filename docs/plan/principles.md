@@ -4,12 +4,13 @@
   fast enough for thousands of tickets.
 - **One ticket, one file, one writer.** No locking or automatic conflict
   repair.
-  - Reads use committed state from every local and remote-tracking branch,
-    taking each ticket's most recently changed version. Uncommitted files in
-    the current worktree override it. This holds for `show` and `list` on
-    `main` too (confirmed with the person, 2026-11-26): the status of work in
-    progress lives on ticket branches, and reading only `main`'s copy would
-    make it look as if nothing were being worked on.
+  - Reads take each ticket's newer copy of the configured main branch and the
+    ticket's own `task-<n>` branch (local or remote-tracking), so `show`,
+    `list` and `next` on `main` show the status of work in progress
+    (confirmed with the person, 2026-11-26). Other branches, such as `plan/`
+    and `hotfix/`, are not read from elsewhere; on such a branch, Chitty reads
+    and writes that branch's own copy (TASK-10027). Uncommitted files in the
+    current worktree override committed state.
   - A write refuses when the latest version is on another branch, and names
     that branch's worktree. Writes never cross branches.
   - So worktrees need `autocommit = true` (or commit every Chitty write).
