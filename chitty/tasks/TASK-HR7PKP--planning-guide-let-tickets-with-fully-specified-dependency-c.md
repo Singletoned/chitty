@@ -1,6 +1,6 @@
 ---
 title: "Planning guide: let tickets with fully specified dependency contracts go to todo"
-status: backlog
+status: to-plan
 created: 2026-11-26
 provisional: true
 ---
@@ -13,7 +13,11 @@ The planning guide (`chitty guide plan`) says: 'If a ticket relies on a contract
 
 Suggestion origin: echonomicon
 
+Decided (the person, 2026-11-26): accept. A ticket may go to todo with depends_on alone when the dependency ticket fully specifies the contract it relies on; change the rule in src/chitty/roles/plan.md.
+
 ## History
 
 - 2026-11-26T10:54:38Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:40Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:10Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:10Z calm-ochre-quail backlog → to-plan
