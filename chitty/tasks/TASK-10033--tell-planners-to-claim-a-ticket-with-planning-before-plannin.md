@@ -1,6 +1,6 @@
 ---
 title: Tell planners to claim a ticket with `planning` before planning it on a branch
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -28,3 +28,4 @@ This replaces two sentences with about one more line; it removes "Keep a new tic
 - 2026-11-25T23:08:02Z golden-coral-stoat → backlog
 - 2026-11-25T23:12:40Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-WWNDDM
+- 2026-11-26T10:55:28Z tidy-silver-puffin todo → doing
