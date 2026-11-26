@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: planning
+status: todo
 created: 2026-11-24
 ---
 
@@ -38,17 +38,9 @@ Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording; TEXT tha
 - [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin), each on a fresh ticket, give equal Notes in `chitty show --json`, and those Notes split into the same words as the stored form of the text: `notes.split() == escape_literal_asterisks(text).split()` (`chitty.markdown`; Chitty escapes `*` and strips trailing whitespace, so exact equality does not hold). A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
 - [ ] A new test in `tests/test_cli.py` shows `chitty note 1 Text --file <path>` exits with status 2 and output containing `give TEXT or --file, not both`, and `chitty note 1` exits with status 2 and output containing `give TEXT or --file`; both leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
 
-## Plan
-
--
-
 ## Notes
 
-Suggestion origin: chitty
-
--
-
-Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
+Requeued 2026-11-26: the last worker returned it with no ticket defect. Commit `21e82d38` on this branch has an untested start on `cli.py`; check it against the Description and write the tests.
 
 ## History
 
@@ -69,3 +61,5 @@ Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
 - 2026-11-26T11:36:24Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:36:24Z brisk-bronze-adder planning → to-plan
 - 2026-11-26T11:36:29Z brisk-bronze-adder to-plan → planning
+- 2026-11-26T11:36:36Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
+- 2026-11-26T11:36:36Z brisk-bronze-adder planning → todo
