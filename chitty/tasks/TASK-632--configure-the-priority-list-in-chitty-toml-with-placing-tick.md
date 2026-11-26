@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: to-plan
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -118,3 +118,4 @@ Released 2026-11-26: stale claim.
 - 2026-11-25T10:38:24Z sunny-hazel-gannet: changed notes
 - 2026-11-26T11:41:41Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:41:41Z brisk-bronze-adder planning → to-plan
+- 2026-11-26T11:41:50Z brisk-bronze-adder to-plan → planning
