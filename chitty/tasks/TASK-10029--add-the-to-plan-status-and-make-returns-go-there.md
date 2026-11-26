@@ -34,6 +34,10 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 
 Add failing tests for the new status, rejected direct planning returns and mixed historical escalation; then update status definitions, return validation and reporting, warnings, retro and specified documentation. Repoint existing return tests, run formatting and checks, and hand off for review.
 
+## Notes
+
+Before implementation, the new direct-return property, mixed-history escalation and to-plan interface tests each failed as expected (pytest: 3 failed).
+
 ## History
 
 - 2026-11-25T23:05:55Z golden-coral-stoat → backlog
@@ -47,3 +51,4 @@ Add failing tests for the new status, rejected direct planning returns and mixed
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-B7CQGM
 - 2026-11-26T01:53:54Z daring-ginger-ibis todo → doing
 - 2026-11-26T01:57:55Z daring-ginger-ibis: wrote the plan
+- 2026-11-26T01:58:30Z daring-ginger-ibis: changed notes
