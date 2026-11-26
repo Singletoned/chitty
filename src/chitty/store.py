@@ -1107,39 +1107,50 @@ class Repo:
             and (self.root / ".git").exists()
             and not edit.skip_current_version
         ):
-            self._require_current_version(stored)
-
-            require_clean()
-            skip_check = (
-                entering_review
-                and self.config.check
-                and self.config.workflow == "runner"
-                and git.is_ancestor(self.root, "HEAD", self._main_branch())
-            )
-            if skip_check:
-                print(f"skipped check: HEAD is already on {self._main_branch()}", file=sys.stderr)
-            if entering_review and self.config.check and not skip_check:
-                command = self.config.check
-                print(f"running check {command} before review (output in .chitty/check.log)", file=sys.stderr)
-                start = time.monotonic()
-                try:
-                    status = commands.run_logged(
-                        "check", command, self.root, self.config.command_timeout
-                    )
-                except commands.CommandTimedOut as error:
-                    raise ChittyError(f"cannot move {task_id} to review; {error}") from error
-                except FileNotFoundError as error:
-                    raise ChittyError(
-                        f"cannot move {task_id} to review; check command not found: {command}"
-                    ) from error
-                print(f"check finished in {int(time.monotonic() - start)}s", file=sys.stderr)
-                if status:
-                    raise ChittyError(
-                        f"cannot move {task_id} to review; check failed with status {status}; "
-                        "output in `.chitty/check.log`"
-                    )
-                require_clean()
+            failed_check = False
+            try:
                 self._require_current_version(stored)
+
+                require_clean()
+                skip_check = (
+                    entering_review
+                    and self.config.check
+                    and self.config.workflow == "runner"
+                    and git.is_ancestor(self.root, "HEAD", self._main_branch())
+                )
+                if skip_check:
+                    print(f"skipped check: HEAD is already on {self._main_branch()}", file=sys.stderr)
+                if entering_review and self.config.check and not skip_check:
+                    command = self.config.check
+                    print(f"running check {command} before review (output in .chitty/check.log)", file=sys.stderr)
+                    start = time.monotonic()
+                    try:
+                        status = commands.run_logged(
+                            "check", command, self.root, self.config.command_timeout
+                        )
+                    except commands.CommandTimedOut as error:
+                        raise ChittyError(f"cannot move {task_id} to review; {error}") from error
+                    except FileNotFoundError as error:
+                        raise ChittyError(
+                            f"cannot move {task_id} to review; check command not found: {command}"
+                        ) from error
+                    print(f"check finished in {int(time.monotonic() - start)}s", file=sys.stderr)
+                    if status:
+                        failed_check = True
+                        raise ChittyError(
+                            f"cannot move {task_id} to review; check failed with status {status}; "
+                            "output in `.chitty/check.log`"
+                        )
+                    require_clean()
+                    self._require_current_version(stored)
+            except ChittyError as error:
+                message = str(error)
+                if not message.endswith("."):
+                    message += "."
+                message += " Nothing from this edit was saved."
+                if failed_check and self.config.setup:
+                    message += f" If this worktree was never set up, run `{self.config.setup}` first."
+                raise ChittyError(message) from error
         if edit.replace_in_description:
             if edit.description is not None:
                 raise ChittyError("--replace-in-description cannot be combined with --description")

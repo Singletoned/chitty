@@ -1,5 +1,6 @@
 import re
 import sys
+import tomllib
 
 from chitty.ids import TaskId
 from chitty.store import Edit, Repo
@@ -89,10 +90,60 @@ class TestReviewCheck(ReviewMergeTestCase):
         result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
         self.assertRegex(result.stderr, r"check finished in \d+s\n")
 
+    def assert_refused_review(self, result):
+        self.assertIn("Nothing from this edit was saved.", result.output)
+        text = next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
+        self.assertIn("status: doing", text)
+        self.assertNotIn("## Summary", text)
+
+    def test_already_dirty(self):
+        self.prepare(self.script(""))
+        (self.root / "untracked").write_text("dirty")
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
+        self.assert_refused_review(result)
+        self.assertNotIn("never set up", result.output)
+
+    def test_passing_review_dirty(self):
+        self.prepare(self.script(""))
+        self.run_cli("edit", "1", "-s", "review")
+        (self.root / "untracked").write_text("dirty")
+        result = self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed.", exit_code=1)
+        self.assertIn("Nothing from this edit was saved.", result.output)
+        self.assertIn(
+            "status: review", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
+        )
+
+    def test_timeout(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                "autocommit = true", "autocommit = true\ncommand_timeout = 1"
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure timeout")
+        self.prepare(self.script("import time\ntime.sleep(5)\n"))
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
+        self.assert_refused_review(result)
+        self.assertNotIn("never set up", result.output)
+
+    def test_failure_without_setup(self):
+        config = self.root / "chitty.toml"
+        config.write_text(re.sub(r"^setup = .*\n", "", config.read_text(), flags=re.MULTILINE))
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "remove setup")
+        self.prepare(self.script("raise SystemExit(3)\n"))
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
+        self.assert_refused_review(result)
+        self.assertNotIn("never set up", result.output)
+
     def test_failure(self):
         self.prepare(self.script("print('boom')\nraise SystemExit(3)\n"))
         before = self.git("rev-parse", "HEAD")
-        result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        setup = tomllib.loads((self.root / "chitty.toml").read_text())["setup"]
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
+        self.assert_refused_review(result)
+        self.assertIn(f"If this worktree was never set up, run `{setup}` first.", result.output)
         self.assertIn("check failed with status 3", result.output)
         self.assertIn("boom", (self.root / ".chitty/check.log").read_text())
         self.assert_doing()
@@ -100,15 +151,17 @@ class TestReviewCheck(ReviewMergeTestCase):
 
     def test_missing(self):
         self.prepare("nonexistent-chitty-check-command")
-        result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
         self.assertIn("check command not found", result.output)
-        self.assert_doing()
+        self.assert_refused_review(result)
+        self.assertNotIn("never set up", result.output)
 
     def test_dirty(self):
         self.prepare(self.script("from pathlib import Path\nPath('made.txt').write_text('x')\n"))
-        result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        result = self.run_cli("edit", "1", "-s", "review", "--summary", "Done.", exit_code=1)
         self.assertIn("the worktree has uncommitted changes: `made.txt`", result.output)
-        self.assert_doing()
+        self.assert_refused_review(result)
+        self.assertNotIn("never set up", result.output)
 
     def test_skip(self):
         marker = self.tmp / "marker"
