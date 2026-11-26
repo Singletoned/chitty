@@ -32,8 +32,8 @@ Out of scope: rules for dropping, `chitty add -s dropped`, archiving, and the gu
 
 ## Acceptance Criteria
 
-- [ ] The `tests/test_status_dropped.py` cases for `-s dropped`, `-s todo` from `dropped`, `chitty list` and the round trip pass, and each fails before the change (record the run in a note); the dependency regression test passes
-- [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` names `dropped`; `make check` passes
+- [x] The `tests/test_status_dropped.py` cases for `-s dropped`, `-s todo` from `dropped`, `chitty list` and the round trip pass, and each fails before the change (record the run in a note); the dependency regression test passes
+- [x] The `- Statuses:` bullet in `docs/plan/task-file.md` names `dropped`; `make check` passes
 
 ## Plan
 
@@ -44,6 +44,10 @@ Add focused CLI and round-trip tests and confirm they fail before adding the sta
 Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (its order follows from `STATUSES`), the dependency check is now a regression test, and the close-from-`main` request moved to TASK-10036.
 
 Before the model change, `.venv/bin/pytest -q tests/test_status_dropped.py` failed all four requested behaviors: edit to dropped rejected the choice, edit from dropped and list rejected frontmatter, and the dropped round-trip failed parsing. The dependency regression also failed parsing, as expected.
+
+## Summary
+
+Added the dropped status, its list display and task-file documentation. Focused CLI, round-trip and dependency tests pass; their pre-change failures are recorded in Notes. `make check` passes.
 
 ## History
 
@@ -125,3 +129,4 @@ Before the model change, `.venv/bin/pytest -q tests/test_status_dropped.py` fail
 - 2026-11-26T12:28:23Z zesty-indigo-vole todo → doing
 - 2026-11-26T12:32:32Z zesty-indigo-vole: wrote the plan
 - 2026-11-26T12:33:13Z zesty-indigo-vole: changed notes
+- 2026-11-26T12:37:18Z zesty-indigo-vole: changed summary; ticked acceptance criteria
