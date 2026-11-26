@@ -4,15 +4,19 @@
   fast enough for thousands of tickets.
 - **One ticket, one file, one writer.** No locking or automatic conflict
   repair.
-  - Reads take each ticket's newer copy of the configured main branch and the
-    ticket's own `task-<n>` branch (local or remote-tracking), so `show`,
-    `list` and `next` on `main` show the status of work in progress
-    (confirmed with the person, 2026-11-26). Other branches, such as `plan/`
-    and `hotfix/`, are not read from elsewhere; on such a branch, Chitty reads
-    and writes that branch's own copy (TASK-10027). Uncommitted files in the
-    current worktree override committed state.
-  - A write refuses when the latest version is on another branch, and names
-    that branch's worktree. Writes never cross branches.
+  - Two situations (the person, 2026-11-26). On `main`, Chitty gives the
+    best view of the whole situation it can: it reads `main`'s copy and also
+    any later versions on other branches, which may be several and may be
+    stale (today only the ticket's own `task-<n>` branch, local or
+    remote-tracking; TASK-603 and TASK-604 widen this). Off `main`, Chitty
+    assumes it runs in isolation (perhaps later in a container with no other
+    branches): it reads and writes the current branch's copy, warns about
+    changes it can see elsewhere, and conflicts are resolved at merge time.
+    Uncommitted files in the current worktree override committed state.
+  - Writes warn rather than refuse ([Direction](direction.md)), with one
+    exception: on `main`, an edit to a ticket whose `task-<n>` branch has a
+    newer copy is refused, because writing `main`'s older copy would hide the
+    work in progress. Writes never cross branches.
   - So worktrees need `autocommit = true` (or commit every Chitty write).
   - Sequential contexts allocate numbers on the configured main branch (or
     outside Git) and provisional IDs off it. `random_ids` contexts use random
