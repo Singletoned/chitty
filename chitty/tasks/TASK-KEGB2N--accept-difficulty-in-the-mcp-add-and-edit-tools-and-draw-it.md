@@ -1,6 +1,6 @@
 ---
 title: Accept `difficulty` in the MCP add and edit tools, and draw it in ticket strategies
-status: planning
+status: cold-read
 depends_on:
   - TASK-311
 parent: TASK-308
@@ -29,3 +29,4 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 ## History
 
 - 2026-11-26T20:08:38Z zesty-ginger-newt → planning
+- 2026-11-26T20:08:50Z zesty-ginger-newt planning → cold-read
