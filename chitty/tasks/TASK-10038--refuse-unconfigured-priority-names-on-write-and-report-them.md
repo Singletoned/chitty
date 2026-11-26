@@ -41,6 +41,10 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 
 Add CLI, check and MCP regression tests and record their pre-fix failures; validate priorities centrally in store writes, report unconfigured values in check, remove frontend restrictions, then format and run make check.
 
+## Notes
+
+Before the fix, the three new priority tests failed: CLI accepted high, check returned success for high, and MCP rejected now as a literal validation error.
+
 ## History
 
 - 2026-11-26T11:40:59Z brisk-bronze-adder → planning
@@ -50,3 +54,4 @@ Add CLI, check and MCP regression tests and record their pre-fix failures; valid
 - 2026-11-26T11:46:15Z brisk-bronze-adder planning → todo
 - 2026-11-26T15:01:18Z intrepid-teal-yellowhammer todo → doing
 - 2026-11-26T15:05:33Z intrepid-teal-yellowhammer: wrote the plan
+- 2026-11-26T15:06:08Z intrepid-teal-yellowhammer: changed notes
