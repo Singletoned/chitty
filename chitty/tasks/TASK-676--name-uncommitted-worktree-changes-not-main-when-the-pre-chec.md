@@ -27,6 +27,10 @@ Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_rec
 
 Add the requested reused-worktree regression test and verify it fails before the fix. Snapshot uncommitted paths before the check, report them on nonzero exit instead of blaming main, then run formatting and checks.
 
+## Notes
+
+Before the fix, the new regression test failed: the note blamed main and omitted the uncommitted path.
+
 ## History
 
 - 2026-11-24T22:21:39Z zesty-coral-newt → backlog
@@ -40,3 +44,4 @@ Add the requested reused-worktree regression test and verify it fails before the
 - 2026-11-25T22:35:54Z golden-coral-stoat planning → todo
 - 2026-11-26T01:16:50Z able-umber-wren todo → doing
 - 2026-11-26T01:19:27Z able-umber-wren: wrote the plan
+- 2026-11-26T01:19:45Z able-umber-wren: changed notes
