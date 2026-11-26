@@ -29,6 +29,10 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 - [ ] In `tests/test_check_ticket_size.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) of `cold_reads_since_retitle` draws a list of History entries, each either a transition `- 2026-01-01T00:00:00Z a <old> → <new>` with `<new>` from `cold-read`, `planning` and `todo`, or an event `- 2026-01-01T00:00:00Z a: <actions>` whose actions are drawn from `changed title`, `changed title, description`, `changed description, notes`, `replaced notes` and `replaced notes; changed title, labels`, joined with newlines. The result equals the number of transitions into `cold-read` after the last event whose actions name `title`, or all of them when no event does. Fails without the change, because the function does not exist.
 - [ ] Through `check`, a `planning` ticket whose History has 3 transitions into `cold-read`, then the event `changed title, description`, then 1 more transition into `cold-read`, gets no `cold reads;` warning; the same History without the event gets one. Fails without the change for the first case. Regression tests: `TestTicketSizeWarnings.test_limits` passes unchanged. `make check` passes.
 
+## Plan
+
+Add property and check integration tests, verify they fail before the fix, then count transitions after the latest title-change event using the shared History patterns. Run formatting and checks before handoff.
+
 ## History
 
 - 2026-11-26T10:54:47Z calm-ochre-quail → backlog
@@ -40,3 +44,4 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 - 2026-11-26T11:14:31Z calm-ochre-quail: changed description
 - 2026-11-26T11:14:31Z calm-ochre-quail cold-read → todo
 - 2026-11-26T15:14:09Z youthful-maroon-zander todo → doing
+- 2026-11-26T15:18:02Z youthful-maroon-zander: wrote the plan
