@@ -1,6 +1,6 @@
 ---
 title: A stale inbox repo path makes every command fail with Not a directory
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -49,3 +49,4 @@ Replace stale inbox repository registrations with the current resolved root and 
 - 2026-11-26T00:44:07Z zesty-jade-wren: wrote the plan
 - 2026-11-26T00:44:38Z zesty-jade-wren: changed notes
 - 2026-11-26T00:48:17Z zesty-jade-wren: changed summary; ticked acceptance criteria
+- 2026-11-26T00:50:38Z zesty-jade-wren doing → review
