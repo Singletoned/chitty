@@ -1,6 +1,6 @@
 ---
 title: Add a validated `priorities` list setting to `chitty.toml`
-status: review
+status: done
 parent: TASK-607
 created: 2026-11-23
 ---
@@ -27,8 +27,8 @@ Out of scope: everything that uses the setting (TASK-10037, TASK-10038), and `ch
 
 ## Acceptance Criteria
 
-- [ ] The default, refusal and line-break property tests in `tests/test_priorities_config.py` pass, and each refusal fails on `main` (record it in a note)
-- [ ] `docs/plan/config.md` has the `priorities` line; `make check` passes
+- [x] The default, refusal and line-break property tests in `tests/test_priorities_config.py` pass, and each refusal fails on `main` (record it in a note)
+- [x] `docs/plan/config.md` has the `priorities` line; `make check` passes
 
 ## Plan
 
@@ -39,6 +39,10 @@ Add focused configuration tests first and verify the default and every refusal f
 Split 2026-11-26 at the last worker request: ordering, model and display moved to TASK-10037, write and check validation to TASK-10038.
 
 Before implementation, .venv/bin/pytest -q tests/test_priorities_config.py failed all six tests: default raised AttributeError and each refusal, including the line-break property, reported extra_forbidden rather than the requested message.
+
+Reviewed: configuration validation and documentation meet the ticket.
+1: pass - make check passes all six tests; in a temporary merge-base worktree, PYTHONPATH="$d/src:$d" .venv/bin/pytest -q tests/test_priorities_config.py --tb=short produced six failures: AttributeError for the default and extra_forbidden instead of each requested refusal message.
+2: pass - docs/plan/config.md contains the specified line; make check passed (1268 tests, 680 subtests).
 
 ## Summary
 
@@ -96,3 +100,5 @@ Added the priorities configuration default and validation, documented the settin
 - 2026-11-26T13:20:04Z kind-coral-falcon: changed notes
 - 2026-11-26T13:24:21Z kind-coral-falcon: changed summary
 - 2026-11-26T13:26:46Z kind-coral-falcon doing → review
+- 2026-11-26T13:36:06Z plucky-jade-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-26T13:36:06Z plucky-jade-lapwing review → done
