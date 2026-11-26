@@ -1,6 +1,6 @@
 ---
 title: Mentions of another repository's ticket IDs are listed as this repository's tickets
-status: backlog
+status: to-plan
 labels:
   - bug
 created: 2026-11-26
@@ -19,8 +19,12 @@ Suggestion origin: chitty
 
 Same root cause as TASK-YST8KG (every mention counts as a local ticket); plan the two together.
 
+Decided (the person, 2026-11-26): skip an ID preceded by a project name, e.g. echonomicon TASK-217, and tell planners to cite other repositories that way.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:47Z calm-ochre-quail: changed notes
 - 2026-11-26T10:56:51Z calm-ochre-quail: changed labels, notes
+- 2026-11-26T11:11:27Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:27Z calm-ochre-quail backlog → to-plan
