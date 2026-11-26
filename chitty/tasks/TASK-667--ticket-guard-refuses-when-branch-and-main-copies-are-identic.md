@@ -21,8 +21,8 @@ Out of scope: listing tickets whose copies really differ (TASK-472).
 
 ## Acceptance Criteria
 
-- [ ] A real-Git test: commit ticket `TASK-1` on `main`, branch `task-1`, make the same ticket edit on both `main` and `task-1` as separate commits (byte-identical files, both sides changed since the split): `chitty list` and `chitty show TASK-1` succeed and show that copy. Fails today with ``ticket `TASK-1` changed on both `task-1` and `main` ``.
-- [ ] Regression tests: when the two copies differ, `changed on both` is still raised, as `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` expect; `tests/test_property_ticket_source.py` passes; `make check` passes.
+- [x] A real-Git test: commit ticket `TASK-1` on `main`, branch `task-1`, make the same ticket edit on both `main` and `task-1` as separate commits (byte-identical files, both sides changed since the split): `chitty list` and `chitty show TASK-1` succeed and show that copy. Fails today with ``ticket `TASK-1` changed on both `task-1` and `main` ``.
+- [x] Regression tests: when the two copies differ, `changed on both` is still raised, as `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` expect; `tests/test_property_ticket_source.py` passes; `make check` passes.
 
 ## Plan
 
@@ -31,6 +31,10 @@ Add a real Git CLI regression for identical independently committed ticket edits
 ## Notes
 
 Regression confirmed: the new real-Git test fails before the fix because show reports changed on both; list already returns a conflict entry. Distinct commit messages ensure the two commits do not collapse to the same Git object.
+
+## Summary
+
+Compare ticket paths at branch tips before checking both sides for changes. Added a real-Git CLI regression; it failed before the fix and passes afterward. Focused regressions and make check pass.
 
 ## History
 
@@ -46,3 +50,4 @@ Regression confirmed: the new real-Git test fails before the fix because show re
 - 2026-11-26T00:27:42Z upbeat-amber-vole todo → doing
 - 2026-11-26T00:31:59Z upbeat-amber-vole: wrote the plan
 - 2026-11-26T00:32:34Z upbeat-amber-vole: changed notes
+- 2026-11-26T00:36:09Z upbeat-amber-vole: changed summary; ticked acceptance criteria
