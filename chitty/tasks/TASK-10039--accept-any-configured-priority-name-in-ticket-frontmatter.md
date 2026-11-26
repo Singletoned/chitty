@@ -1,6 +1,6 @@
 ---
 title: Accept any configured priority name in ticket frontmatter
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -31,8 +31,8 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 
 ## Acceptance Criteria
 
-- [ ] The `priority: ""` and custom-name list and next tests in `tests/test_priorities_config.py` pass and fail before the change (record the failures in a note)
-- [ ] The `task-file.md` priority row is updated; `make check` passes
+- [x] The `priority: ""` and custom-name list and next tests in `tests/test_priorities_config.py` pass and fail before the change (record the failures in a note)
+- [x] The `task-file.md` priority row is updated; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,10 @@ Add hand-written frontmatter and CLI ordering regression tests and record their 
 ## Notes
 
 Before the fix, pytest CustomPriorityTests failed both tests: empty priority reported the built-in literal choices instead of the required message, and list rejected the custom priority soon as not one of those choices.
+
+Reviewed: implementation and complete diff meet the ticket.
+1: pass - `make check` passes both `CustomPriorityTests`; applying the tests to merge base `7ecc35c2` and running `PYTHONPATH=<base>/src:<base> python -m pytest -q tests/test_priorities_config.py::CustomPriorityTests` gives two failures: custom `soon` is rejected and the empty priority reports the old literal choices instead of the required message.
+2: pass - `docs/plan/task-file.md` updates the priority row; `make check` passes (1284 tests, 684 subtests).
 
 ## Summary
 
@@ -58,3 +62,5 @@ Frontmatter accepts non-empty priority names; list displays unknown names withou
 - 2026-11-26T14:40:32Z plucky-maroon-urchin: changed notes
 - 2026-11-26T14:44:33Z plucky-maroon-urchin: changed summary
 - 2026-11-26T14:47:07Z plucky-maroon-urchin doing → review
+- 2026-11-26T14:54:23Z honest-lilac-eel: changed notes; ticked acceptance criteria
+- 2026-11-26T14:54:23Z honest-lilac-eel review → done
