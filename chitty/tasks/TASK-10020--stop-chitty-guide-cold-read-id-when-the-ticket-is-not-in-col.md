@@ -36,6 +36,10 @@ Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named 
 
 Before the fix, .venv/bin/pytest tests/test_guide_cold_read.py -q failed the status property for backlog: exit 0 and guide printed instead of exit 1.
 
+## Summary
+
+Cold-read guides with a ticket ID now resolve the checkout ticket like show and reject other statuses; the cold-reader uses the named checkout. Added status property and repository error tests. The property failed for backlog before the fix; make check passes.
+
 ## History
 
 - 2026-11-25T22:28:28Z calm-ochre-quail → backlog
@@ -51,3 +55,4 @@ Before the fix, .venv/bin/pytest tests/test_guide_cold_read.py -q failed the sta
 - 2026-11-26T01:41:31Z calm-fawn-falcon todo → doing
 - 2026-11-26T01:45:27Z calm-fawn-falcon: wrote the plan
 - 2026-11-26T01:46:15Z calm-fawn-falcon: changed notes
+- 2026-11-26T01:50:14Z calm-fawn-falcon: changed summary
