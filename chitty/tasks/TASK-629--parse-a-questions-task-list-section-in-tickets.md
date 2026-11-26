@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: to-plan
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -147,3 +147,4 @@ Released 2026-11-26: the last planner claim is from 2026-11-24 and stale; splitt
 - 2026-11-24T09:25:59Z sunny-khaki-crane doing → planning
 - 2026-11-26T11:28:10Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:28:10Z brisk-bronze-adder planning → to-plan
+- 2026-11-26T11:28:19Z brisk-bronze-adder to-plan → planning
