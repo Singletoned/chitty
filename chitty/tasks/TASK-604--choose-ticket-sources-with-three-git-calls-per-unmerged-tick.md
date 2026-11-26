@@ -1,6 +1,6 @@
 ---
 title: Choose ticket sources with three Git calls per unmerged ticket branch
-status: cold-read
+status: todo
 priority: high
 depends_on:
   - TASK-SNYWDV
@@ -18,7 +18,7 @@ On this repository on 2026-11-26 that came to about 80 of the 130 Git calls in `
 
 Change, with `ticket_source` and its arguments unchanged:
 
-- `contains` stays a general two-argument function, because the mutant tests swap its arguments. Answer `contains(main_tip, tip)` from the set of commit IDs printed by one `git for-each-ref --merged=<main_tip> --format=%(objectname) refs/heads refs/remotes`. Run it at most once per `Repo` and clear it in `_invalidate`. Other pairs still use `git.is_ancestor`.
+- `contains` stays a general two-argument function, because the mutant tests swap its arguments. Answer `contains(main_tip, tip)` from the set of commit IDs printed by one `git for-each-ref --merged=<main_tip> --format=%(objectname) refs/heads refs/remotes`. Run it at most once per `Repo` and clear it in `_invalidate`. Return `True` without Git when both arguments are equal (`ticket_source` calls `contains(tip, tip)`). Other pairs still use `git.is_ancestor`.
 - In `changed_on_both`, keep `git.paths_differ`, and replace each `git.changed_since_split` with a new `git.changed_since_split_point(root, ref, against, paths)` in `src/chitty/git.py`. It runs `git --literal-pathspecs diff --quiet <against>...<ref> -- <paths>`, which diffs from the merge base. It returns `False` without running Git when `paths` is empty, as `paths_differ` does. On exit 128, call `git.common_ancestor`: if that gives `None`, raise today's `refs <ref> and <against> have unrelated histories`; otherwise raise the diff's error.
 
 Leave `changed_since_split` in place: `_require_current_version` still uses it.
@@ -39,3 +39,5 @@ Out of scope: reading every non-ticket branch (TASK-603), and `src/chitty/run.py
 - 2026-11-26T21:57:53Z youthful-lilac-heron: changed title, priority, dependencies, description, acceptance criteria
 - 2026-11-26T21:58:09Z youthful-lilac-heron planning → cold-read
 - 2026-11-26T22:00:42Z youthful-lilac-heron: changed title, description, acceptance criteria
+- 2026-11-26T22:03:19Z youthful-lilac-heron: changed description
+- 2026-11-26T22:03:19Z youthful-lilac-heron cold-read → todo
