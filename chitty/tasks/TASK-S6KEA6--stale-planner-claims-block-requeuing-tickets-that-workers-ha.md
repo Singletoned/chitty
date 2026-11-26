@@ -1,6 +1,8 @@
 ---
 title: Stale planner claims block requeuing tickets that workers handed back
 status: backlog
+labels:
+  - bug
 created: 2026-11-26
 provisional: true
 ---
@@ -13,7 +15,10 @@ On 2026-11-26, requeuing seven `planning` tickets (TASK-629, 599, 632, 688, 674,
 
 Suggestion origin: chitty
 
+Mostly addressed since: TASK-10030 tells workers to return tickets to `to-plan`, and TASK-10031 moved old `planning` tickets to `to-plan` on setup upgrade; of the seven tickets named, six are now done. What is left: `claim_refusal` in `src/chitty/model.py` still treats a `doing -> planning` transition as a planning claim.
+
 ## History
 
 - 2026-11-26T18:06:12Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:14Z calm-ochre-quail: changed notes
+- 2026-11-26T18:07:28Z calm-ochre-quail: changed labels, notes
