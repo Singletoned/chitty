@@ -47,26 +47,33 @@ class TestProvisionalPreflightErrors(RepoTestCase):
         self.assertEqual(before, self.snapshot())
         return str(caught.exception)
 
+    def stale_feature(self):
+        self.git("branch", "feature")
+        (self.root / "advance").write_text("advance")
+        self.commit()
+        self.git("switch", "feature")
+
     def test_feature(self):
-        self.git("switch", "-c", "feature")
-        self.check_error(ProvisionalOffMain, "feature")
+        self.stale_feature()
+        self.check_error(ProvisionalOffMain, "feature", "rebase onto main first")
 
     def test_unique_numbered_ticket_on_feature_branch(self):
         path = self.file("tasks", "TASK-1")
         self.commit()
-        self.git("switch", "-c", "feature")
+        self.stale_feature()
         before = self.snapshot()
         previous = os.getcwd()
         os.chdir(self.root)
         self.addCleanup(os.chdir, previous)
         result = CliRunner().invoke(cli, ["renumber", str(path)])
         self.assertEqual(result.exit_code, 1, result.output)
-        self.assertIn("provisional tickets are renumbered on", result.output)
+        self.assertIn("rebase onto main first", result.output)
         self.assertEqual(before, self.snapshot())
 
     def test_detached(self):
+        self.stale_feature()
         self.git("checkout", "--detach")
-        self.check_error(ProvisionalOffMain, "detached HEAD")
+        self.check_error(ProvisionalOffMain, "detached HEAD", "rebase onto main first")
 
     def test_malformed(self):
         path = self.root / "chitty/tasks/TASK-BAAAAA--bad.md"

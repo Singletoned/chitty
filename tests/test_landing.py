@@ -133,6 +133,22 @@ class TestLanding(LandingTestCase):
 
         self.assertTrue((self.root / "untracked").exists())
 
+    def test_landing_renumbers_provisional_ticket(self):
+        provisional = self.worktree / "chitty/tasks/TASK-ABCDEF--new.md"
+        provisional.write_text(
+            "---\ntitle: New\nstatus: todo\ncreated: 2026-01-01\n"
+            "provisional: true\n---\n\n## Description\n\nSee TASK-ABCDEF.\n"
+        )
+        self.git("add", str(provisional), cwd=self.worktree)
+        self.git("commit", "--quiet", "-m", "add provisional", cwd=self.worktree)
+        self.finish_ticket()
+        self.land()
+        ticket = self.root / "chitty/tasks/TASK-2--new.md"
+        self.assertIn("moved_from: TASK-ABCDEF", ticket.read_text())
+        self.assertIn("See TASK-2.", ticket.read_text())
+        self.assertFalse(list((self.root / "chitty/tasks").glob("TASK-ABCDEF--*")))
+        self.assertIn("chitty: renumber", self.git("log", "--format=%s", "main"))
+
     def test_ticket_fast_forwards_main_and_cleans_up(self):
         self.finish_ticket()
         self.land()

@@ -1303,6 +1303,11 @@ def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check
             ) from exc
 
 
+def _renumber_and_fast_forward(main_repo: Repo, worktree: Path, branch: str) -> None:
+    Repo(worktree, main_repo.config).renumber_provisional()
+    git.fast_forward(main_repo.root, branch)
+
+
 def _land_locked(
     main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str
 ) -> bool:
@@ -1368,7 +1373,7 @@ def _land_locked(
         try:
             with locks.main_checkout_lock(main_root):
                 git.require_clean(main_root)
-                git.fast_forward(main_root, branch)
+                _renumber_and_fast_forward(main_repo, worktree, branch)
         except ChittyError:
             if not git.is_ancestor(main_root, main_branch, branch):
                 while quick_attempts < QUICK_LANDING_ATTEMPTS:
@@ -1393,7 +1398,7 @@ def _land_locked(
                     try:
                         with locks.main_checkout_lock(main_root):
                             git.require_clean(main_root)
-                            git.fast_forward(main_root, branch)
+                            _renumber_and_fast_forward(main_repo, worktree, branch)
                     except ChittyError:
                         if not git.is_ancestor(main_root, main_branch, branch):
                             continue

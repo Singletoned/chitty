@@ -253,6 +253,16 @@ class TestCliProvisionalRenumbering(CliTestCase):
         result = self.run_cli("renumber", "--json")
         self.assertEqual([item["id"] for item in json.loads(result.stdout)], ["TASK-3"])
 
+    def test_branch_containing_main_renumbers_and_commits(self):
+        self.fixture()
+        self.git("switch", "-c", "fresh")
+        before = self.git("rev-parse", "HEAD")
+        result = self.run_cli("renumber")
+        self.assertEqual(len(result.stdout.splitlines()), 2)
+        self.assertNotEqual(before, self.git("rev-parse", "HEAD"))
+        self.assertIn("chitty: renumber", self.git("log", "-1", "--format=%s"))
+        self.assertEqual(self.git("branch", "--show-current").strip(), "fresh")
+
     def test_main(self):
         self.fixture()
         old = sorted(p.name.split("--")[0] for p in (self.root / "chitty/tasks").glob("TASK-*.md"))
@@ -279,9 +289,7 @@ class TestCliProvisionalRenumbering(CliTestCase):
         self.git("switch", "feature")
         result = self.run_cli("renumber", "--json")
         self.assertEqual(json.loads(result.stdout), [])
-        self.assertEqual(
-            result.stderr.strip(), "provisional tickets are renumbered on main; nothing changed"
-        )
+        self.assertEqual(result.stderr.strip(), "rebase onto main first; nothing changed")
 
     def test_outside_git(self):
         for ident, title in [("AAAAAA", "Alpha"), ("BAAAAA", "Beta")]:
@@ -297,14 +305,15 @@ class TestCliProvisionalRenumbering(CliTestCase):
 
     def test_off_main(self):
         self.fixture()
+        (self.root / "advance").write_text("advance")
+        self.git("add", "advance")
+        self.git("commit", "-m", "advance main")
         for args in [("switch", "feature"), ("switch", "--detach")]:
             self.git(*args)
             before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
             status = self.git("status", "--porcelain")
             result = self.run_cli("renumber")
-            self.assertEqual(
-                result.stderr.strip(), "provisional tickets are renumbered on main; nothing changed"
-            )
+            self.assertEqual(result.stderr.strip(), "rebase onto main first; nothing changed")
             self.assertEqual(
                 before, {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
             )

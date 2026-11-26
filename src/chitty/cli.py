@@ -1025,10 +1025,11 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 @click.argument("path", type=click.Path(path_type=Path), required=False)
 @json_option
 def renumber(path: Path | None, as_json: bool) -> None:
-    """Renumber provisional tickets on main, or one of several files sharing an ID.
+    """Renumber provisional tickets, or one of several files sharing an ID.
 
-    PATH identifies a ticket. A unique ID is renumbered on main (or outside Git)
-    in a sequential context, and its references are rewritten. For a shared ID,
+    PATH identifies a ticket. A unique ID is renumbered in a sequential context
+    on a branch containing main (or outside Git); its references are rewritten.
+    For a shared ID,
     the new ID follows the context's allocation rules; references are not
     rewritten because they are ambiguous, and tickets naming it are listed to
     check. Both forms record moved_from.
@@ -1037,7 +1038,7 @@ def renumber(path: Path | None, as_json: bool) -> None:
         try:
             changes = _repo().renumber_provisional()
         except ProvisionalOffMain:
-            click.echo("provisional tickets are renumbered on main; nothing changed", err=True)
+            click.echo("rebase onto main first; nothing changed", err=True)
             if as_json:
                 _print_json([])
             return

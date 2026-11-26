@@ -1276,10 +1276,9 @@ class Repo:
         if git.is_repository(self.root):
             branch = git.current_branch(self.root)
             main = self._main_branch()
-            if branch != main:
+            if branch != main and not git.is_ancestor(self.root, main, "HEAD"):
                 raise ProvisionalOffMain(
-                    f"provisional tickets are renumbered on {main}; "
-                    f"current branch is {branch or 'detached HEAD'}"
+                    f"rebase onto {main} first; current branch is {branch or 'detached HEAD'}"
                 )
         sequential = {
             context.name: context

@@ -80,11 +80,13 @@ file holds the decisions behind them.
   context, keeps the slug, sets `moved_from`, and rewrites `depends_on` and
   `parent` references. No cross-repository move: `suggest` there, then
   `archive` here.
-- `renumber` without a path renumbers provisional tickets on main. It prints
-  `renumbered <old ID> -> <new ID> <path>` on stdout for each ticket. If there
-  is nothing to renumber, it prints `nothing to renumber` on stderr; off main,
-  it prints `provisional tickets are renumbered on main; nothing changed` on
-  stderr. Both cases exit 0. With `--json`, stdout is a list of renumbered
+- `renumber` without a path renumbers provisional tickets on a branch containing
+  main's tip (or outside Git). It prints `renumbered <old ID> -> <new ID> <path>`
+  on stdout for each ticket. If there is nothing to renumber, it prints
+  `nothing to renumber` on stderr; on a stale branch, it prints
+  `rebase onto main first; nothing changed` on stderr. Both cases exit 0.
+  The runner renumbers under the landing lock before fast-forwarding main.
+  With `--json`, stdout is a list of renumbered
   tickets, empty when nothing changes.
 - `renumber PATH` repairs two files sharing an ID, as a merge of two branches
   can leave. Such files collapse into one ticket for `show`, `edit` and
