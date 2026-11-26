@@ -1,6 +1,6 @@
 ---
 title: Refuse writes to a ticket another actor is planning
-status: review
+status: done
 depends_on:
   - TASK-10029
 parent: TASK-10026
@@ -39,6 +39,10 @@ Add failing property and CLI tests for planning claims, implement the pure claim
 
 Before the fix, the property failed because claim_refusal did not exist and the CLI test failed because another actor could add a note.
 
+Reviewed: Planning claims are enforced at the requested write boundaries.
+1: pass - make check runs the property and CLI example successfully; applying the test diff to the merge base and running pytest for both tests fails with ImportError for claim_refusal and exit code 0 instead of 1 for the conflicting note, respectively.
+2: pass - make check: 1234 passed, 655 subtests passed; ruff and pyright passed.
+
 ## Summary
 
 Added a pure planning-claim rule and enforced it for edits, moves, archives and restores. Property and CLI tests failed before the fix and pass afterward; make check passes.
@@ -58,3 +62,5 @@ Added a pure planning-claim rule and enforced it for edits, moves, archives and 
 - 2026-11-26T02:22:01Z sunny-umber-jay: changed notes
 - 2026-11-26T02:25:03Z sunny-umber-jay: changed summary; ticked acceptance criteria
 - 2026-11-26T02:27:24Z sunny-umber-jay doing → review
+- 2026-11-26T02:33:18Z sunny-teal-heron: changed notes
+- 2026-11-26T02:33:18Z sunny-teal-heron review → done
