@@ -1,6 +1,6 @@
 ---
 title: Choose ticket sources with at most two Git calls per unmerged ticket branch
-status: planning
+status: cold-read
 priority: high
 depends_on:
   - TASK-SNYWDV
@@ -37,3 +37,4 @@ Out of scope: reading every non-ticket branch (TASK-603), and `src/chitty/run.py
 - 2026-11-26T18:02:07Z brisk-bronze-adder: changed description
 - 2026-11-26T21:55:45Z youthful-lilac-heron backlog → planning
 - 2026-11-26T21:57:53Z youthful-lilac-heron: changed title, priority, dependencies, description, acceptance criteria
+- 2026-11-26T21:58:09Z youthful-lilac-heron planning → cold-read
