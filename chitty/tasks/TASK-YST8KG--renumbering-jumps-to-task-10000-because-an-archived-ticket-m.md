@@ -1,6 +1,8 @@
 ---
 title: Renumbering jumps to TASK-10000 because an archived ticket mentions `TASK-9999`
 status: backlog
+labels:
+  - bug
 created: 2026-11-26
 provisional: true
 ---
@@ -17,3 +19,4 @@ Suggestion origin: chitty
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:44Z calm-ochre-quail: changed notes
+- 2026-11-26T10:56:45Z calm-ochre-quail: changed labels
