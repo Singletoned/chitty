@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: planning
+status: todo
 labels:
   - needs-minor
 priority: high
@@ -26,7 +26,9 @@ Tests, in a new `tests/test_status_dropped.py`, with classes inheriting `CliTest
 - Round trip: for each status in `("dropped", *chitty.model.STATUSES)`, a ticket file written by `chitty add` with its status line changed to that status satisfies `parse(text).render() == text`.
 - Regression test: `TASK-2` in `todo` with `depends_on: [TASK-1]`, where `TASK-1` is `dropped`, plus an independent `todo` `TASK-3`: `chitty next --mode work` prints `work TASK-3`.
 
-Out of scope: rules for dropping, `chitty add -s dropped`, archiving, `chitty summary`, and the guides.
+`chitty summary` will list a `dropped` section before `done` (it ranks `reversed` statuses); that is intended. Before the change, the list and dependency fixtures fail at parsing, which is enough.
+
+Out of scope: rules for dropping, `chitty add -s dropped`, archiving, and the guides.
 
 ## Acceptance Criteria
 
@@ -112,3 +114,5 @@ Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (
 - 2026-11-26T11:39:00Z brisk-bronze-adder: replaced notes; changed owner, description, acceptance criteria; wrote the plan
 - 2026-11-26T11:39:00Z brisk-bronze-adder planning → cold-read
 - 2026-11-26T12:03:37Z brisk-bronze-adder cold-read → planning
+- 2026-11-26T12:03:45Z brisk-bronze-adder: changed description
+- 2026-11-26T12:03:45Z brisk-bronze-adder planning → todo
