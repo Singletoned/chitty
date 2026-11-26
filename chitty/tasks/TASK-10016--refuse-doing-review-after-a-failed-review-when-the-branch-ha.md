@@ -32,6 +32,10 @@ Confirmed both new tests fail before the fix: the stub property assertion and th
 
 Decided: commits to inspect -> main..HEAD, because a new main commit after review is not a fix on the ticket branch and must not bypass the rebase regression.
 
+## Summary
+
+Reject repeat review on the ticket branch unless a non-bookkeeping branch commit has a later author timestamp than the latest review-to-doing transition. Added property and real-Git rebase coverage and updated review fixtures. make check passes.
+
 ## History
 
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
@@ -48,3 +52,4 @@ Decided: commits to inspect -> main..HEAD, because a new main commit after revie
 - 2026-11-26T01:29:56Z rosy-jade-marten: wrote the plan
 - 2026-11-26T01:30:38Z rosy-jade-marten: changed notes
 - 2026-11-26T01:31:02Z rosy-jade-marten: changed notes
+- 2026-11-26T01:37:52Z rosy-jade-marten: changed summary
