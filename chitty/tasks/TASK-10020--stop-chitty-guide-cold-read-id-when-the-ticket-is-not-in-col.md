@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
-status: todo
+status: doing
 created: 2026-11-25
 moved_from: TASK-VKTREF
 ---
@@ -42,3 +42,4 @@ Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named 
 - 2026-11-25T23:49:48Z calm-ochre-quail: changed notes
 - 2026-11-25T23:50:43Z calm-ochre-quail: changed description
 - 2026-11-25T23:50:43Z calm-ochre-quail cold-read → todo
+- 2026-11-26T01:41:31Z calm-fawn-falcon todo → doing
