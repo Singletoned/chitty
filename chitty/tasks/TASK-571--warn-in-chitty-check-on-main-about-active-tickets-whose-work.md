@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
   - TASK-572
@@ -17,7 +17,7 @@ Decisions:
 - In `check()` in `src/chitty/check.py`, only when `include_worktree_state` is true and `git.current_branch(repo.root)` equals `repo.config.main_branch`, call `unfinished_landed(git.trailer_commits(repo.root, main_branch), statuses, ticket_directories)` and add one warning per returned ticket, on that ticket's file path: `commit <first 10 characters of SHA> on <main_branch> has work for <ID>, which is <status>`. Warnings do not change the exit code.
 - `statuses`: the active (not archived) ticket files `check()` already parsed, by ID. Archived tickets never warn: archiving closes a ticket, and on 2026-11-22 four old archived tickets (`TASK-106`, `TASK-171`, `TASK-231`, `TASK-372`) are archived without being `done` and have code commits. An ID with more than one file, which `check()` already reports as an error, is left out.
 - `ticket_directories`: the `directory` of each of `repo.discovered_contexts()`, relative to `repo.root`, including its `archive/` directory (in this repository `chitty/tasks`, `chitty/human`, `chitty/backlog`).
-- `include_worktree_state` is false when a write runs the check (`store.py` around line 1460); that is wanted here too, so writes do not pay for a history scan (about 0.3 s on this repository). Add a comment saying the flag gates both.
+- `include_worktree_state` is false when a write runs the check (`Repo` in `src/chitty/store.py`, where it calls `check(..., include_worktree_state=False)`); that is wanted here too, so writes do not pay for a history scan (about 0.3 s on this repository). Add a comment saying the flag gates both. `check()` is already long, so put the new warnings in a helper called from it.
 - Out of scope: commits on other branches; `chitty run` behaviour.
 
 Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheriting `CliTestCase` from `tests/test_cli.py`, real Git on branch `main`. No property: `TASK-358` covers the rule with properties; these check the wiring, a fixed set of cases.
@@ -40,3 +40,5 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 - 2026-11-26T18:58:14Z zesty-ginger-newt planning → to-plan
 - 2026-11-26T18:58:32Z zesty-ginger-newt: replaced notes
 - 2026-11-26T18:58:32Z zesty-ginger-newt to-plan → planning
+- 2026-11-26T18:58:44Z zesty-ginger-newt: changed description
+- 2026-11-26T18:58:44Z zesty-ginger-newt planning → cold-read
