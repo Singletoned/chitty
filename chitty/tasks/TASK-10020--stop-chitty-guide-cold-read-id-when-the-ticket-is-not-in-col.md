@@ -34,6 +34,8 @@ Add a status property test using a temporary repository and confirm it fails bef
 
 Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named the worktree, but the reader followed `.claude/agents/cold-reader.md` step 1, read `main`'s `backlog` copy, and reported "no Acceptance Criteria" and status `backlog`.
 
+Before the fix, .venv/bin/pytest tests/test_guide_cold_read.py -q failed the status property for backlog: exit 0 and guide printed instead of exit 1.
+
 ## History
 
 - 2026-11-25T22:28:28Z calm-ochre-quail → backlog
@@ -48,3 +50,4 @@ Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named 
 - 2026-11-25T23:50:43Z calm-ochre-quail cold-read → todo
 - 2026-11-26T01:41:31Z calm-fawn-falcon todo → doing
 - 2026-11-26T01:45:27Z calm-fawn-falcon: wrote the plan
+- 2026-11-26T01:46:15Z calm-fawn-falcon: changed notes
