@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: review
+status: done
 labels:
   - needs-minor
 priority: high
@@ -44,6 +44,10 @@ Add focused CLI and round-trip tests and confirm they fail before adding the sta
 Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (its order follows from `STATUSES`), the dependency check is now a regression test, and the close-from-`main` request moved to TASK-10036.
 
 Before the model change, `.venv/bin/pytest -q tests/test_status_dropped.py` failed all four requested behaviors: edit to dropped rejected the choice, edit from dropped and list rejected frontmatter, and the dropped round-trip failed parsing. The dependency regression also failed parsing, as expected.
+
+Reviewed: implementation and complete diff checked.
+1: pass - make check passed the five focused tests. In a temporary merge-base worktree, PYTHONPATH="$p/src:$p" .venv/bin/python -m pytest -q tests/test_status_dropped.py produced five failures: both edits, list and round trip rejected dropped, as did the dependency regression; the test file was copied from HEAD and the temporary worktree removed.
+2: pass - docs/plan/task-file.md names dropped and its meaning; make check passed (1255 tests, 679 subtests; ruff and pyright clean).
 
 ## Summary
 
@@ -131,3 +135,5 @@ Added the dropped status, its list display and task-file documentation. Focused 
 - 2026-11-26T12:33:13Z zesty-indigo-vole: changed notes
 - 2026-11-26T12:37:18Z zesty-indigo-vole: changed summary; ticked acceptance criteria
 - 2026-11-26T12:40:46Z zesty-indigo-vole doing → review
+- 2026-11-26T12:51:25Z upbeat-teal-falcon: changed notes
+- 2026-11-26T12:51:25Z upbeat-teal-falcon review → done
