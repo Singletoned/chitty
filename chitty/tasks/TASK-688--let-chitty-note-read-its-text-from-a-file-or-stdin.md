@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: doing
+status: review
 created: 2026-11-24
 ---
 
@@ -76,3 +76,4 @@ Verified the existing note file-input implementation and added property, literal
 - 2026-11-26T13:41:41Z kind-fawn-wren todo → doing
 - 2026-11-26T13:45:45Z kind-fawn-wren: wrote the plan
 - 2026-11-26T13:50:50Z kind-fawn-wren: changed notes, summary
+- 2026-11-26T13:53:17Z kind-fawn-wren doing → review
