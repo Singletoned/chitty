@@ -441,6 +441,11 @@ def changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path
         raise ChittyError(
             f"`git merge-base {ref} {against}` failed in {root}:\n{result.stderr.strip()}"
         )
+    return paths_differ(root, result.stdout.strip(), ref, paths)
+
+
+def paths_differ(root: Path, first: str, second: str, paths: Sequence[Path]) -> bool:
+    """Whether selected paths differ between two refs."""
     if not paths:
         return False
     diff = subprocess.run(
@@ -449,8 +454,8 @@ def changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path
             "--literal-pathspecs",
             "diff",
             "--quiet",
-            result.stdout.strip(),
-            ref,
+            first,
+            second,
             "--",
             *map(str, paths),
         ],
@@ -461,7 +466,7 @@ def changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path
     if diff.returncode in (0, 1):
         return diff.returncode == 1
     raise ChittyError(
-        f"`git diff --quiet --literal-pathspecs {result.stdout.strip()} {ref} -- ...` "
+        f"`git --literal-pathspecs diff --quiet {first} {second} -- ...` "
         f"failed in {root}:\n{diff.stderr.decode().strip()}"
     )
 

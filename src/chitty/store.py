@@ -635,9 +635,11 @@ class Repo:
                     for path, _ in self._ref_ticket_files(source, task_id)
                 }
             )
-            return git.changed_since_split(
-                self.root, tips[ref], main_tip, paths
-            ) and git.changed_since_split(self.root, main_tip, tips[ref], paths)
+            return (
+                git.paths_differ(self.root, main_tip, tips[ref], paths)
+                and git.changed_since_split(self.root, tips[ref], main_tip, paths)
+                and git.changed_since_split(self.root, main_tip, tips[ref], paths)
+            )
 
         def contains(a: str | None, b: str) -> bool:
             return a is not None and git.is_ancestor(self.root, b, a)

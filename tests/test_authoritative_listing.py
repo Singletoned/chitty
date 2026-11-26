@@ -68,6 +68,24 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
         self.assertIn(str(first), result.output)
         self.assertIn(str(other), result.output)
 
+    def test_identical_edits_on_both_branches(self):
+        self.setup_base()
+        self.git("checkout", "-b", "task-1")
+        self.file(1, "same edit")
+        self.commit()
+        self.git("checkout", "main")
+        self.file(1, "same edit")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "main edit")
+        self.assertNotEqual(self.git("rev-parse", "main"), self.git("rev-parse", "task-1"))
+
+        listed = self.json("list")
+        ticket = next(t for t in listed if t["id"] == "TASK-1")
+        self.assertEqual(ticket["title"], "same edit")
+        self.assertNotIn("conflict", ticket)
+        shown = self.run_cli("show", "TASK-1")
+        self.assertIn("same edit", shown.output)
+
     def test_conflict_and_isolated_allocation(self):
         self.setup_changed_both()
         listed = self.json("list")
