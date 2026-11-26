@@ -1,6 +1,6 @@
 ---
 title: A stale inbox repo path makes every command fail with Not a directory
-status: planning
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -31,3 +31,4 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-AZ59M3
 - 2026-11-26T00:21:46Z calm-ochre-quail: replaced notes; changed priority, description, acceptance criteria
 - 2026-11-26T00:21:46Z calm-ochre-quail backlog → planning
+- 2026-11-26T00:21:51Z calm-ochre-quail planning → cold-read
