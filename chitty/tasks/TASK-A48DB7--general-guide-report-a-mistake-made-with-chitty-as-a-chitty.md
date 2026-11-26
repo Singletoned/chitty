@@ -1,6 +1,6 @@
 ---
 title: "General guide: report a mistake made with Chitty as a Chitty defect"
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -26,6 +26,10 @@ This grows a 77-word guide by about 35 words. Nothing is cut: every line there i
 
 Adding a `chitty suggest` pointer to refusal errors.
 
+## Plan
+
+Add one concise line to `src/chitty/guide.md` after the `chitty --help` line instructing agents to treat any Chitty mistake as a Chitty defect and report it without asking via `chitty suggest chitty`. Update `tests/fixtures/guide-runner-expected.md` to match while leaving `AGENTS.md` untouched. Verify with `make check` via `chitty edit -s review`.
+
 ## History
 
 - 2026-11-26T10:54:50Z calm-ochre-quail → backlog
@@ -35,3 +39,5 @@ Adding a `chitty suggest` pointer to refusal errors.
 - 2026-11-26T11:12:30Z calm-ochre-quail: replaced notes; changed title, labels, owner, description
 - 2026-11-26T11:12:30Z calm-ochre-quail to-plan → todo
 - 2026-11-26T11:12:42Z calm-ochre-quail: changed description
+- 2026-11-26T18:17:42Z calm-russet-badger: wrote the plan
+- 2026-11-26T18:17:42Z calm-russet-badger todo → doing
