@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: planning
+status: to-plan
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -92,6 +92,8 @@ Planner, 2026-11-24: requeued. The last return was about session budget, not the
 
 Ticket is implementable and no defect or external obstacle has been identified; implementation remains unfinished.
 
+Released 2026-11-26: the last planner claim is from 2026-11-24 and stale; splitting the ticket.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -143,3 +145,5 @@ Ticket is implementable and no defect or external obstacle has been identified; 
 - 2026-11-24T09:25:19Z sunny-khaki-crane: wrote the plan
 - 2026-11-24T09:25:59Z sunny-khaki-crane: changed owner, notes
 - 2026-11-24T09:25:59Z sunny-khaki-crane doing → planning
+- 2026-11-26T11:28:10Z brisk-bronze-adder: changed notes
+- 2026-11-26T11:28:10Z brisk-bronze-adder planning → to-plan
