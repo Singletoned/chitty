@@ -35,6 +35,10 @@ Tests:
 
 Add failing property and CLI tests for planning claims, implement the pure claim rule and enforce it at the specified store write boundaries, then format, run checks, and hand off for review.
 
+## Notes
+
+Before the fix, the property failed because claim_refusal did not exist and the CLI test failed because another actor could add a note.
+
 ## History
 
 - 2026-11-25T23:06:45Z golden-coral-stoat → backlog
@@ -47,3 +51,4 @@ Add failing property and CLI tests for planning claims, implement the pure claim
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-SYR88D
 - 2026-11-26T02:18:50Z sunny-umber-jay todo → doing
 - 2026-11-26T02:21:31Z sunny-umber-jay: wrote the plan
+- 2026-11-26T02:22:01Z sunny-umber-jay: changed notes
