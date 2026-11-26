@@ -1,6 +1,6 @@
 ---
 title: Mark conflicted tickets in `chitty list` instead of failing
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -44,6 +44,11 @@ Regression test confirmed failing before the fix: list --json exits 1 with the c
 
 The real-Git property also fails against the unmodified HEAD: list exits 1 for states=[both]. Existing placement tests expected listing to raise, so their listing assertions now check conflict markers while preserving find error checks.
 
+Reviewed: Real-Git conflict listing and selection behave as required.
+1: pass - `make check` passes; `test_conflicts` fails on merge-base with `states=['both']` and the changed-on-both error.
+2: pass - `test_next_skips_conflict_and_show_still_fails` passes; on merge-base `next` exits 1 with the changed-on-both error.
+3: pass - `make check`: 1202 passed, 632 subtests passed.
+
 ## Summary
 
 Listings retain conflicted tickets with main or working-tree fallback, conflict markers and JSON details; selection skips them while direct operations still fail. Real-Git property and regression tests pass; make check passed.
@@ -66,3 +71,5 @@ Listings retain conflicted tickets with main or working-tree fallback, conflict 
 - 2026-11-25T23:50:23Z nimble-bronze-otter: changed notes
 - 2026-11-25T23:53:08Z nimble-bronze-otter: changed summary; ticked acceptance criteria
 - 2026-11-25T23:55:24Z nimble-bronze-otter doing → review
+- 2026-11-26T00:03:17Z golden-amber-newt: changed notes
+- 2026-11-26T00:03:17Z golden-amber-newt review → done
