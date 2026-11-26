@@ -1,6 +1,6 @@
 ---
 title: Show `chitty check` warnings when an edit moves a ticket to `cold-read` or `todo`
-status: todo
+status: doing
 created: 2026-11-26
 provisional: true
 ---
@@ -40,3 +40,4 @@ Running the configured repository check; warnings for other statuses or other co
 - 2026-11-26T11:17:06Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:17:06Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:17:24Z calm-ochre-quail: changed description
+- 2026-11-26T15:26:07Z rosy-pearl-toad todo → doing
