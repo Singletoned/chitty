@@ -206,6 +206,7 @@ class Edit:
     add_labels: Sequence[str] = ()
     rm_labels: Sequence[str] = ()
     priority: str | None = None  # "" removes
+    difficulty: str | None = None  # "" removes
     owner: str | None = None  # "" removes
     depends_on: Sequence[str] = ()
     rm_depends_on: Sequence[str] = ()
@@ -248,6 +249,8 @@ class Edit:
             task = task.with_field("labels", labels)
         if self.priority is not None:
             task = task.with_field("priority", self.priority or None)
+        if self.difficulty is not None:
+            task = task.with_field("difficulty", self.difficulty or None)
         if self.owner is not None:
             task = task.with_field("owner", self.owner or None)
         if self.depends_on or self.rm_depends_on:
@@ -2716,6 +2719,8 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("labels")
     if edit.priority is not None:
         changes.append("priority")
+    if edit.difficulty is not None:
+        changes.append("difficulty")
     if edit.owner is not None:
         changes.append("owner")
     if edit.depends_on or edit.rm_depends_on:

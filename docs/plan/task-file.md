@@ -50,6 +50,7 @@ Strict: unknown keys are an error.
 | `status`     | see below           | yes      |                                         |
 | `labels`     | list[string]        | no       | absent means `[]`                       |
 | `priority`   | any non-empty name | no       | absent means unset; configured names are checked on write and by `chitty check` (TASK-10038) |
+| `difficulty` | `low\|medium\|high` | no       | absent means unset |
 | `owner`      | string              | no       | one line: `human`, a name, an agent     |
 | `depends_on` | list[ID]            | no       | any context in the same repo            |
 | `parent`     | ID                  | no       | groups tickets; same repo               |

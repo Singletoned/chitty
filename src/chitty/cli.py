@@ -39,6 +39,7 @@ from chitty.integrations.claude.usage import run_hook
 from chitty.model import (
     ACCEPTANCE_CRITERIA,
     DEFAULT_LIST_STATUSES,
+    DIFFICULTIES,
     FIELD_ORDER,
     PRIORITY_GLYPHS,
     QUESTIONS,
@@ -398,6 +399,7 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.option("--ac", "criteria", multiple=True, help="Acceptance criterion (repeatable).")
 @click.option("-l", "--label", "labels", multiple=True, help="Label (repeatable).")
 @click.option("-p", "--priority")
+@click.option("--difficulty", type=click.Choice(DIFFICULTIES))
 @click.option("--owner", help="Free text: human, a name, an agent.")
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
@@ -417,6 +419,7 @@ def add(
     criteria: tuple[str, ...],
     labels: tuple[str, ...],
     priority: str | None,
+    difficulty: str | None,
     owner: str | None,
     depends_on: tuple[str, ...],
     parent: str | None,
@@ -444,6 +447,7 @@ def add(
         "status": status,
         "labels": list(dict.fromkeys(labels)),
         "priority": priority,
+        "difficulty": difficulty,
         "owner": owner,
         "depends_on": list(depends_on),
         "parent": parent,
@@ -731,6 +735,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("--add-label", multiple=True)
 @click.option("--rm-label", multiple=True)
 @click.option("-p", "--priority", help="A configured priority; '' unsets.")
+@click.option("--difficulty", type=click.Choice([*DIFFICULTIES, ""]), help="low, medium, high; '' unsets.")
 @click.option("--owner", help="'' unsets.")
 @click.option("--depends-on", multiple=True, help="Add a dependency (repeatable).")
 @click.option("--rm-depends-on", multiple=True, help="Remove a dependency (repeatable).")
@@ -798,6 +803,7 @@ def edit(
     add_label: tuple[str, ...],
     rm_label: tuple[str, ...],
     priority: str | None,
+    difficulty: str | None,
     owner: str | None,
     depends_on: tuple[str, ...],
     rm_depends_on: tuple[str, ...],
@@ -846,6 +852,7 @@ def edit(
         add_labels=add_label,
         rm_labels=rm_label,
         priority=priority,
+        difficulty=difficulty,
         owner=owner,
         depends_on=depends_on,
         rm_depends_on=rm_depends_on,

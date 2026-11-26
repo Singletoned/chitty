@@ -73,12 +73,14 @@ STATUS_LABELS = {
     "dropped": "drop",
 }
 PRIORITIES = ("low", "medium", "high")
+DIFFICULTIES = ("low", "medium", "high")
 PRIORITY_GLYPHS = {"high": "⏫", "medium": "➖", "low": "⏬", None: ""}
 FIELD_ORDER = (
     "title",
     "status",
     "labels",
     "priority",
+    "difficulty",
     "owner",
     "depends_on",
     "parent",
@@ -201,6 +203,7 @@ class Frontmatter(BaseModel):
     ]
     labels: list[str] = []
     priority: str | None = None
+    difficulty: Literal["low", "medium", "high"] | None = None
     owner: str | None = None
     depends_on: list[str] = []
     parent: str | None = None
