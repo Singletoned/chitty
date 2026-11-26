@@ -9,7 +9,7 @@ provisional: true
 
 ### Why
 
-On 2026-11-25 a planner scripted `chitty edit TASK-472 -s planning --replace-in-description ...`, then `chitty check <file>`, then `chitty edit TASK-472 -s todo`. The first edit was refused, but the script went on and moved the ticket to `todo` without its fixes. The plan guide makes `chitty check` a separate step ("run `chitty check` on the ticket file before starting a reader"), so planners script the sequence as separate commands. Decided (the person, 2026-11-26): the move itself runs the ticket's checks, so the separate step goes. The plan guide's line on joining commands with `&&` is TASK-HR7PKP.
+On 2026-11-25 a planner scripted an edit, then `chitty check <file>`, then `chitty edit TASK-472 -s todo`; the first edit was refused, but the last still moved the ticket to `todo` without its fixes. The plan guide makes `chitty check` a separate step. Decided (the person, 2026-11-26): the move itself runs the ticket's checks, so that step goes.
 
 Today `Repo._commit` (`src/chitty/store.py`) already runs `check.fix` on the written task files and refuses on errors, but only when `autoformat` or `autocommit` is set, and it discards the warnings.
 
@@ -39,3 +39,4 @@ Running the configured repository check; warnings for other statuses or other co
 - 2026-11-26T11:15:34Z calm-ochre-quail to-plan → cold-read
 - 2026-11-26T11:17:06Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:17:06Z calm-ochre-quail cold-read → todo
+- 2026-11-26T11:17:24Z calm-ochre-quail: changed description
