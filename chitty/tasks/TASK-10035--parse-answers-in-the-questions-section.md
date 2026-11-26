@@ -1,6 +1,6 @@
 ---
 title: Parse answers in the `## Questions` section
-status: planning
+status: cold-read
 depends_on:
   - TASK-629
 parent: TASK-621
@@ -49,3 +49,4 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 ## History
 
 - 2026-11-26T11:27:21Z brisk-bronze-adder → planning
+- 2026-11-26T11:28:48Z brisk-bronze-adder planning → cold-read
