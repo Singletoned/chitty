@@ -50,6 +50,10 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 
 Add focused parsing, refusal, round-trip, formatter and renumbering tests; record their failures before implementing answer-paragraph tracking in the questions parser. Format, run make check, and hand off for review.
 
+## Notes
+
+Before the fix, .venv/bin/pytest -q tests/test_questions_section.py -k answer_or_renumber (using the expression answer or renumber) failed the example, both blank-line variants, renumbering, and refusal: each received the may only contain error.
+
 ## History
 
 - 2026-11-26T11:27:21Z brisk-bronze-adder → planning
@@ -60,3 +64,4 @@ Add focused parsing, refusal, round-trip, formatter and renumbering tests; recor
 - 2026-11-26T11:30:23Z brisk-bronze-adder: changed description
 - 2026-11-26T13:54:31Z upbeat-zinc-wren todo → doing
 - 2026-11-26T13:58:30Z upbeat-zinc-wren: wrote the plan
+- 2026-11-26T13:59:00Z upbeat-zinc-wren: changed notes
