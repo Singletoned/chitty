@@ -23,6 +23,10 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 - [ ] Two stdin reads in one command fail with `only one file option can read stdin: <names>`, naming the `-file` options: `--plan - --note -` names `--plan-file` and `--note-file`; `--plan - --note-file -` the same; `--note - --note -` fails too. Fails today: the dashes are stored.
 - [ ] Regression tests: existing `-file` and stdin tests pass; `make check` passes.
 
+## Plan
+
+Normalize bare dashes to stdin file inputs before validation, preserving mutual exclusion and counting repeated notes. Add property and conflict regression tests, verify they fail before the fix, then format and run make check.
+
 ## History
 
 - 2026-11-25T22:28:33Z calm-ochre-quail → backlog
@@ -36,3 +40,4 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 - 2026-11-25T23:34:01Z calm-ochre-quail cold-read → planning
 - 2026-11-25T23:34:06Z calm-ochre-quail planning → todo
 - 2026-11-26T00:11:43Z zesty-fawn-toad todo → doing
+- 2026-11-26T00:15:38Z zesty-fawn-toad: wrote the plan
