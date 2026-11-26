@@ -38,6 +38,10 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 - [ ] In a scratch worktree with its own `.venv` after `uv pip uninstall mcp`, `make check` reinstalls `mcp` and pyright reports no `Import "mcp.server.mcpserver" could not be resolved`.
 - [ ] `make check` passes in the ticket worktree, and `mate --list` still lists `check` with its description.
 
+## Plan
+
+Add a first-line symlink guard and sync all extras before check's uv commands. Verify both failure modes in isolated scratch copies before and after the change, then run make check and mate --list in this worktree.
+
 ## History
 
 - 2026-11-21T07:58:04Z nimble-umber-gannet → backlog
@@ -47,3 +51,4 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 - 2026-11-26T18:18:58Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T18:18:58Z calm-ochre-quail cold-read → todo
 - 2026-11-26T18:38:04Z mellow-silver-eel todo → doing
+- 2026-11-26T18:42:02Z mellow-silver-eel: wrote the plan
