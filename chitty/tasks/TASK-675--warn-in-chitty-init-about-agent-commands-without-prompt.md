@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: review
+status: done
 created: 2026-11-24
 ---
 
@@ -49,6 +49,10 @@ Requeued 2026-11-26: the last worker returned it over tool failures, not a ticke
 
 Before implementation, both new tests failed: the property found commands={a: 0} against an empty stub, and init emitted no warning. Decided: blank named commands produce no warning, because the Tests section and acceptance criterion explicitly exclude all blank commands.
 
+Reviewed: implementation and complete diff checked.
+1: pass - `make check` passes; in a temporary merge-base worktree, `python -m pytest -q tests/test_agent_command_warnings.py` with a stub returning `[]` failed with `0 != 1` for `commands={'a': '0'}`.
+2: pass - `make check` passes (1270 tests); in the merge-base worktree, `python -m pytest -q tests/test_cli.py::TestInit::test_warns_for_agent_command_without_prompt` failed because stderr was empty.
+
 ## Summary
 
 Init warns on nonblank agent commands without the prompt placeholder, without changing commands. Property and CLI tests failed before the fix and pass now; make check passes (1264 tests).
@@ -76,3 +80,5 @@ Init warns on nonblank agent commands without the prompt placeholder, without ch
 - 2026-11-26T13:32:54Z tidy-umber-newt: changed notes
 - 2026-11-26T13:36:36Z tidy-umber-newt: changed summary; ticked acceptance criteria
 - 2026-11-26T13:40:26Z tidy-umber-newt doing → review
+- 2026-11-26T13:47:49Z kind-khaki-heron: changed notes
+- 2026-11-26T13:47:49Z kind-khaki-heron review → done
