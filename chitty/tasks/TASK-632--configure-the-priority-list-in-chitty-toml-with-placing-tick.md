@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: planning
+status: to-plan
 labels:
   - needs-minor
 parent: TASK-607
@@ -75,6 +75,8 @@ Please split into reviewable dependent tickets: (1) configuration and model vali
 
 Planner, 2026-11-25: `TASK-692` (bugs first) adds a `"bug" not in labels` key between status and priority in `selection.choose` and `store.ordered`, the same keys this ticket changes. Whichever lands second must keep both; re-check the anchors when re-planning.
 
+Released 2026-11-26: stale claim.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -114,3 +116,5 @@ Planner, 2026-11-25: `TASK-692` (bugs first) adds a `"bug" not in labels` key be
 - 2026-11-23T20:09:16Z eager-ebony-quail: changed owner, notes
 - 2026-11-23T20:09:16Z eager-ebony-quail doing → planning
 - 2026-11-25T10:38:24Z sunny-hazel-gannet: changed notes
+- 2026-11-26T11:41:41Z brisk-bronze-adder: changed notes
+- 2026-11-26T11:41:41Z brisk-bronze-adder planning → to-plan
