@@ -38,6 +38,10 @@ Add fixed upgrade tests at the real version, verify migration fails before imple
 
 Before the fix, the three fixed tests produced one failure: the old setup retained planning instead of to-plan; the two regression cases passed.
 
+## Summary
+
+Setup upgrades migrate active planning tickets from shared-planning versions to to-plan, clear owners, and commit history changes with setup. Fixed tests verify migration, repeat upgrade, and current-version behavior; make check passes.
+
 ## History
 
 - 2026-11-25T23:07:24Z golden-coral-stoat → backlog
@@ -48,3 +52,4 @@ Before the fix, the three fixed tests produced one failure: the old setup retain
 - 2026-11-26T02:35:50Z rosy-dusky-vole todo → doing
 - 2026-11-26T02:38:38Z rosy-dusky-vole: wrote the plan
 - 2026-11-26T02:39:15Z rosy-dusky-vole: changed notes
+- 2026-11-26T02:42:21Z rosy-dusky-vole: changed summary
