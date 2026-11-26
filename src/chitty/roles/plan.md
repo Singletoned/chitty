@@ -30,12 +30,11 @@ guide or prompt text says what it cuts to make room, or why they should grow.
   - Rewrite descriptions cleanly so the ticket holds current truth only, and
     clear resolved notes with `--set-notes ''` before `todo` (Git keeps the
     history).
-- Take `to-plan` tickets before `backlog`. Claim one with `-s planning` in the
-  main checkout, then plan it on a `plan/` branch, changing its text only when
-  you have finished. Use `-s cold-read` for its cold read, `-s planning` again
-  to settle findings, then `-s todo`, and land the branch. Leave a ticket
-  another planner holds alone. Change status in the same edit as the text it
-  depends on. Use `parent` to group flat IDs.
+- Take `to-plan` tickets before `backlog`: claim one with `-s planning` in the
+  main checkout, plan on a `plan/` branch, and edit its text only when finished.
+  Use `-s cold-read`, `-s planning` to settle findings, then `-s todo` and land.
+  Leave other planners' tickets alone. Change status in the same edit as the
+  text it depends on. Use `parent` to group flat IDs.
 - Cold-read every ticket. If a change is too small to justify a ticket and cold
   read, do it directly (e.g. on a `hotfix/` branch) rather than ticketing it.
 - Plan one ticket at a time. Check every claim about code, commands, tests, or
