@@ -12,7 +12,7 @@ provisional: true
 
 ### Why
 
-`src/chitty/roles/plan.md` says: "If a ticket relies on a contract an unfinished ticket is building, keep it in `planning` with a note naming that ticket and re-check once it lands". In echonomicon on 2026-11-25 this parked about a dozen tickets that had already been planned and cold-read (TASK-134, 136, 222 and others). Each needed a second planning pass after its dependency landed, although the dependency tickets pinned every name, signature and file format. `depends_on` already stops the runner starting a ticket early, and drift shows up at once as an import or test error the worker can fix or send back. The person agreed on 2026-11-26.
+`src/chitty/roles/plan.md` says: "If a ticket relies on a contract an unfinished ticket is building, keep it in `planning` with a note naming that ticket and re-check once it lands". In echonomicon on 2026-11-25 this parked about a dozen tickets that had already been planned and cold-read (echonomicon `TASK-134`, `TASK-136`, `TASK-222` and others). Each needed a second planning pass after its dependency landed, although the dependency tickets pinned every name, signature and file format. `depends_on` already stops the runner starting a ticket early, and drift shows up at once as an import or test error the worker can fix or send back. The person agreed on 2026-11-26.
 
 The same planner also scripted three Chitty commands where the first was refused and the last still moved the ticket to `todo` (TASK-XZS6RV). One clause on chaining commands prevents that.
 
@@ -38,3 +38,4 @@ The cold-read guide's handling of `depends_on` (TASK-661), and making `edit -s t
 - 2026-11-26T11:11:10Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:12:27Z calm-ochre-quail: replaced notes; changed title, labels, owner, description
 - 2026-11-26T11:12:27Z calm-ochre-quail to-plan → todo
+- 2026-11-26T11:12:45Z calm-ochre-quail: changed description
