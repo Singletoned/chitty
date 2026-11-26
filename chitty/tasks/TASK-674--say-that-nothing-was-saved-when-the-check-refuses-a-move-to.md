@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: planning
+status: todo
 labels:
   - bug
 created: 2026-11-24
@@ -33,17 +33,9 @@ Saving any part of a refused edit; running `setup` automatically; refusals outsi
 - [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
 - [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
-## Plan
-
-Inspect the review-check implementation and fixtures, add regression cases for each specified refusal, then wrap the guarded refusal block so ChittyError messages state no edit was saved and add setup guidance only for failed checks when setup is configured. Run focused tests and make check, then commit implementation and tests.
-
 ## Notes
 
-Suggestion origin: chitty
-
-Implementation cannot proceed safely because the prior session overwrote `src/chitty/store.py` with an empty file. Restoring the committed version removes that accidental damage, but loses the unfinished implementation. No ticket defect is evident; decision needed: confirm the restored baseline and resume implementation in a fresh session, or provide recovery guidance if there were intended uncommitted changes. No tests were run.
-
-Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
+Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/store.py` by accident; this worktree is clean at the committed version, so start from it. No ticket defect was found.
 
 ## History
 
@@ -68,3 +60,5 @@ Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
 - 2026-11-26T11:36:50Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:36:50Z brisk-bronze-adder planning → to-plan
 - 2026-11-26T11:36:56Z brisk-bronze-adder to-plan → planning
+- 2026-11-26T11:37:02Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
+- 2026-11-26T11:37:02Z brisk-bronze-adder planning → todo
