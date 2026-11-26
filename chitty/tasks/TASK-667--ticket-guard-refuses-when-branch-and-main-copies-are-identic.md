@@ -1,6 +1,6 @@
 ---
 title: Ticket guard refuses when branch and main copies are identical
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -51,3 +51,4 @@ Compare ticket paths at branch tips before checking both sides for changes. Adde
 - 2026-11-26T00:31:59Z upbeat-amber-vole: wrote the plan
 - 2026-11-26T00:32:34Z upbeat-amber-vole: changed notes
 - 2026-11-26T00:36:09Z upbeat-amber-vole: changed summary; ticked acceptance criteria
+- 2026-11-26T00:39:15Z upbeat-amber-vole doing → review
