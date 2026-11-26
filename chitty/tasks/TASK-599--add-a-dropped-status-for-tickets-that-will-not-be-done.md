@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: cold-read
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -111,3 +111,4 @@ Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (
 - 2026-11-26T11:38:52Z brisk-bronze-adder to-plan → planning
 - 2026-11-26T11:39:00Z brisk-bronze-adder: replaced notes; changed owner, description, acceptance criteria; wrote the plan
 - 2026-11-26T11:39:00Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T12:03:37Z brisk-bronze-adder cold-read → planning
