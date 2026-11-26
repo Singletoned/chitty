@@ -1,6 +1,6 @@
 ---
 title: "Cold-read guide: read a ticket as if its `depends_on` tickets have landed"
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -34,6 +34,9 @@ Review failed (work): `src/chitty/roles/cold-read.md` can say the same thing in 
 - Assume `depends_on` tickets have landed as their text describes; report
   contradictions with them, not their absence from `main`.
 
+Reviewed: diff of `main...task-661` is the one `src/chitty/roles/cold-read.md` bullet given in the previous review note, placed first in the list after "Read the ticket with `chitty show <ID>`"; merges cleanly with `main` (`git merge-tree`).
+1: pass - bullet treats every `depends_on` ticket as landed per its own text, reports contradictions, not absence from `main`; wording is general.
+
 ## Summary
 
 Replaced the `depends_on` bullet in `src/chitty/roles/cold-read.md` with the shorter 18-word wording from review (2 wrapped lines instead of 3):
@@ -56,3 +59,5 @@ Branch `task-661` (worktree `.worktrees/task-661`). `make check` passed via `chi
 - 2026-11-26T11:29:09Z human review → doing
 - 2026-11-26T18:29:27Z calm-russet-badger: changed owner, summary
 - 2026-11-26T18:29:27Z calm-russet-badger doing → review
+- 2026-11-26T18:51:22Z intrepid-russet-falcon: changed notes
+- 2026-11-26T18:51:22Z intrepid-russet-falcon review → done
