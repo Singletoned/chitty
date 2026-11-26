@@ -87,9 +87,12 @@ FIELD_ORDER = (
     "moved_from",
     "provisional",
 )
-SectionName = Literal["Description", "Acceptance Criteria", "Plan", "Notes", "Summary", "History"]
+SectionName = Literal[
+    "Description", "Acceptance Criteria", "Questions", "Plan", "Notes", "Summary", "History"
+]
 DESCRIPTION: Final[SectionName] = "Description"
 ACCEPTANCE_CRITERIA: Final[SectionName] = "Acceptance Criteria"
+QUESTIONS: Final[SectionName] = "Questions"
 PLAN: Final[SectionName] = "Plan"
 NOTES: Final[SectionName] = "Notes"
 SUMMARY: Final[SectionName] = "Summary"
@@ -99,6 +102,7 @@ HISTORY_ACTION_SEPARATOR = "; "
 SECTION_ORDER: tuple[SectionName, ...] = (
     DESCRIPTION,
     ACCEPTANCE_CRITERIA,
+    QUESTIONS,
     PLAN,
     NOTES,
     SUMMARY,
@@ -250,6 +254,13 @@ class Criterion:
 
 
 @dataclass(frozen=True)
+class Question:
+    checked: bool
+    text: str
+    answer: str | None
+
+
+@dataclass(frozen=True)
 class _FieldSpan:
     key: str | None  # None for anything before the first key
     leading: tuple[str, ...]  # comments and blank lines directly above the key
@@ -272,6 +283,7 @@ class Task:
     _preamble: tuple[str, ...]
     _sections: tuple[_Section, ...]
     criteria: tuple[Criterion, ...]
+    questions: tuple[Question, ...]
 
     # -- reading ---------------------------------------------------------
 
@@ -640,6 +652,9 @@ def parse(text: str) -> Task:
     - Acceptance criteria without text or with nested lists (`acceptance
       criterion N`), or nonblank content other than checkbox items and their
       indented continuations (`'## Acceptance Criteria' may only contain`).
+    - Questions without text or with nested lists (`question N`), or content
+      other than checkbox items and their immediately indented continuations
+      (`'## Questions' may only contain`).
     - History that is not last, is empty, or contains a malformed entry
       (`'## History' must be the last section`, `'## History' must contain`,
       `'## History' may only contain`, respectively). A syntactically valid entry
@@ -666,13 +681,14 @@ def parse(text: str) -> Task:
     body_lines = [line + "\n" for line in body.split("\n")[:-1]]
     preamble, sections = _split_sections(body_lines, first_line=close + 2)
     criteria = _parse_criteria(sections)
+    questions = _parse_questions(sections)
     _parse_history(sections)
     description = next((s for s in sections if s.name == DESCRIPTION), None)
     if description is None:
         raise TaskError("'## Description' section is required")
     if not "".join(description.lines[1:]).strip():
         raise TaskError("'## Description' must not be empty")
-    return Task(frontmatter, tuple(fields), tuple(preamble), tuple(sections), criteria)
+    return Task(frontmatter, tuple(fields), tuple(preamble), tuple(sections), criteria, questions)
 
 
 def new_task(
@@ -859,6 +875,33 @@ def _parse_criteria(sections: list[_Section]) -> tuple[Criterion, ...]:
                 f"'## {ACCEPTANCE_CRITERIA}' may only contain '- [ ] ...' items; found {stripped!r}"
             )
     return tuple(Criterion(c, " ".join(t), s, e) for c, t, s, e in items)
+
+
+def _parse_questions(sections: list[_Section]) -> tuple[Question, ...]:
+    section = next((s for s in sections if s.name == QUESTIONS), None)
+    if section is None:
+        return ()
+    items: list[tuple[bool, list[str]]] = []
+    continuing = False
+    for line in section.lines[1:]:
+        stripped = line.strip()
+        match = CRITERION_RE.fullmatch(line.rstrip("\n"))
+        if not stripped:
+            continuing = False
+        elif match:
+            if not match[2]:
+                raise TaskError(f"question {len(items) + 1} has no text")
+            items.append((match[1] != " ", [match[2]]))
+            continuing = True
+        elif line[0] in " \t" and continuing:
+            if LIST_MARKER_RE.match(stripped):
+                raise TaskError(f"question {len(items)}: nested lists are not allowed")
+            items[-1][1].append(stripped)
+        else:
+            raise TaskError(
+                f"'## {QUESTIONS}' may only contain '- [ ] ...' items; found {stripped!r}"
+            )
+    return tuple(Question(checked, " ".join(text), None) for checked, text in items)
 
 
 # -- rendering --------------------------------------------------------------

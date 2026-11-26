@@ -73,8 +73,8 @@ Strict: unknown keys are an error.
 
 ## Body
 
-- Sections are `##` headings: `Description`, `Acceptance Criteria`, `Plan`,
-  `Notes`, `Summary`, `History`. Any other `##`, any `#`, or text before the
+- Sections are `##` headings: `Description`, `Acceptance Criteria`, `Questions`,
+  `Plan`, `Notes`, `Summary`, `History`. Any other `##`, any `#`, or text before the
   first `##` is an error. Use `###` and below inside a section.
 - Fence-aware: `##` in a code block is not a heading.
 - `Description` is required and non-empty.
@@ -82,6 +82,9 @@ Strict: unknown keys are an error.
   or `- [X]` at column 0 and may continue on indented lines. Blank lines
   between items are allowed; anything else is an error. Items are numbered by
   position in the CLI, never in the text. The tool writes `- [x]`.
+- `Questions` is a flat task list. Items may continue on immediately following
+  indented lines; blank lines separate items but cannot precede continuations.
+  Answers are not yet supported.
 - Everything else is free Markdown.
 
 ## History
