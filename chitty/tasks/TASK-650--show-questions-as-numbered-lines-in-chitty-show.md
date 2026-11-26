@@ -29,6 +29,10 @@ Out of scope: CLI and MCP options (TASK-630) and list markers (TASK-631).
 - [ ] Both `chitty show` tests in `tests/test_questions_section.py` pass; the first fails on its line assertion at the baseline named in the Description; record that failure message in a note
 - [ ] `make check` passes
 
+## Plan
+
+Add CLI show tests and confirm the formatted questions test fails at baseline; render parsed questions in section order, then run formatting and checks.
+
 ## Notes
 
 Second cold read (2026-11-23): nothing serious. Its baseline and `SECTION_ORDER` points repeat ones already settled (baseline is `main` with TASK-629 and TASK-649 landed; TASK-629 adds the name). Fixed: placement before Plan, one-line answers, and the no-questions check is now an exact line match.
@@ -45,3 +49,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline and `SECTION_ORDER`
 - 2026-11-23T19:47:26Z friendly-coral-badger planning → todo
 - 2026-11-26T11:27:48Z brisk-bronze-adder: changed dependencies
 - 2026-11-26T14:48:22Z youthful-fawn-wren todo → doing
+- 2026-11-26T14:52:24Z youthful-fawn-wren: wrote the plan
