@@ -1,6 +1,6 @@
 ---
 title: Count cold reads only since the ticket's last title change
-status: review
+status: done
 created: 2026-11-26
 provisional: true
 ---
@@ -26,8 +26,8 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_check_ticket_size.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) of `cold_reads_since_retitle` draws a list of History entries, each either a transition `- 2026-01-01T00:00:00Z a <old> → <new>` with `<new>` from `cold-read`, `planning` and `todo`, or an event `- 2026-01-01T00:00:00Z a: <actions>` whose actions are drawn from `changed title`, `changed title, description`, `changed description, notes`, `replaced notes` and `replaced notes; changed title, labels`, joined with newlines. The result equals the number of transitions into `cold-read` after the last event whose actions name `title`, or all of them when no event does. Fails without the change, because the function does not exist.
-- [ ] Through `check`, a `planning` ticket whose History has 3 transitions into `cold-read`, then the event `changed title, description`, then 1 more transition into `cold-read`, gets no `cold reads;` warning; the same History without the event gets one. Fails without the change for the first case. Regression tests: `TestTicketSizeWarnings.test_limits` passes unchanged. `make check` passes.
+- [x] In `tests/test_check_ticket_size.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) of `cold_reads_since_retitle` draws a list of History entries, each either a transition `- 2026-01-01T00:00:00Z a <old> → <new>` with `<new>` from `cold-read`, `planning` and `todo`, or an event `- 2026-01-01T00:00:00Z a: <actions>` whose actions are drawn from `changed title`, `changed title, description`, `changed description, notes`, `replaced notes` and `replaced notes; changed title, labels`, joined with newlines. The result equals the number of transitions into `cold-read` after the last event whose actions name `title`, or all of them when no event does. Fails without the change, because the function does not exist.
+- [x] Through `check`, a `planning` ticket whose History has 3 transitions into `cold-read`, then the event `changed title, description`, then 1 more transition into `cold-read`, gets no `cold reads;` warning; the same History without the event gets one. Fails without the change for the first case. Regression tests: `TestTicketSizeWarnings.test_limits` passes unchanged. `make check` passes.
 
 ## Plan
 
@@ -36,6 +36,10 @@ Add property and check integration tests, verify they fail before the fix, then 
 ## Notes
 
 Before the fix, the property test failed because the function was absent and the integration test failed because the retitled ticket still warned.
+
+Reviewed: implementation and complete diff checked.
+1: pass - property test passes in make check; applying the test to the merge base and running pytest tests/test_check_ticket_size.py::TestTicketSizeWarnings::test_cold_reads_since_retitle fails with AttributeError: cold_reads_since_retitle missing.
+2: pass - make check passes, including test_limits and test_retitle_resets_warning; the latter on the merge base fails with AssertionError: True != False for the retitled case.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Cold-read warnings now count transitions since the latest title-change event. Pr
 - 2026-11-26T15:18:34Z youthful-maroon-zander: changed notes
 - 2026-11-26T15:22:04Z youthful-maroon-zander: changed summary
 - 2026-11-26T15:24:52Z youthful-maroon-zander doing → review
+- 2026-11-26T15:31:54Z daring-pearl-vole: changed notes; ticked acceptance criteria
+- 2026-11-26T15:31:54Z daring-pearl-vole review → done
