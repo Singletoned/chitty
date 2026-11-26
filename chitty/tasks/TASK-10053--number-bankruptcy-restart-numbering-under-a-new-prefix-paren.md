@@ -4,7 +4,7 @@ status: backlog
 labels:
   - needs-minor
 created: 2026-11-26
-provisional: true
+moved_from: TASK-W74AVC
 ---
 
 ## Description
@@ -24,3 +24,4 @@ Design: a context gets `old_prefixes` in `chitty.toml`. Tickets with an old pref
 - 2026-11-26T17:50:32Z calm-ochre-quail backlog → cold-read
 - 2026-11-26T17:52:00Z calm-ochre-quail: changed title, description, acceptance criteria
 - 2026-11-26T17:52:00Z calm-ochre-quail cold-read → backlog
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-W74AVC

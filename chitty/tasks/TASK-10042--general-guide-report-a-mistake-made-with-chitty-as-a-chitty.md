@@ -5,7 +5,7 @@ labels:
   - untestable
 owner: human
 created: 2026-11-26
-provisional: true
+moved_from: TASK-A48DB7
 ---
 
 ## Description
@@ -61,3 +61,4 @@ Branch `task-a48db7` (worktree `.worktrees/task-a48db7`). `make check` passed vi
 - 2026-11-26T18:34:17Z calm-russet-badger doing → review
 - 2026-11-26T20:07:51Z intrepid-russet-falcon: changed notes
 - 2026-11-26T20:07:51Z intrepid-russet-falcon review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-A48DB7

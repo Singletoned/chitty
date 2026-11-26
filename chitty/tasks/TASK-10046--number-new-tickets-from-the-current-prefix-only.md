@@ -1,16 +1,16 @@
 ---
 title: Number new tickets from the current prefix only
 status: todo
-parent: TASK-W74AVC
+parent: TASK-10053
 created: 2026-11-26
-provisional: true
+moved_from: TASK-GNSWY6
 ---
 
 ## Description
 
 ### Why
 
-Part of TASK-W74AVC: after a person changes a context's `prefix` (TASK-MQ87S9), new tickets should start again at 1. Today `Repo._used_numbers` (`src/chitty/store.py`) collects the number of every file in the context whatever its prefix (`_files` scans with `allow_any_prefix=True`), so `ids.next_number` continues after the old tickets.
+Part of TASK-10053: after a person changes a context's `prefix` (TASK-10048), new tickets should start again at 1. Today `Repo._used_numbers` (`src/chitty/store.py`) collects the number of every file in the context whatever its prefix (`_files` scans with `allow_any_prefix=True`), so `ids.next_number` continues after the old tickets.
 
 ### Change
 
@@ -30,3 +30,4 @@ Reading old-prefix tickets (sibling ticket). The filter applies to random-ID con
 - 2026-11-26T17:52:22Z calm-ochre-quail → cold-read
 - 2026-11-26T17:54:10Z calm-ochre-quail: changed dependencies, description, acceptance criteria
 - 2026-11-26T17:54:10Z calm-ochre-quail cold-read → todo
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GNSWY6

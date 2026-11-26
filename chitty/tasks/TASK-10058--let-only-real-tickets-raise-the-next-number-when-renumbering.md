@@ -4,7 +4,7 @@ status: done
 labels:
   - bug
 created: 2026-11-26
-provisional: true
+moved_from: TASK-YST8KG
 ---
 
 ## Description
@@ -20,7 +20,7 @@ On 2026-11-25 `chitty renumber` on `main` gave this repository's provisional tic
 
 ### Out of scope
 
-Renumbering `TASK-10000` onwards back down; treating mentions of other repositories' tickets differently (TASK-QYMMZY); `next_number` and `new_id`, which already count only files.
+Renumbering `TASK-10000` onwards back down; treating mentions of other repositories' tickets differently (TASK-10049); `next_number` and `new_id`, which already count only files.
 
 ## Acceptance Criteria
 
@@ -64,3 +64,4 @@ Renumbering starts after real used IDs and skips numbers mentioned in ticket tex
 - 2026-11-26T11:39:34Z golden-fawn-dormouse doing → review
 - 2026-11-26T11:48:26Z friendly-ginger-urchin: changed notes; ticked acceptance criteria
 - 2026-11-26T11:48:26Z friendly-ginger-urchin review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-YST8KG

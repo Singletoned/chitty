@@ -4,7 +4,7 @@ status: done
 labels:
   - bug
 depends_on:
-  - TASK-YST8KG
+  - TASK-10058
 created: 2026-11-24
 ---
 
@@ -24,7 +24,7 @@ In echonomicon on 2026-11-24, after a plan branch landed, `chitty renumber chitt
 
 ### Out of scope
 
-Accepting an ID instead of a path; choosing the new number; renumbering on landing (TASK-340); restarting numbering (TASK-W74AVC).
+Accepting an ID instead of a path; choosing the new number; renumbering on landing (TASK-340); restarting numbering (TASK-10053).
 
 ## Acceptance Criteria
 

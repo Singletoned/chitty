@@ -5,7 +5,7 @@ labels:
   - untestable
 owner: human
 created: 2026-11-26
-provisional: true
+moved_from: TASK-HR7PKP
 ---
 
 ## Description
@@ -14,7 +14,7 @@ provisional: true
 
 `src/chitty/roles/plan.md` says: "If a ticket relies on a contract an unfinished ticket is building, keep it in `planning` with a note naming that ticket and re-check once it lands". In echonomicon on 2026-11-25 this parked about a dozen tickets that had already been planned and cold-read (echonomicon `TASK-134`, `TASK-136`, `TASK-222` and others). Each needed a second planning pass after its dependency landed, although the dependency tickets pinned every name, signature and file format. `depends_on` already stops the runner starting a ticket early, and drift shows up at once as an import or test error the worker can fix or send back. The person agreed on 2026-11-26.
 
-The same planner also scripted three Chitty commands where the first was refused and the last still moved the ticket to `todo` (TASK-XZS6RV). One clause on chaining commands prevents that.
+The same planner also scripted three Chitty commands where the first was refused and the last still moved the ticket to `todo` (TASK-10056). One clause on chaining commands prevents that.
 
 ### Change
 
@@ -28,7 +28,7 @@ The guide grows by about 20 words. Nothing is cut, because each parked ticket co
 
 ### Out of scope
 
-The cold-read guide's handling of `depends_on` (TASK-661), and making `edit -s todo` run the ticket checks (TASK-XZS6RV).
+The cold-read guide's handling of `depends_on` (TASK-661), and making `edit -s todo` run the ticket checks (TASK-10056).
 
 ## Plan
 
@@ -69,3 +69,4 @@ Branch `task-hr7pkp` (worktree `.worktrees/task-hr7pkp`). `make check` passed vi
 - 2026-11-26T18:34:21Z calm-russet-badger doing → review
 - 2026-11-26T20:12:47Z intrepid-russet-falcon: changed notes
 - 2026-11-26T20:12:47Z intrepid-russet-falcon review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-HR7PKP

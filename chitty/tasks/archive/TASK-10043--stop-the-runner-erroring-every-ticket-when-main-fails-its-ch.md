@@ -2,7 +2,7 @@
 title: Stop the runner erroring every ticket when main fails its check
 status: backlog
 created: 2026-11-26
-provisional: true
+moved_from: TASK-CAJV5T
 ---
 
 ## Description
@@ -23,3 +23,4 @@ Suggestion origin: echonomicon
 - 2026-11-26T10:54:57Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:59Z calm-ochre-quail: changed notes
 - 2026-11-26T10:56:41Z calm-ochre-quail backlog → archived
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-CAJV5T

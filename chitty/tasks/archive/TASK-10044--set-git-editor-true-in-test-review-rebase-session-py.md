@@ -4,7 +4,7 @@ status: backlog
 labels:
   - bug
 created: 2026-11-26
-provisional: true
+moved_from: TASK-G7J457
 ---
 
 ## Description
@@ -26,3 +26,4 @@ Fixed directly on `hotfix/git-editor` (decided with the person, 2026-11-26): the
 - 2026-11-26T18:07:31Z calm-ochre-quail: changed labels
 - 2026-11-26T18:22:56Z calm-ochre-quail: changed notes
 - 2026-11-26T18:23:19Z calm-ochre-quail backlog → archived
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-G7J457

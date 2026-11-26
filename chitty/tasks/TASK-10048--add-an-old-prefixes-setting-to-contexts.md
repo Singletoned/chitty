@@ -3,16 +3,16 @@ title: Add an `old_prefixes` setting to contexts
 status: todo
 labels:
   - needs-minor
-parent: TASK-W74AVC
+parent: TASK-10053
 created: 2026-11-26
-provisional: true
+moved_from: TASK-MQ87S9
 ---
 
 ## Description
 
 ### Why
 
-Part of TASK-W74AVC: restarting numbering under a new prefix needs each context to remember the prefixes its older tickets use.
+Part of TASK-10053: restarting numbering under a new prefix needs each context to remember the prefixes its older tickets use.
 
 ### Change
 
@@ -36,3 +36,4 @@ Reading or numbering old-prefix tickets (the sibling tickets).
 - 2026-11-26T17:52:02Z calm-ochre-quail → cold-read
 - 2026-11-26T17:53:12Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:53:12Z calm-ochre-quail cold-read → todo
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-MQ87S9

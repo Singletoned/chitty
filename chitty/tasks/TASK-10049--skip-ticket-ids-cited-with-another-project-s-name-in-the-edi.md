@@ -4,9 +4,9 @@ status: done
 labels:
   - bug
 depends_on:
-  - TASK-YST8KG
+  - TASK-10058
 created: 2026-11-26
-provisional: true
+moved_from: TASK-QYMMZY
 ---
 
 ## Description
@@ -19,13 +19,13 @@ On 2026-11-26, after `chitty edit -s todo`, Chitty listed `TASK-217 done ...` an
 
 - `ids.ticket_references(text, prefixes, *, foreign)` in `src/chitty/ids.py` gets a required keyword argument `foreign: Collection[str]`, project names. A match is skipped when the text just before it is one of those names (compared case-insensitively), then exactly one space character, then optionally one backtick directly before the ID, and the character before the name is not in `[A-Za-z0-9._-]` (or the name starts the text). Newlines and tabs do not count as the space.
 - `Repo.referenced_tasks` (`src/chitty/store.py`, the listing `chitty edit -s todo` prints) passes `config.registered_projects()` minus `self.config.project`. The registry is per machine, which is fine for a listing that only informs the planner.
-- The renumbering call in `_plan_provisional_renumbering` passes `foreign=()`, so renumbering stays the same on every machine. This ticket depends on TASK-YST8KG, which changes the same call. Update the four test calls in `tests/test_promote_references.py` to pass `foreign=()`.
+- The renumbering call in `_plan_provisional_renumbering` passes `foreign=()`, so renumbering stays the same on every machine. This ticket depends on TASK-10058, which changes the same call. Update the four test calls in `tests/test_promote_references.py` to pass `foreign=()`.
 - Leftover test registrations on a machine (TASK-310) can hide a real citation from this listing; that is accepted, since the listing only informs the planner.
 - In `src/chitty/roles/plan.md`, in the bullet that begins "Put paths, globs, commands, IDs, and code in backticks", add: "Cite another project's ticket with its name first, for example `other TASK-4`." About 12 more words; nothing cut, because a misread citation costs a wrong dependency or archive.
 
 ### Out of scope
 
-Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TASK-YST8KG).
+Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TASK-10058).
 
 ## Acceptance Criteria
 
@@ -73,3 +73,4 @@ Foreign-qualified citations are omitted from promotion listings using the local 
 - 2026-11-26T12:27:09Z vivid-indigo-gannet doing → review
 - 2026-11-26T12:40:10Z vivid-teal-stoat: changed notes
 - 2026-11-26T12:40:10Z vivid-teal-stoat review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-QYMMZY

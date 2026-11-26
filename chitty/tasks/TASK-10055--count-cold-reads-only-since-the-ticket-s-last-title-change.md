@@ -2,7 +2,7 @@
 title: Count cold reads only since the ticket's last title change
 status: done
 created: 2026-11-26
-provisional: true
+moved_from: TASK-X77EBX
 ---
 
 ## Description
@@ -62,3 +62,4 @@ Cold-read warnings now count transitions since the latest title-change event. Pr
 - 2026-11-26T15:24:52Z youthful-maroon-zander doing → review
 - 2026-11-26T15:31:54Z daring-pearl-vole: changed notes; ticked acceptance criteria
 - 2026-11-26T15:31:54Z daring-pearl-vole review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-X77EBX

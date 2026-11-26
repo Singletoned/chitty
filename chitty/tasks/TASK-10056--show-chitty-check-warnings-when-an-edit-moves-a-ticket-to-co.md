@@ -2,7 +2,7 @@
 title: Show `chitty check` warnings when an edit moves a ticket to `cold-read` or `todo`
 status: done
 created: 2026-11-26
-provisional: true
+moved_from: TASK-XZS6RV
 ---
 
 ## Description
@@ -64,3 +64,4 @@ Checked moves to cold-read or todo now refuse errors and surface warnings in CLI
 - 2026-11-26T15:48:11Z sunny-maroon-crane: changed notes; ticked acceptance criteria
 - 2026-11-26T15:48:11Z sunny-maroon-crane review → done
 - 2026-11-26T17:47:31Z calm-ochre-quail: changed description
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-XZS6RV

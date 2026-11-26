@@ -4,7 +4,7 @@ status: done
 labels:
   - bug
 created: 2026-11-26
-provisional: true
+moved_from: TASK-V4NQEM
 ---
 
 ## Description
@@ -61,3 +61,4 @@ Renumber provisional tickets on branches containing main and under the landing l
 - 2026-11-26T18:09:42Z youthful-white-puffin doing → review
 - 2026-11-26T18:24:10Z golden-dusky-kestrel: changed notes; ticked acceptance criteria
 - 2026-11-26T18:24:10Z golden-dusky-kestrel review → done
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-V4NQEM

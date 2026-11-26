@@ -2,17 +2,17 @@
 title: Read tickets with a context's old prefixes on branches, in references and in branch cleanup
 status: todo
 depends_on:
-  - TASK-MQ87S9
-parent: TASK-W74AVC
+  - TASK-10048
+parent: TASK-10053
 created: 2026-11-26
-provisional: true
+moved_from: TASK-GK7GSE
 ---
 
 ## Description
 
 ### Why
 
-Part of TASK-W74AVC. After a person changes a context's `prefix` and lists the old one in `old_prefixes` (TASK-MQ87S9), old tickets must keep working everywhere Chitty matches IDs by prefix.
+Part of TASK-10053. After a person changes a context's `prefix` and lists the old one in `old_prefixes` (TASK-10048), old tickets must keep working everywhere Chitty matches IDs by prefix.
 
 ### Change
 
@@ -27,7 +27,7 @@ Add a property `Context.prefixes` (`(prefix, *old_prefixes)`) in `src/chitty/sto
 
 ### Out of scope
 
-Numbering (sibling ticket); the setting itself (TASK-MQ87S9).
+Numbering (sibling ticket); the setting itself (TASK-10048).
 
 ## Acceptance Criteria
 
@@ -39,3 +39,4 @@ Numbering (sibling ticket); the setting itself (TASK-MQ87S9).
 - 2026-11-26T17:52:20Z calm-ochre-quail → cold-read
 - 2026-11-26T17:53:36Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:53:36Z calm-ochre-quail cold-read → todo
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GK7GSE

@@ -2,7 +2,7 @@
 title: Runner blames `main` for a check failure caused by uncommitted changes in the ticket worktree
 status: backlog
 created: 2026-11-26
-provisional: true
+moved_from: TASK-YCSSEZ
 ---
 
 ## Description
@@ -21,3 +21,4 @@ Already fixed: commit af2680bc (TASK-676, 2026-11-26) makes `_run_check` in `src
 - 2026-11-26T18:06:12Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:18Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:21Z calm-ochre-quail backlog → archived
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-YCSSEZ

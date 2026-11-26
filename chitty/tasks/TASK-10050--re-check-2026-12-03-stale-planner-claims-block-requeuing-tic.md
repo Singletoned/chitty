@@ -4,7 +4,7 @@ status: backlog
 labels:
   - bug
 created: 2026-11-26
-provisional: true
+moved_from: TASK-S6KEA6
 ---
 
 ## Description
@@ -26,3 +26,4 @@ Decided (the person, 2026-11-26): wait and see; probably a glitch from the move 
 - 2026-11-26T18:07:28Z calm-ochre-quail: changed labels, notes
 - 2026-11-26T18:17:06Z calm-ochre-quail: changed notes
 - 2026-11-26T18:17:35Z calm-ochre-quail: changed title
+- 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-S6KEA6
