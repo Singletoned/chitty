@@ -1,6 +1,6 @@
 ---
 title: Check dependencies against the ticket index of `main` read once per command
-status: cold-read
+status: todo
 priority: high
 created: 2026-11-26
 provisional: true
@@ -30,3 +30,4 @@ Out of scope: reading ticket-branch blobs and the Git calls in source selection 
 
 - 2026-11-26T21:56:46Z youthful-lilac-heron → cold-read
 - 2026-11-26T22:00:57Z youthful-lilac-heron: changed description, acceptance criteria
+- 2026-11-26T22:01:22Z youthful-lilac-heron cold-read → todo
