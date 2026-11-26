@@ -32,6 +32,10 @@ Rerunning a flaky check (TASK-496); timeouts, missing check commands, review tic
 
 Rewrite both no-work check failure tests and confirm they fail, then restore the claimed ticket to todo and raise a dedicated run error. Run formatting and checks, commit, and hand off for review.
 
+## Notes
+
+Both rewritten no-work tests failed against the original implementation: run exited 0 and moved the ticket to error instead of exiting 1.
+
 ## History
 
 - 2026-11-22T13:19:33Z friendly-jade-stoat → todo
@@ -45,3 +49,4 @@ Rewrite both no-work check failure tests and confirm they fail, then restore the
 - 2026-11-26T11:21:11Z calm-ochre-quail cold-read → todo
 - 2026-11-26T12:47:15Z friendly-white-raven todo → doing
 - 2026-11-26T12:51:32Z friendly-white-raven: wrote the plan
+- 2026-11-26T12:52:12Z friendly-white-raven: changed notes
