@@ -1,6 +1,6 @@
 ---
 title: Parse answers in the `## Questions` section
-status: doing
+status: review
 depends_on:
   - TASK-629
 parent: TASK-621
@@ -70,3 +70,4 @@ Parse single-paragraph answers independently of question ticks, preserving round
 - 2026-11-26T13:58:30Z upbeat-zinc-wren: wrote the plan
 - 2026-11-26T13:59:00Z upbeat-zinc-wren: changed notes
 - 2026-11-26T14:02:07Z upbeat-zinc-wren: changed summary; ticked acceptance criteria
+- 2026-11-26T14:05:53Z upbeat-zinc-wren doing → review
