@@ -1,6 +1,6 @@
 ---
 title: Make `make check` sync this worktree's own venv and refuse a symlinked one
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-21
@@ -34,9 +34,9 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 
 ## Acceptance Criteria
 
-- [ ] With a scratch worktree whose `.venv` is a symlink to a scratch venv, `make check` exits non-zero before any `uv` command, printing the message naming `rm .venv` and `make install`; the linked venv's file listing is unchanged afterwards.
-- [ ] In a scratch worktree with its own `.venv` after `uv pip uninstall mcp`, `make check` reinstalls `mcp` and pyright reports no `Import "mcp.server.mcpserver" could not be resolved`.
-- [ ] `make check` passes in the ticket worktree, and `mate --list` still lists `check` with its description.
+- [x] With a scratch worktree whose `.venv` is a symlink to a scratch venv, `make check` exits non-zero before any `uv` command, printing the message naming `rm .venv` and `make install`; the linked venv's file listing is unchanged afterwards.
+- [x] In a scratch worktree with its own `.venv` after `uv pip uninstall mcp`, `make check` reinstalls `mcp` and pyright reports no `Import "mcp.server.mcpserver" could not be resolved`.
+- [x] `make check` passes in the ticket worktree, and `mate --list` still lists `check` with its description.
 
 ## Plan
 
@@ -45,6 +45,11 @@ Add a first-line symlink guard and sync all extras before check's uv commands. V
 ## Notes
 
 Before the fix, the scratch symlink check ran uv and changed the linked venv listing; removing mcp from the scratch venv made pyright report the missing import. Surprise: an initial uv pip uninstall inherited VIRTUAL_ENV and removed mcp from this ticket worktree instead of scratch; the check below restores it. Repeated with explicit scratch VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT.
+
+Reviewed: isolated scratch worktrees and ticket checkout verified.
+1: pass - scratch symlink make check exited 2 with rm .venv and make install in the message; sorted linked venv listings matched, and no uv command ran.
+2: pass - scratch uv pip uninstall mcp followed by make check reinstalled mcp; import mcp.server.mcpserver succeeded and pyright reported 0 errors.
+3: pass - make check passed (1295 tests); mate --list shows check with its description.
 
 ## Summary
 
@@ -63,3 +68,5 @@ Before the fix, the scratch symlink check ran uv and changed the linked venv lis
 - 2026-11-26T18:49:59Z mellow-silver-eel: changed notes
 - 2026-11-26T19:00:02Z mellow-silver-eel: changed summary
 - 2026-11-26T19:05:05Z mellow-silver-eel doing → review
+- 2026-11-26T21:57:33Z jolly-bronze-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-26T21:57:33Z jolly-bronze-kestrel review → done
