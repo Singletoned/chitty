@@ -42,6 +42,10 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 
 Add a first-line symlink guard and sync all extras before check's uv commands. Verify both failure modes in isolated scratch copies before and after the change, then run make check and mate --list in this worktree.
 
+## Notes
+
+Before the fix, the scratch symlink check ran uv and changed the linked venv listing; removing mcp from the scratch venv made pyright report the missing import. Surprise: an initial uv pip uninstall inherited VIRTUAL_ENV and removed mcp from this ticket worktree instead of scratch; the check below restores it. Repeated with explicit scratch VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT.
+
 ## History
 
 - 2026-11-21T07:58:04Z nimble-umber-gannet → backlog
@@ -52,3 +56,4 @@ Add a first-line symlink guard and sync all extras before check's uv commands. V
 - 2026-11-26T18:18:58Z calm-ochre-quail cold-read → todo
 - 2026-11-26T18:38:04Z mellow-silver-eel todo → doing
 - 2026-11-26T18:42:02Z mellow-silver-eel: wrote the plan
+- 2026-11-26T18:49:59Z mellow-silver-eel: changed notes
