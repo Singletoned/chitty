@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` without erroring the ticket when `main` fails its check
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -25,8 +25,8 @@ Rerunning a flaky check (TASK-496); timeouts, missing check commands, review tic
 
 ## Acceptance Criteria
 
-- [ ] Rewrite `test_run_check_failure_on_todo_ticket_records_error_on_branch` in `tests/test_next.py` (rename it to say the run stops) for the new behaviour, using `self.run_cli("run", exit_code=1)`: stderr contains the message text ``main fails the check`` once; the agent did not start; the branch copy of `TASK-1` has `status: todo` and a note containing ``Not started: `main` fails the check`` and the check detail; it has no `Runner error (check)`; `main` is unchanged; and `next_action` with no modes picks `TASK-1` again. Keep its existing assertions on the check arguments, log and worktree status. Rewrite `test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors` (around line 1513) the same way, since a branch with only ticket-file commits has no work. Fails without the change.
-- [ ] Regression tests: a `todo` ticket whose branch already has a work commit, and `doing`/`error` tickets whose check fails, behave as today (their existing tests in `tests/test_next.py` pass unchanged), and `test_todo_check_timeout` in `tests/test_command_timeout.py` passes unchanged. `make check` passes.
+- [x] Rewrite `test_run_check_failure_on_todo_ticket_records_error_on_branch` in `tests/test_next.py` (rename it to say the run stops) for the new behaviour, using `self.run_cli("run", exit_code=1)`: stderr contains the message text ``main fails the check`` once; the agent did not start; the branch copy of `TASK-1` has `status: todo` and a note containing ``Not started: `main` fails the check`` and the check detail; it has no `Runner error (check)`; `main` is unchanged; and `next_action` with no modes picks `TASK-1` again. Keep its existing assertions on the check arguments, log and worktree status. Rewrite `test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors` (around line 1513) the same way, since a branch with only ticket-file commits has no work. Fails without the change.
+- [x] Regression tests: a `todo` ticket whose branch already has a work commit, and `doing`/`error` tickets whose check fails, behave as today (their existing tests in `tests/test_next.py` pass unchanged), and `test_todo_check_timeout` in `tests/test_command_timeout.py` passes unchanged. `make check` passes.
 
 ## Plan
 
@@ -35,6 +35,10 @@ Rewrite both no-work check failure tests and confirm they fail, then restore the
 ## Notes
 
 Both rewritten no-work tests failed against the original implementation: run exited 0 and moved the ticket to error instead of exiting 1.
+
+Reviewed: The runner stops without erroring an unstarted ticket when the main check fails.
+1: pass - Both rewritten tests pass in make check; applying tests/test_next.py to the merge base and running the two tests with PYTHONPATH set to the base src produced two failures (exit 0 instead of 1, todo → error).
+2: pass - make check passed (1255 tests), including the unchanged work-commit, doing/error, and timeout regression tests.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Stop the run and restore the branch ticket to todo when a nonzero check fails be
 - 2026-11-26T12:52:12Z friendly-white-raven: changed notes
 - 2026-11-26T12:59:23Z friendly-white-raven: changed summary
 - 2026-11-26T13:01:47Z friendly-white-raven doing → review
+- 2026-11-26T13:10:01Z kind-zinc-gannet: changed notes; ticked acceptance criteria
+- 2026-11-26T13:10:01Z kind-zinc-gannet review → done
