@@ -1,6 +1,6 @@
 ---
 title: Show `## Questions` as numbered lines in `chitty show`
-status: doing
+status: review
 depends_on:
   - TASK-649
   - TASK-629
@@ -58,3 +58,4 @@ Show numbered questions and indented answers in section order; JSON remains unch
 - 2026-11-26T14:52:24Z youthful-fawn-wren: wrote the plan
 - 2026-11-26T14:53:19Z youthful-fawn-wren: changed notes
 - 2026-11-26T14:57:32Z youthful-fawn-wren: changed summary; ticked acceptance criteria
+- 2026-11-26T15:00:04Z youthful-fawn-wren doing → review
