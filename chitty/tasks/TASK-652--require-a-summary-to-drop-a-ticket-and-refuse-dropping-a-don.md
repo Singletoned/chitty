@@ -1,6 +1,6 @@
 ---
 title: Require a Summary to drop a ticket, and refuse dropping a `done` one
-status: cold-read
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -45,3 +45,4 @@ Out of scope: `chitty add -s dropped` (`TASK-653`), archiving (`TASK-654`), depe
 - 2026-11-26T18:59:33Z zesty-ginger-newt: replaced notes; changed description, acceptance criteria
 - 2026-11-26T18:59:33Z zesty-ginger-newt to-plan → planning
 - 2026-11-26T18:59:41Z zesty-ginger-newt planning → cold-read
+- 2026-11-26T19:01:58Z zesty-ginger-newt cold-read → planning
