@@ -52,6 +52,8 @@ Add focused failing parser tests, then introduce the Questions section and immut
 
 Split 2026-11-26 after four stalled worker runs: answers, the formatter sample and the renumbering test moved to TASK-10035.
 
+Before implementation, all seven tests in `tests/test_questions_section.py` failed: the item, uppercase and continuation tests raised `line 11: unknown section 'Questions'`; the three refusal tests received that same error instead of their expected exact messages; the unknown-section test found `Questions` missing from the allowed names.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -114,3 +116,4 @@ Split 2026-11-26 after four stalled worker runs: answers, the formatter sample a
 - 2026-11-26T11:30:33Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:03:07Z lively-dusky-quail todo → doing
 - 2026-11-26T13:07:03Z lively-dusky-quail: wrote the plan
+- 2026-11-26T13:07:31Z lively-dusky-quail: changed notes
