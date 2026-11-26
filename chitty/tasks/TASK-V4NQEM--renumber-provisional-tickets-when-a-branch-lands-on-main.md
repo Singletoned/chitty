@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets when a branch lands on `main`
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-26
@@ -53,3 +53,4 @@ Renumber provisional tickets on branches containing main and under the landing l
 - 2026-11-26T17:57:12Z youthful-white-puffin: wrote the plan
 - 2026-11-26T17:57:39Z youthful-white-puffin: changed notes
 - 2026-11-26T18:07:11Z youthful-white-puffin: changed summary
+- 2026-11-26T18:09:42Z youthful-white-puffin doing → review
