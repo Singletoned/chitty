@@ -1,6 +1,6 @@
 ---
 title: Count cold reads only since the ticket's last title change
-status: doing
+status: review
 created: 2026-11-26
 provisional: true
 ---
@@ -55,3 +55,4 @@ Cold-read warnings now count transitions since the latest title-change event. Pr
 - 2026-11-26T15:18:02Z youthful-maroon-zander: wrote the plan
 - 2026-11-26T15:18:34Z youthful-maroon-zander: changed notes
 - 2026-11-26T15:22:04Z youthful-maroon-zander: changed summary
+- 2026-11-26T15:24:52Z youthful-maroon-zander doing → review
