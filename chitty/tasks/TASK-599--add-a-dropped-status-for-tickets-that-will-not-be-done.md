@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: review
 labels:
   - needs-minor
 priority: high
@@ -130,3 +130,4 @@ Added the dropped status, its list display and task-file documentation. Focused 
 - 2026-11-26T12:32:32Z zesty-indigo-vole: wrote the plan
 - 2026-11-26T12:33:13Z zesty-indigo-vole: changed notes
 - 2026-11-26T12:37:18Z zesty-indigo-vole: changed summary; ticked acceptance criteria
+- 2026-11-26T12:40:46Z zesty-indigo-vole doing → review
