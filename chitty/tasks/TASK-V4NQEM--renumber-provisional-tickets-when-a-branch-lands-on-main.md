@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets when a branch lands on `main`
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-26
@@ -26,9 +26,9 @@ Plan and hotfix branches landed by hand get the same steps when TASK-340 adds `c
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_landing.py` (`LandingTestCase`), the ticket branch also commits a provisional ticket (`provisional: true`, ID `TASK-ABCDEF`, written into its file directly) whose Description mentions its own ID; after `finish_ticket` and `land()`, `main` has that ticket as `TASK-2` with `moved_from: TASK-ABCDEF`, no file with the provisional ID, the mention rewritten, and a commit on the landed branch whose subject starts `chitty: renumber`. Fails without the change.
-- [ ] In `tests/test_renumber_provisional.py`, bare `chitty renumber` on a branch made from `main`'s tip renumbers its provisional tickets and commits on that branch. On a branch made from `main`, after which `main` gets one more commit (so the branch no longer contains `main`'s tip), it changes nothing and prints a message saying to rebase onto `main` first. Fails without the change.
-- [ ] Update the tests that expect the old rule or message: `tests/test_provisional_preflight_errors.py` (around lines 52 and 69: a `feature` branch and a detached HEAD that do not contain `main`'s tip still raise `ProvisionalOffMain`), and the exact-text assertions in `tests/test_renumber_provisional.py` (around lines 283 and 306). Regression tests: `tests/test_landing.py` and `tests/test_landing_retry.py` pass. `make check` passes.
+- [x] In `tests/test_landing.py` (`LandingTestCase`), the ticket branch also commits a provisional ticket (`provisional: true`, ID `TASK-ABCDEF`, written into its file directly) whose Description mentions its own ID; after `finish_ticket` and `land()`, `main` has that ticket as `TASK-2` with `moved_from: TASK-ABCDEF`, no file with the provisional ID, the mention rewritten, and a commit on the landed branch whose subject starts `chitty: renumber`. Fails without the change.
+- [x] In `tests/test_renumber_provisional.py`, bare `chitty renumber` on a branch made from `main`'s tip renumbers its provisional tickets and commits on that branch. On a branch made from `main`, after which `main` gets one more commit (so the branch no longer contains `main`'s tip), it changes nothing and prints a message saying to rebase onto `main` first. Fails without the change.
+- [x] Update the tests that expect the old rule or message: `tests/test_provisional_preflight_errors.py` (around lines 52 and 69: a `feature` branch and a detached HEAD that do not contain `main`'s tip still raise `ProvisionalOffMain`), and the exact-text assertions in `tests/test_renumber_provisional.py` (around lines 283 and 306). Regression tests: `tests/test_landing.py` and `tests/test_landing_retry.py` pass. `make check` passes.
 
 ## Plan
 
@@ -37,6 +37,11 @@ Add failing landing and branch-renumber tests, then permit renumbering when HEAD
 ## Notes
 
 Before the fix, both new tests failed: landing left TASK-ABCDEF unnumbered and renumber on a fresh branch produced no changes.
+
+Reviewed: Implementation and complete diff checked.
+1: pass - `make check` passes landing test; applying tests to merge-base and running `pytest -q tests/test_landing.py::TestLanding::test_landing_renumbers_provisional_ticket` fails with missing `TASK-2--new.md`.
+2: pass - `make check` passes branch and stale-branch tests; merge-base `pytest -q tests/test_renumber_provisional.py::TestCliProvisionalRenumbering::test_branch_containing_main_renumbers_and_commits` fails with 0 output lines instead of 2.
+3: pass - updated preflight and exact-message tests, landing and landing-retry regression tests all pass in `make check` (1295 passed).
 
 ## Summary
 
@@ -54,3 +59,5 @@ Renumber provisional tickets on branches containing main and under the landing l
 - 2026-11-26T17:57:39Z youthful-white-puffin: changed notes
 - 2026-11-26T18:07:11Z youthful-white-puffin: changed summary
 - 2026-11-26T18:09:42Z youthful-white-puffin doing → review
+- 2026-11-26T18:24:10Z golden-dusky-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-26T18:24:10Z golden-dusky-kestrel review → done
