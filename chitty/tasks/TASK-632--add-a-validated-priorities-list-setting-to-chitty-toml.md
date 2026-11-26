@@ -1,6 +1,6 @@
 ---
 title: Add a validated `priorities` list setting to `chitty.toml`
-status: doing
+status: review
 parent: TASK-607
 created: 2026-11-23
 ---
@@ -95,3 +95,4 @@ Added the priorities configuration default and validation, documented the settin
 - 2026-11-26T13:19:37Z kind-coral-falcon: wrote the plan
 - 2026-11-26T13:20:04Z kind-coral-falcon: changed notes
 - 2026-11-26T13:24:21Z kind-coral-falcon: changed summary
+- 2026-11-26T13:26:46Z kind-coral-falcon doing → review
