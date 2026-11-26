@@ -1,6 +1,6 @@
 ---
 title: Refuse `doing -> review` after a failed review when the branch has no new code commit
-status: planning
+status: cold-read
 priority: medium
 created: 2026-11-25
 moved_from: TASK-QD8H6G
@@ -30,3 +30,4 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-QD8H6G
 - 2026-11-26T00:22:23Z calm-ochre-quail: replaced notes; changed description, acceptance criteria
 - 2026-11-26T00:22:23Z calm-ochre-quail backlog → planning
+- 2026-11-26T00:22:29Z calm-ochre-quail planning → cold-read
