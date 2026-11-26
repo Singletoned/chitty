@@ -1,6 +1,6 @@
 ---
 title: Name `to-plan` as the return status in guides, prompts and docs
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -19,6 +19,10 @@ Replace `planning` with `to-plan` where it names the status a ticket is returned
 
 Word for word replacements only, so the guides do not grow. Out of scope: `src/chitty/roles/plan.md` (`TASK-10033`).
 
+## Notes
+
+Reviewed: Complete diff checked against every file and scope rule in the Description. Word-for-word `planning` -> `to-plan` replacements match in `src/chitty/run.py` (`work` and `review` continuation prompts), `src/chitty/roles/work.md`, `src/chitty/roles/review.md`, `src/chitty/guide-runner.md` and `tests/fixtures/guide-runner-expected.md`, `scripts/worker_trial/lean-work.md`, `README.md` (default statuses, return example, `list -s to-plan`), and `docs/plan/cli.md` (default statuses); `docs/plan/task-file.md` adds `to-plan` (waiting for a planner) and updates `planning` (a planner has it). `AGENTS.md` and `src/chitty/roles/plan.md` are untouched, and the guides do not grow. No acceptance criteria (`untestable`). After rebasing onto `main`, `GIT_EDITOR=true make check` passed (ruff, pyright, 1237 passed, 655 subtests passed).
+
 ## Summary
 
 Replaced `planning` with `to-plan` word for word where it names the return status or the status that lists waiting tickets: the `work` and `review` continuation prompts in `src/chitty/run.py`, `src/chitty/roles/work.md`, `src/chitty/roles/review.md`, `src/chitty/guide-runner.md` and its fixture, `scripts/worker_trial/lean-work.md`, `README.md` (return command, `list -s to-plan`, default statuses) and `docs/plan/cli.md` (default statuses). `docs/plan/task-file.md` now lists `to-plan` (waiting for a planner) and `planning` (a planner has it). The managed block in `AGENTS.md` is untouched.
@@ -33,3 +37,5 @@ Replaced `planning` with `to-plan` word for word where it names the return statu
 - 2026-11-26T10:55:25Z tidy-silver-puffin todo → doing
 - 2026-11-26T11:01:23Z tidy-silver-puffin: changed owner, summary
 - 2026-11-26T11:01:23Z tidy-silver-puffin doing → review
+- 2026-11-26T11:43:50Z human: changed notes
+- 2026-11-26T11:43:50Z human review → done
