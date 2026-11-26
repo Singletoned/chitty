@@ -38,6 +38,10 @@ Out of scope: custom priority names and their display (TASK-10039), and write va
 
 Add a CLI regression test and verify it fails; implement shared configurable ranking for list and selection, add independent permutation properties, update existing expectations and documentation, then format and run checks.
 
+## Notes
+
+Before the fix, the default CLI ordering regression failed: actual high, unset, medium, low; expected high, medium, unset, low.
+
 ## History
 
 - 2026-11-26T11:40:35Z brisk-bronze-adder → planning
@@ -48,3 +52,4 @@ Add a CLI regression test and verify it fails; implement shared configurable ran
 - 2026-11-26T11:45:48Z brisk-bronze-adder planning → todo
 - 2026-11-26T14:07:07Z witty-white-kestrel todo → doing
 - 2026-11-26T14:11:14Z witty-white-kestrel: wrote the plan
+- 2026-11-26T14:11:56Z witty-white-kestrel: changed notes
