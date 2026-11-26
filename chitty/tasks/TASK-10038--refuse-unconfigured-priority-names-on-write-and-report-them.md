@@ -1,6 +1,6 @@
 ---
 title: Refuse unconfigured priority names on write and report them in `chitty check`
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -60,3 +60,4 @@ Store writes validate configured priority names; CLI and MCP accept custom names
 - 2026-11-26T15:05:33Z intrepid-teal-yellowhammer: wrote the plan
 - 2026-11-26T15:06:08Z intrepid-teal-yellowhammer: changed notes
 - 2026-11-26T15:10:35Z intrepid-teal-yellowhammer: changed summary
+- 2026-11-26T15:12:55Z intrepid-teal-yellowhammer doing → review
