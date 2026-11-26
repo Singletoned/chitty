@@ -20,3 +20,4 @@ Already fixed: commit af2680bc (TASK-676, 2026-11-26) makes `_run_check` in `src
 - 2026-11-26T18:06:09Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:12Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:18Z calm-ochre-quail: changed notes
+- 2026-11-26T18:07:21Z calm-ochre-quail backlog → archived
