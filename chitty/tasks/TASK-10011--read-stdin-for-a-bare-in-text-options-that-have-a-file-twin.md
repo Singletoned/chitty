@@ -27,6 +27,10 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 
 Normalize bare dashes to stdin file inputs before validation, preserving mutual exclusion and counting repeated notes. Add property and conflict regression tests, verify they fail before the fix, then format and run make check.
 
+## Notes
+
+Before the fix, the new property test stored a literal dash instead of stdin and the conflict cases did not report stdin conflicts. The initial suggest test also exposed a test fixture project-name issue, corrected to use an explicit path.
+
 ## History
 
 - 2026-11-25T22:28:33Z calm-ochre-quail → backlog
@@ -41,3 +45,4 @@ Normalize bare dashes to stdin file inputs before validation, preserving mutual 
 - 2026-11-25T23:34:06Z calm-ochre-quail planning → todo
 - 2026-11-26T00:11:43Z zesty-fawn-toad todo → doing
 - 2026-11-26T00:15:38Z zesty-fawn-toad: wrote the plan
+- 2026-11-26T00:17:09Z zesty-fawn-toad: changed notes
