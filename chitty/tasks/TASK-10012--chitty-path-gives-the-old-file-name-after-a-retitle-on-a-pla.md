@@ -21,6 +21,8 @@ Triage 2026-11-25: TASK-602 makes Chitty read tickets from the current branch, w
 
 Reproduced 2026-11-25 on `plan/branch-writes-all`: after `chitty edit TASK-10027 --title ...`, `chitty path TASK-10027` printed the old file name and `chitty check "$(chitty path TASK-10027)"` failed with "not a task file in any chitty context".
 
+Triage 2026-11-26: the replanned TASK-602 no longer touches `chitty path`; this is a separate bug (`path` does not use `find_for_show` on a `plan/` branch).
+
 ## History
 
 - 2026-11-25T22:28:41Z calm-ochre-quail → backlog
@@ -28,3 +30,4 @@ Reproduced 2026-11-25 on `plan/branch-writes-all`: after `chitty edit TASK-10027
 - 2026-11-25T22:34:20Z calm-ochre-quail: changed labels, dependencies, notes
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-N8MC9A
 - 2026-11-25T23:06:31Z calm-ochre-quail: changed notes
+- 2026-11-26T18:02:38Z brisk-bronze-adder: changed notes
