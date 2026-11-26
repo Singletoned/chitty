@@ -1,6 +1,6 @@
 ---
 title: Make `make check` sync this worktree's own venv and refuse a symlinked one
-status: cold-read
+status: todo
 labels:
   - bug
 created: 2026-11-21
@@ -19,10 +19,12 @@ Decided (the person, 2026-11-26): `make check` refuses a symlinked `.venv` and o
 
 ### Change
 
-In the `check` target of `Makefile`, before the other lines:
+In the `check` target of `Makefile`:
 
-1. Refuse when `.venv` is a symlink, with a message such as ``.venv is a symlink; run `make install` in this worktree to give it its own venv``.
-2. Run `uv sync --all-extras --quiet`, so extras are current too.
+1. As the first recipe line, refuse when `$(CURDIR)/.venv` is a symlink (`test -L`), with a message such as ``.venv is a symlink to another checkout's venv; run `rm .venv`, then `make install` ``. (`make install` alone would sync through the link too.) `UV_PROJECT_ENVIRONMENT` is already set by the Makefile, so the path is the only case.
+2. Before the first `uv run` line, run `uv sync --all-extras --quiet`, so extras are current too.
+
+Verify in scratch checkouts under a temporary directory, never against the main checkout's `.venv`: for the symlink case, link a scratch worktree's `.venv` to another scratch checkout's venv and compare that venv's file listing before and after; for the stale case, `uv pip uninstall mcp` in a scratch worktree's own venv.
 
 Keep the `##` description, and check `mate --list` still lists the target.
 
@@ -32,8 +34,9 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 
 ## Acceptance Criteria
 
-- [ ] In a scratch linked worktree whose `.venv` is a symlink to another checkout's `.venv`, `make check` exits non-zero before running any `uv` command, with a message naming `.venv` and `make install`, and the other checkout's `.venv/bin/chitty` still runs afterwards. Without the change, `make check` there repoints the other venv.
-- [ ] In a scratch worktree with its own `.venv` where `uv pip install mcp==<an older version the lock allows>` (or `uv pip uninstall mcp`) has made the `mcp` extra stale, `make check` re-syncs it and pyright no longer reports `Import "mcp.server.mcpserver" could not be resolved`. Without the change, the stale package stays and pyright fails. `make check` passes in this checkout.
+- [ ] With a scratch worktree whose `.venv` is a symlink to a scratch venv, `make check` exits non-zero before any `uv` command, printing the message naming `rm .venv` and `make install`; the linked venv's file listing is unchanged afterwards.
+- [ ] In a scratch worktree with its own `.venv` after `uv pip uninstall mcp`, `make check` reinstalls `mcp` and pyright reports no `Import "mcp.server.mcpserver" could not be resolved`.
+- [ ] `make check` passes in the ticket worktree, and `mate --list` still lists `check` with its description.
 
 ## History
 
@@ -41,3 +44,5 @@ Node dependencies (`npm ci`); the `test` target; Chitty's runner setup.
 - 2026-11-21T07:58:06Z nimble-umber-gannet: changed notes
 - 2026-11-26T18:16:11Z calm-ochre-quail: replaced notes; changed title, labels, description, acceptance criteria
 - 2026-11-26T18:16:11Z calm-ochre-quail backlog → cold-read
+- 2026-11-26T18:18:58Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-26T18:18:58Z calm-ochre-quail cold-read → todo
