@@ -30,6 +30,8 @@ Use the latest timed transition into doing and Git author timestamps to reject a
 
 Confirmed both new tests fail before the fix: the stub property assertion and the first CLI refusal (which instead succeeded).
 
+Decided: commits to inspect -> main..HEAD, because a new main commit after review is not a fix on the ticket branch and must not bypass the rebase regression.
+
 ## History
 
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
@@ -45,3 +47,4 @@ Confirmed both new tests fail before the fix: the stub property assertion and th
 - 2026-11-26T01:25:59Z rosy-jade-marten todo → doing
 - 2026-11-26T01:29:56Z rosy-jade-marten: wrote the plan
 - 2026-11-26T01:30:38Z rosy-jade-marten: changed notes
+- 2026-11-26T01:31:02Z rosy-jade-marten: changed notes
