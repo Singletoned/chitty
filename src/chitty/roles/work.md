@@ -42,5 +42,5 @@ Optimise for less human work first, then cost-effective simplicity (automation
   to read with zero prior context — what the ticket is for, why it stopped, the
   options if a decision is needed, and your preferred option and why — then set
   `-s blocked`. Never block for time, token, or context budget.
-- Leave `human` tickets in `todo`. File unrelated work with `chitty add` (or
-  `-c human`, or `chitty suggest PROJECT`) rather than doing it here.
+- Leave `human` tickets in `todo`. Do not do unrelated work: `chitty suggest`
+  if small, return to `to-plan` if big; never add tickets on a ticket branch.
