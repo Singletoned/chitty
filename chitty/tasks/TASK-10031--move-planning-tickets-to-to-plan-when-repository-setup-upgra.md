@@ -34,6 +34,10 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 
 Add fixed upgrade tests at the real version, verify migration fails before implementation, then migrate active planning tickets at the version boundary using existing task parsing and history methods. Preserve rollback and include migrated paths in the upgrade commit; run formatting and checks.
 
+## Notes
+
+Before the fix, the three fixed tests produced one failure: the old setup retained planning instead of to-plan; the two regression cases passed.
+
 ## History
 
 - 2026-11-25T23:07:24Z golden-coral-stoat → backlog
@@ -43,3 +47,4 @@ Add fixed upgrade tests at the real version, verify migration fails before imple
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-QZ7SD8
 - 2026-11-26T02:35:50Z rosy-dusky-vole todo → doing
 - 2026-11-26T02:38:38Z rosy-dusky-vole: wrote the plan
+- 2026-11-26T02:39:15Z rosy-dusky-vole: changed notes
