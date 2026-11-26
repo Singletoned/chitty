@@ -30,6 +30,10 @@ Plan and hotfix branches landed by hand get the same steps when TASK-340 adds `c
 - [ ] In `tests/test_renumber_provisional.py`, bare `chitty renumber` on a branch made from `main`'s tip renumbers its provisional tickets and commits on that branch. On a branch made from `main`, after which `main` gets one more commit (so the branch no longer contains `main`'s tip), it changes nothing and prints a message saying to rebase onto `main` first. Fails without the change.
 - [ ] Update the tests that expect the old rule or message: `tests/test_provisional_preflight_errors.py` (around lines 52 and 69: a `feature` branch and a detached HEAD that do not contain `main`'s tip still raise `ProvisionalOffMain`), and the exact-text assertions in `tests/test_renumber_provisional.py` (around lines 283 and 306). Regression tests: `tests/test_landing.py` and `tests/test_landing_retry.py` pass. `make check` passes.
 
+## Plan
+
+Add failing landing and branch-renumber tests, then permit renumbering when HEAD contains main and run it under the landing lock before each fast-forward. Update stale-branch tests and messages, format, and run checks.
+
 ## History
 
 - 2026-11-26T17:46:59Z calm-ochre-quail → backlog
@@ -38,3 +42,4 @@ Plan and hotfix branches landed by hand get the same steps when TASK-340 adds `c
 - 2026-11-26T17:49:57Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:49:57Z calm-ochre-quail cold-read → todo
 - 2026-11-26T17:54:27Z youthful-white-puffin todo → doing
+- 2026-11-26T17:57:12Z youthful-white-puffin: wrote the plan
