@@ -1,6 +1,6 @@
 ---
 title: Order tickets by the configured `priorities` list
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -42,3 +42,4 @@ Out of scope: custom priority names and their display (TASK-10039), and write va
 - 2026-11-26T11:45:41Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T11:45:48Z brisk-bronze-adder: changed title, labels, description, acceptance criteria
 - 2026-11-26T11:45:48Z brisk-bronze-adder planning → todo
+- 2026-11-26T14:07:07Z witty-white-kestrel todo → doing
