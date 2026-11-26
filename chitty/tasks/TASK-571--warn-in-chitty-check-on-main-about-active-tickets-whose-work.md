@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: todo
+status: doing
 depends_on:
   - TASK-358
   - TASK-572
@@ -44,3 +44,4 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTe
 - 2026-11-26T19:02:35Z zesty-ginger-newt: changed description, acceptance criteria
 - 2026-11-26T19:02:35Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T19:02:52Z zesty-ginger-newt planning → todo
+- 2026-11-26T23:58:11Z mellow-pearl-badger todo → doing
