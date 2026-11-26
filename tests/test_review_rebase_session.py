@@ -20,7 +20,7 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
         timeout = TIMEOUT_CASE_SECONDS if exit_code == 124 else NO_LIMIT
         script = self.tmp / "rebase-agent.py"
         script.write_text(
-            "import subprocess, sys, time\n"
+            "import os, subprocess, sys, time\n"
             "from pathlib import Path\n"
             "mode = sys.argv[1]\n"
             "print(mode + '-stdout', flush=True)\n"
@@ -37,7 +37,8 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
             "    if finish:\n"
             "        subprocess.run(['git', 'add', 'shared.txt'], check=True)\n"
             "        subprocess.run(\n"
-            "            ['git', '-c', 'core.editor=true', 'rebase', '--continue'], check=True\n"
+            "            ['git', 'rebase', '--continue'], check=True,\n"
+            "            env={**os.environ, 'GIT_EDITOR': 'true'},\n"
             "        )\n"
             "    if dirty:\n"
             "        Path('leftover.txt').write_text('uncommitted')\n"
