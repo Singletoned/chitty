@@ -33,6 +33,10 @@ Running the configured repository check; warnings for other statuses or other co
 
 Add failing CLI and MCP coverage for checked status moves, then propagate check warnings and errors through the store and front ends, update the guide and status regression test, and run formatting and checks.
 
+## Notes
+
+Before the fix, both new tests fail: checked moves omit warnings and accept a missing dependency.
+
 ## History
 
 - 2026-11-26T10:54:53Z calm-ochre-quail → backlog
@@ -46,3 +50,4 @@ Add failing CLI and MCP coverage for checked status moves, then propagate check 
 - 2026-11-26T11:17:24Z calm-ochre-quail: changed description
 - 2026-11-26T15:26:07Z rosy-pearl-toad todo → doing
 - 2026-11-26T15:30:03Z rosy-pearl-toad: wrote the plan
+- 2026-11-26T15:30:45Z rosy-pearl-toad: changed notes
