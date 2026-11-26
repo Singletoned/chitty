@@ -5,7 +5,7 @@ depends_on:
   - TASK-311
 parent: TASK-308
 created: 2026-11-26
-provisional: true
+moved_from: TASK-KEGB2N
 ---
 
 ## Description
@@ -33,3 +33,4 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 - 2026-11-26T20:10:17Z zesty-ginger-newt: changed description
 - 2026-11-26T20:10:17Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T20:10:20Z zesty-ginger-newt planning → todo
+- 2026-11-26T20:10:34Z zesty-ginger-newt: renumbered from TASK-KEGB2N
