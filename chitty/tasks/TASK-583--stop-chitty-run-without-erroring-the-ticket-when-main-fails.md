@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` without erroring the ticket when `main` fails its check
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -55,3 +55,4 @@ Stop the run and restore the branch ticket to todo when a nonzero check fails be
 - 2026-11-26T12:51:32Z friendly-white-raven: wrote the plan
 - 2026-11-26T12:52:12Z friendly-white-raven: changed notes
 - 2026-11-26T12:59:23Z friendly-white-raven: changed summary
+- 2026-11-26T13:01:47Z friendly-white-raven doing → review
