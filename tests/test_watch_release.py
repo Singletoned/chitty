@@ -56,14 +56,13 @@ class TestWatchRelease(unittest.TestCase):
         self.assertIn("uv tool install chitty==1.2.3", calls)
         self.assertNotIn("sump", calls)
 
-    def test_failure_captures_in_sump_and_exits_non_zero(self) -> None:
+    def test_failure_names_the_run_and_exits_non_zero(self) -> None:
         completed, calls = self.run_script(1)
         self.assertNotEqual(completed.returncode, 0)
-        self.assertIn("publish workflow failed for v1.2.3", completed.stderr)
         self.assertIn(
-            "sump capture chitty --message release v1.2.3: publish workflow failed", calls
+            "publish workflow failed for v1.2.3: https://example.invalid/7", completed.stderr
         )
-        self.assertIn("https://example.invalid/7", calls)
+        self.assertNotIn("sump", calls)
         self.assertNotIn("uv tool install", calls)
 
 

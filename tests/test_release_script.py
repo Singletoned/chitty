@@ -1,8 +1,8 @@
 """`scripts/release.sh` releases from a temporary worktree.
 
 Each test builds a repository with a bare `origin`, the real release scripts,
-a fixture `Makefile`, a stub `watch_release.py` and a fake `uv` on `PATH`, so
-the release runs end to end without the network.
+a fixture `Makefile`, a stub `watch_release.py` and fake `uv` and `sump` on
+`PATH`, so the release runs end to end without the network.
 """
 
 import os
@@ -60,7 +60,7 @@ class TestReleaseScript(unittest.TestCase):
         self.git("config", "user.name", "Test")
         (self.root / "Makefile").write_text(MAKEFILE)
         (self.root / "scripts").mkdir()
-        for name in ("release.sh", "release_version.py"):
+        for name in ("release.sh", "release_version.py", "report_release_failure.py"):
             shutil.copy(CHECKOUT / "scripts" / name, self.root / "scripts" / name)
         (self.root / "scripts" / "check_linux.sh").write_text(
             f'git log -1 --format=%s >> "{self.tmp}/linux-ran"\nsh "{self.linux_script}"\n'
@@ -82,6 +82,10 @@ class TestReleaseScript(unittest.TestCase):
         uv = bin_dir / "uv"
         uv.write_text(FAKE_UV)
         uv.chmod(uv.stat().st_mode | stat.S_IXUSR)
+        self.sump_calls = self.tmp / "sump-calls"
+        sump = bin_dir / "sump"
+        sump.write_text(f'#!/bin/sh\nprintf "%s\\n" "$*" >> "{self.sump_calls}"\n')
+        sump.chmod(sump.stat().st_mode | stat.S_IXUSR)
         self.env = {
             **os.environ,
             "PATH": f"{bin_dir}:{os.environ['PATH']}",
@@ -129,6 +133,7 @@ class TestReleaseScript(unittest.TestCase):
         result = self.release()
 
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(self.sump_calls.exists())
         self.assertEqual(
             self.origin_git("log", "-1", "--format=%s", "main").strip(), "Release 0.1.1"
         )
@@ -178,6 +183,20 @@ class TestReleaseScript(unittest.TestCase):
         self.assertFalse((self.root / ".worktrees" / "release").exists())
         self.assertFalse(self.watched.exists())
         self.assertFalse((self.tmp / "linux-ran").exists())
+
+    def test_failure_writes_a_log_and_captures_it_in_sump_once(self):
+        self.check_script.write_text("echo check output line\nexit 1\n")
+
+        result = self.release()
+
+        self.assertNotEqual(result.returncode, 0)
+        (log,) = (self.root / "tmp" / "release").glob("*.log")
+        self.assertIn(f"full log: {log}", result.stderr)
+        self.assertIn("check output line", log.read_text())
+        self.assertIn("checks failed at 0.1.1", log.read_text())
+        (call,) = self.sump_calls.read_text().splitlines()
+        self.assertIn("capture chitty --message make release failed: release: checks failed", call)
+        self.assertIn(str(log), call)
 
     def test_main_behind_origin_is_refused(self):
         other = self.tmp / "other"

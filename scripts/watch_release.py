@@ -3,8 +3,8 @@
 Usage: python3 scripts/watch_release.py VERSION
 
 `make release` runs this after pushing the tag. On success the global `chitty`
-is upgraded to the release; on failure the failure is captured in Sump, so
-`chitty fetch-errors` (TASK-256) can pick it up, and the script exits non-zero.
+is upgraded to the release; on failure the script exits non-zero and
+`scripts/release.sh` reports it (`scripts/report_release_failure.py`).
 """
 
 import json
@@ -13,7 +13,6 @@ import sys
 import time
 
 WORKFLOW = "release.yml"
-SUMP_PROJECT = "chitty"
 FIND_ATTEMPTS = 30
 FIND_DELAY_SECONDS = 2
 UPGRADE_ATTEMPTS = 10
@@ -57,12 +56,6 @@ def upgrade(version: str) -> None:
 
 
 def report_failure(tag: str, url: object) -> None:
-    subprocess.run(
-        ["sump", "capture", SUMP_PROJECT]
-        + ["--message", f"release {tag}: publish workflow failed"]
-        + ["--context-json", json.dumps({"tag": tag, "run_url": url})],
-        check=True,
-    )
     raise SystemExit(f"release: publish workflow failed for {tag}: {url}")
 
 

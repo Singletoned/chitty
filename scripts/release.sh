@@ -8,9 +8,26 @@
 # and tag there; push the
 # commit to `origin/main` and the tag atomically; merge the tag into the local
 # `main`; remove the worktree; wait for the publish workflow.
+#
+# All output also goes to `tmp/release/<UTC time>.log`. On any failure the
+# script prints that path and captures the failure in Sump, with the log's tail.
 set -eu
 
 root=$(git rev-parse --show-toplevel)
+
+if [ -z "${CHITTY_RELEASE_LOG:-}" ]; then
+	mkdir -p "$root/tmp/release"
+	CHITTY_RELEASE_LOG="$root/tmp/release/$(date -u +%Y%m%dT%H%M%SZ).log"
+	export CHITTY_RELEASE_LOG
+	# Run this script again with its output copied to the log and to stderr,
+	# keeping its exit status.
+	exec 4>&2
+	status=$({ { sh "$0" 2>&1 && echo 0 >&3 || echo $? >&3; } | tee "$CHITTY_RELEASE_LOG" >&4; } 3>&1)
+	if [ "$status" -ne 0 ]; then
+		python3 "$root/scripts/report_release_failure.py" "$CHITTY_RELEASE_LOG"
+	fi
+	exit "$status"
+fi
 worktree="$root/.worktrees/release"
 
 git -C "$root" fetch origin

@@ -47,8 +47,10 @@ rules, and parts are old: update it when a decision changes.
   `.github/workflows/release.yml` checks, builds and publishes to PyPI by
   trusted publishing (environment `pypi`). `make release` then waits for that
   run (`scripts/watch_release.py`): on success it installs the released version
-  as the global `chitty`; on failure it records the failure with `sump capture
-  chitty` and exits non-zero.
+  as the global `chitty`. All output is also written to
+  `tmp/release/<UTC time>.log`; on any failure, local or in the workflow, it
+  prints that path, records the failure with `sump capture chitty` and exits
+  non-zero.
 - Branches never change `__version__` in `src/chitty/__init__.py`; `make release`
   chooses the published bump. Never edit `chitty.toml` or the managed block below,
   or run `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades
