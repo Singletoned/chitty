@@ -1,6 +1,6 @@
 ---
 title: "Work guide: suggest small unrelated work instead of adding tickets on a ticket branch"
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -15,6 +15,10 @@ Size: the guide stays the same length.
 
 Dropped on 2026-11-26: one line in each role guide on rebasing after an out-of-date warning. The warning from TASK-602 and TASK-10040 now says so itself (`...; merge or rebase it now and resolve any conflict`), so the guides need no text.
 
+## Plan
+
+Replace the unrelated-work sentence in the last bullet of `src/chitty/roles/work.md` to direct small unrelated work to `chitty suggest`, big unrelated work to `to-plan`, and forbid adding tickets on a ticket branch, keeping the bullet at 2 lines and general. Verify with `make check` via `chitty edit -s review`.
+
 ## History
 
 - 2026-11-23T08:47:14Z plucky-umber-wren → backlog
@@ -24,3 +28,5 @@ Dropped on 2026-11-26: one line in each role guide on rebasing after an out-of-d
 - 2026-11-26T10:55:42Z tidy-silver-puffin: changed owner
 - 2026-11-26T10:55:42Z tidy-silver-puffin doing → todo
 - 2026-11-26T18:02:21Z brisk-bronze-adder: changed title, dependencies, description
+- 2026-11-26T18:17:03Z calm-russet-badger: wrote the plan
+- 2026-11-26T18:17:03Z calm-russet-badger todo → doing
