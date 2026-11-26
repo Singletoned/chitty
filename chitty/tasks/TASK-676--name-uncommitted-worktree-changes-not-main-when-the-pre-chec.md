@@ -1,6 +1,6 @@
 ---
 title: Name uncommitted worktree changes, not `main`, when the pre-check fails
-status: doing
+status: review
 priority: high
 created: 2026-11-24
 ---
@@ -50,3 +50,4 @@ Snapshot uncommitted paths before the pre-check and name them on failure instead
 - 2026-11-26T01:19:27Z able-umber-wren: wrote the plan
 - 2026-11-26T01:19:45Z able-umber-wren: changed notes
 - 2026-11-26T01:22:22Z able-umber-wren: changed summary
+- 2026-11-26T01:24:43Z able-umber-wren doing → review
