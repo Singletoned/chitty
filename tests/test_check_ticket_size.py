@@ -5,6 +5,7 @@ from datetime import date
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+import chitty.check as check_module
 from chitty.check import check, errors
 from chitty.model import STATUSES, parse
 from chitty.store import Repo
@@ -13,6 +14,65 @@ from tests.support import RepoTestCase
 
 
 class TestTicketSizeWarnings(RepoTestCase):
+    @settings(max_examples=examples(100))
+    @given(
+        entries=st.lists(
+            st.one_of(
+                st.tuples(
+                    st.just("transition"), st.sampled_from(["cold-read", "planning", "todo"])
+                ),
+                st.tuples(
+                    st.just("event"),
+                    st.sampled_from(
+                        [
+                            "changed title",
+                            "changed title, description",
+                            "changed description, notes",
+                            "replaced notes",
+                            "replaced notes; changed title, labels",
+                        ]
+                    ),
+                ),
+            )
+        )
+    )
+    def test_cold_reads_since_retitle(self, entries):
+        lines = []
+        expected = 0
+        for kind, value in entries:
+            if kind == "transition":
+                lines.append(f"- 2026-01-01T00:00:00Z a planning → {value}")
+                expected += value == "cold-read"
+            else:
+                lines.append(f"- 2026-01-01T00:00:00Z a: {value}")
+                if value in {
+                    "changed title",
+                    "changed title, description",
+                    "replaced notes; changed title, labels",
+                }:
+                    expected = 0
+        self.assertEqual(check_module.cold_reads_since_retitle("\n".join(lines)), expected)
+
+    def test_retitle_resets_warning(self):
+        os.environ["CHITTY_ACTOR"] = "test-agent"
+        repo = Repo.open(self.root)
+        context = repo.context("tasks")
+        path = repo.add(
+            context, "Ticket", "description", [], {"status": "planning"}, date(2026, 1, 1)
+        ).task.path
+        task = parse(path.read_text())
+        transition = "- 2026-01-01T00:00:00Z a planning → cold-read"
+        event = "- 2026-01-01T00:00:00Z a: changed title, description"
+        for retitled in (False, True):
+            lines = [transition] * 3 + ([event] if retitled else []) + [transition]
+            path.write_text(task.with_section("History", "\n".join(lines)).render())
+            warnings = [
+                p
+                for p in check(repo, repo.contexts(), [])
+                if p.path == path and "cold reads;" in p.message
+            ]
+            self.assertEqual(bool(warnings), not retitled)
+
     @settings(max_examples=examples(100), deadline=None)
     @given(
         status=st.sampled_from(STATUSES),

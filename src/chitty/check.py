@@ -11,7 +11,15 @@ from markdown_it import MarkdownIt
 from chitty import git, ids
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.model import SectionName, Task, parse
+from chitty.model import (
+    HISTORY,
+    HISTORY_ACTION_SEPARATOR,
+    HISTORY_EVENT_RE,
+    HISTORY_LINE_RE,
+    SectionName,
+    Task,
+    parse,
+)
 from chitty.store import Context, Repo, scan
 
 
@@ -48,6 +56,19 @@ MAX_CRITERIA = 5
 MAX_SPEC_WORDS = 500
 MAX_TODO_NOTES_WORDS = 200
 MAX_COLD_READS = 2
+
+
+def cold_reads_since_retitle(history: str) -> int:
+    """Count cold-read transitions after the most recent title change."""
+    count = 0
+    for line in history.splitlines():
+        if transition := HISTORY_LINE_RE.fullmatch(line):
+            count += transition["new"] == "cold-read"
+        elif event := HISTORY_EVENT_RE.fullmatch(line):
+            for action in event["action"].split(HISTORY_ACTION_SEPARATOR):
+                if action.startswith("changed ") and "title" in action.removeprefix("changed ").split(", "):
+                    count = 0
+    return count
 
 
 def errors(problems: Sequence[Problem]) -> list[Problem]:
@@ -241,7 +262,7 @@ def check(
                             path, f"notes have {notes_words} words; clear resolved notes with "
                             "--set-notes ''", "warning"
                         ))
-                    cold_reads = sum(new == "cold-read" for _, new in task.transitions())
+                    cold_reads = cold_reads_since_retitle(task.section(HISTORY) or "")
                     if status in {"to-plan", "planning", "cold-read", "todo"} and cold_reads > MAX_COLD_READS:
                         problems.append(Problem(
                             path, f"{cold_reads} cold reads; simplify or split instead of another read",
