@@ -1,6 +1,6 @@
 ---
 title: Show `## Questions` as numbered lines in `chitty show`
-status: review
+status: done
 depends_on:
   - TASK-649
   - TASK-629
@@ -39,6 +39,10 @@ Second cold read (2026-11-23): nothing serious. Its baseline and `SECTION_ORDER`
 
 Baseline: `.venv/bin/pytest -q tests/test_questions_section.py::TestShowQuestions` failed as expected: `AssertionError: Lists differ`; first differing element 2 was `- [x] Which database?` instead of `1. [x] Which database?`. The no-questions test passed.
 
+Reviewed: Questions display and JSON match the requested behavior.
+1: pass - `make check` passes both show tests; on the merge-base with the test diff applied, `pytest -q tests/test_questions_section.py::TestShowQuestions` gives 1 failed, 1 passed: `AssertionError: Lists differ`, first differing element `- [x] Which database?` versus `1. [x] Which database?`.
+2: pass - `make check` passed: 1286 tests and 684 subtests, ruff and pyright clean.
+
 ## Summary
 
 Show numbered questions and indented answers in section order; JSON remains unchanged. Added CLI coverage and confirmed the formatting test fails at baseline. make check passes.
@@ -59,3 +63,5 @@ Show numbered questions and indented answers in section order; JSON remains unch
 - 2026-11-26T14:53:19Z youthful-fawn-wren: changed notes
 - 2026-11-26T14:57:32Z youthful-fawn-wren: changed summary; ticked acceptance criteria
 - 2026-11-26T15:00:04Z youthful-fawn-wren doing → review
+- 2026-11-26T15:07:01Z lively-navy-kestrel: changed notes
+- 2026-11-26T15:07:01Z lively-navy-kestrel review → done
