@@ -31,6 +31,10 @@ Tests:
 - [ ] The property test on `claim_refusal` and the CLI example pass, and each fails before the change
 - [ ] `make check` passes
 
+## Plan
+
+Add failing property and CLI tests for planning claims, implement the pure claim rule and enforce it at the specified store write boundaries, then format, run checks, and hand off for review.
+
 ## History
 
 - 2026-11-25T23:06:45Z golden-coral-stoat → backlog
@@ -42,3 +46,4 @@ Tests:
 - 2026-11-25T23:12:30Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-SYR88D
 - 2026-11-26T02:18:50Z sunny-umber-jay todo → doing
+- 2026-11-26T02:21:31Z sunny-umber-jay: wrote the plan
