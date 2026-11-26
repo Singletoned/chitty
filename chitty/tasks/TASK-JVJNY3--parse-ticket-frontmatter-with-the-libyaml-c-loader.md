@@ -22,9 +22,14 @@ Out of scope: the rest of `parse` (pydantic validation, sections, history).
 - [ ] A test asserts `issubclass(model._StringLoader, yaml.CSafeLoader if yaml.__with_libyaml__ else yaml.SafeLoader)`, with no skip; it fails before the change
 - [ ] `make check` passes
 
+## Plan
+
+Add a loader-selection test and a rendered-ticket property comparing against a string-only SafeLoader, verify selection fails before the change, then select CSafeLoader when available and run formatting and checks.
+
 ## History
 
 - 2026-11-26T21:56:05Z youthful-lilac-heron → cold-read
 - 2026-11-26T22:00:03Z youthful-lilac-heron: changed description, acceptance criteria
 - 2026-11-26T22:01:16Z youthful-lilac-heron cold-read → todo
 - 2026-11-26T23:15:17Z nimble-violet-crane todo → doing
+- 2026-11-26T23:19:02Z nimble-violet-crane: wrote the plan
