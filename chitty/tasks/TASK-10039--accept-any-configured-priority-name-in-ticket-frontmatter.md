@@ -38,6 +38,10 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 
 Add hand-written frontmatter and CLI ordering regression tests and record their failures; allow non-empty priority strings, safely render unknown glyphs, update the task-file specification, then format and run checks.
 
+## Notes
+
+Before the fix, pytest CustomPriorityTests failed both tests: empty priority reported the built-in literal choices instead of the required message, and list rejected the custom priority soon as not one of those choices.
+
 ## History
 
 - 2026-11-26T11:45:33Z brisk-bronze-adder → planning
@@ -47,3 +51,4 @@ Add hand-written frontmatter and CLI ordering regression tests and record their 
 - 2026-11-26T11:48:00Z brisk-bronze-adder planning → todo
 - 2026-11-26T14:35:35Z plucky-maroon-urchin todo → doing
 - 2026-11-26T14:39:44Z plucky-maroon-urchin: wrote the plan
+- 2026-11-26T14:40:32Z plucky-maroon-urchin: changed notes
