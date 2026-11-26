@@ -1,6 +1,6 @@
 ---
 title: Put only the runner's `chitty` on a worker's `PATH`, not its whole `.venv/bin`
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -55,3 +55,4 @@ Work and review agents receive a temporary PATH directory containing only a syml
 - 2026-11-26T00:00:41Z calm-umber-adder: wrote the plan
 - 2026-11-26T00:01:24Z calm-umber-adder: changed notes
 - 2026-11-26T00:08:17Z calm-umber-adder: changed summary
+- 2026-11-26T00:10:28Z calm-umber-adder doing → review
