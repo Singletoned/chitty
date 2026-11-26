@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: cold-read
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -26,14 +26,15 @@ Code, in `src/chitty/model.py`:
 - Add `"Questions"` to `SectionName`, a `QUESTIONS` constant, and put it in `SECTION_ORDER` straight after `ACCEPTANCE_CRITERIA`.
 - A frozen dataclass `Question(checked: bool, text: str, answer: str | None)` and `Task.questions: tuple[Question, ...]`, filled by a new `_parse_questions` next to `_parse_criteria`. In this ticket `answer` is always `None`.
 - Items are `- [ ] text`, `- [x] text` or `- [X] text`, matched with `CRITERION_RE`. An indented line (first character a space or tab) directly after an item, with no blank line between, continues its text, joined with a space. Blank (or whitespace-only) lines between items and at the end are allowed.
-- Errors (`TaskError`), with these exact messages: `- [ ]` with no text gives `question <n> has no text`; any other line, including an indented line after a blank line, gives `'## Questions' may only contain '- [ ] ...' items; found <line repr>`. TASK-10035 turns the indented-after-blank case into an answer.
+- Errors (`TaskError`), with these exact messages and, like criteria, no `line N:` prefix: `- [ ]` with no text gives `question <n> has no text`; an indented line whose stripped text matches `LIST_MARKER_RE` gives `question <n>: nested lists are not allowed`; any other line gives `'## Questions' may only contain '- [ ] ...' items; found <stripped line repr>` (as `_parse_criteria` formats it). Unlike criteria, an indented line after a blank line is one of these other lines: TASK-10035 makes it an answer.
+- `SECTION_ORDER` is also looped over by `_format` in `src/chitty/cli.py`, `src/chitty/renumbering.py` and `src/chitty/import_backlog.py`; Questions passes through them unchanged (raw in `chitty show` until TASK-650, IDs rewritten by renumbering), which is intended. Update the refusal list in the `parse()` docstring.
 - `parse` keeps the original lines, so `render()` is byte-identical, as for other sections.
 
 Tests, in a new `tests/test_questions_section.py` (each fails today because `parse` refuses `## Questions`):
 
 - Two items, `- [x] Which database?` and `- [ ] Who owns the migration?` separated by a blank line, give `(Question(True, "Which database?", None), Question(False, "Who owns the migration?", None))`, and `render()` returns the text unchanged. `- [X] Q` parses as checked.
 - `- [ ] Q\n  more\n` gives text `"Q more"`.
-- The two refusals above, each with its exact message.
+- The three refusals above, each checked with `assertEqual(str(error), ...)` on the exact message, including an indented line after a blank.
 - A `## Questionz` heading is still refused, and the error's list of allowed names includes `Questions`.
 
 Out of scope: answers (TASK-10035), the formatter tests, renumbering, `as_dict`, `chitty show`, and CLI or MCP options.
@@ -103,3 +104,5 @@ Split 2026-11-26 after four stalled worker runs: answers, the formatter sample a
 - 2026-11-26T11:28:19Z brisk-bronze-adder to-plan → planning
 - 2026-11-26T11:28:26Z brisk-bronze-adder: replaced notes; changed description, acceptance criteria; wrote the plan
 - 2026-11-26T11:28:26Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T11:30:27Z brisk-bronze-adder: changed description
+- 2026-11-26T11:30:27Z brisk-bronze-adder cold-read → planning
