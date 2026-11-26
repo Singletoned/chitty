@@ -33,6 +33,10 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 
 Add property and check integration tests, verify they fail before the fix, then count transitions after the latest title-change event using the shared History patterns. Run formatting and checks before handoff.
 
+## Notes
+
+Before the fix, the property test failed because the function was absent and the integration test failed because the retitled ticket still warned.
+
 ## History
 
 - 2026-11-26T10:54:47Z calm-ochre-quail → backlog
@@ -45,3 +49,4 @@ Add property and check integration tests, verify they fail before the fix, then 
 - 2026-11-26T11:14:31Z calm-ochre-quail cold-read → todo
 - 2026-11-26T15:14:09Z youthful-maroon-zander todo → doing
 - 2026-11-26T15:18:02Z youthful-maroon-zander: wrote the plan
+- 2026-11-26T15:18:34Z youthful-maroon-zander: changed notes
