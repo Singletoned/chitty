@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
-status: review
+status: done
 created: 2026-11-25
 moved_from: TASK-VKTREF
 ---
@@ -23,8 +23,8 @@ Out of scope: warning `chitty show` readers about newer copies on other branches
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test over every status in `src/chitty/model.py`'s status list: with one ticket in that status, `chitty guide cold-read <ID>` prints the cold-read guide when the status is `cold-read`, and otherwise exits 1 with `<ID> is <status> in this checkout, not cold-read`, printing no guide. Fails today: the guide prints for every status.
-- [ ] Regression tests: the existing guide tests pass, including `chitty guide cold-read` with no ID; `make check` passes.
+- [x] A Hypothesis property test over every status in `src/chitty/model.py`'s status list: with one ticket in that status, `chitty guide cold-read <ID>` prints the cold-read guide when the status is `cold-read`, and otherwise exits 1 with `<ID> is <status> in this checkout, not cold-read`, printing no guide. Fails today: the guide prints for every status.
+- [x] Regression tests: the existing guide tests pass, including `chitty guide cold-read` with no ID; `make check` passes.
 
 ## Plan
 
@@ -35,6 +35,10 @@ Add a status property test using a temporary repository and confirm it fails bef
 Planner, 2026-11-25: happened again while planning TASK-10019. The prompt named the worktree, but the reader followed `.claude/agents/cold-reader.md` step 1, read `main`'s `backlog` copy, and reported "no Acceptance Criteria" and status `backlog`.
 
 Before the fix, .venv/bin/pytest tests/test_guide_cold_read.py -q failed the status property for backlog: exit 0 and guide printed instead of exit 1.
+
+Reviewed: implementation and complete diff checked.
+1: pass - `make check` passes the status property; on the merge base, applying the test diff and running `PYTHONPATH="$d/src:$d" pytest tests/test_guide_cold_read.py::TestColdReadGuide::test_ticket_status -q` fails for `backlog` with exit 0 and the guide printed.
+2: pass - `make check` passes (1229 tests, 650 subtests), including the existing no-ID guide coverage.
 
 ## Summary
 
@@ -57,3 +61,5 @@ Cold-read guides with a ticket ID now resolve the checkout ticket like show and 
 - 2026-11-26T01:46:15Z calm-fawn-falcon: changed notes
 - 2026-11-26T01:50:14Z calm-fawn-falcon: changed summary
 - 2026-11-26T01:52:37Z calm-fawn-falcon doing → review
+- 2026-11-26T01:59:28Z open-bronze-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-26T01:59:28Z open-bronze-yellowhammer review → done
