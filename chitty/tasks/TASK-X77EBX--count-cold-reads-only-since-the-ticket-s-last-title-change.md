@@ -1,6 +1,6 @@
 ---
 title: Count cold reads only since the ticket's last title change
-status: todo
+status: doing
 created: 2026-11-26
 provisional: true
 ---
@@ -39,3 +39,4 @@ Resetting on description rewrites, or a reset option; the other `check` warnings
 - 2026-11-26T11:13:33Z calm-ochre-quail to-plan → cold-read
 - 2026-11-26T11:14:31Z calm-ochre-quail: changed description
 - 2026-11-26T11:14:31Z calm-ochre-quail cold-read → todo
+- 2026-11-26T15:14:09Z youthful-maroon-zander todo → doing
