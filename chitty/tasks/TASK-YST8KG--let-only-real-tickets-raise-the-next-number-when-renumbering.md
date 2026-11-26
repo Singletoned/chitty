@@ -1,6 +1,6 @@
 ---
 title: Let only real tickets raise the next number when renumbering
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-26
@@ -57,3 +57,4 @@ Renumbering starts after real used IDs and skips numbers mentioned in ticket tex
 - 2026-11-26T11:28:48Z golden-fawn-dormouse: changed notes
 - 2026-11-26T11:33:31Z golden-fawn-dormouse: changed notes
 - 2026-11-26T11:36:18Z golden-fawn-dormouse: changed summary
+- 2026-11-26T11:39:34Z golden-fawn-dormouse doing → review
