@@ -1,6 +1,6 @@
 ---
 title: Add the `to-plan` status and make returns go there
-status: review
+status: done
 labels:
   - needs-minor
 parent: TASK-10026
@@ -26,9 +26,9 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 
 ## Acceptance Criteria
 
-- [ ] The new property test (an edit from `doing` or `review` to `planning` is refused) and the mixed-history escalation example pass, and each fails before the change. Regression tests: the re-pointed return and escalation tests named above
-- [ ] The `tests/test_statuses_planning.py` cases for a `to-plan` ticket pass, and fail before the change
-- [ ] `make check` passes
+- [x] The new property test (an edit from `doing` or `review` to `planning` is refused) and the mixed-history escalation example pass, and each fails before the change. Regression tests: the re-pointed return and escalation tests named above
+- [x] The `tests/test_statuses_planning.py` cases for a `to-plan` ticket pass, and fail before the change
+- [x] `make check` passes
 
 ## Plan
 
@@ -37,6 +37,11 @@ Add failing tests for the new status, rejected direct planning returns and mixed
 ## Notes
 
 Before implementation, the new direct-return property, mixed-history escalation and to-plan interface tests each failed as expected (pytest: 3 failed).
+
+Reviewed: Implementation and complete diff checked.
+1: pass - make check passes the new and regression tests; applying the test diff at the merge base and running the two new TestReturnValidation tests yields 2 failures: direct return accepted and mixed history not escalated.
+2: pass - make check passes TestPlanningStatuses; applying the test diff at the merge base and running test_to_plan_is_listed_but_not_selected_next fails because to-plan is not a valid status.
+3: pass - make check: 1232 passed, 655 subtests passed.
 
 ## Summary
 
@@ -58,3 +63,5 @@ Added to-plan as the default-listed waiting status, routed returns and escalatio
 - 2026-11-26T01:58:30Z daring-ginger-ibis: changed notes
 - 2026-11-26T02:08:17Z daring-ginger-ibis: changed summary
 - 2026-11-26T02:10:36Z daring-ginger-ibis doing → review
+- 2026-11-26T02:16:23Z nimble-coral-falcon: changed notes; ticked acceptance criteria
+- 2026-11-26T02:16:23Z nimble-coral-falcon review → done
