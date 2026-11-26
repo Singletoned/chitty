@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: planning
+status: to-plan
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -61,6 +61,8 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 
 Implementation has not begun despite the existing scope. The requested end-to-end field spans model, store, CLI, MCP, property strategies, tests and documentation and is too large to complete reliably in one session. Decision needed: split TASK-311 into smaller tickets (core model/store/CLI and tests; MCP and strategy/docs), or explicitly retain it as one implementation ticket for a fresh session.
 
+Released: claim idle since 2026-11-23; splitting as the last worker asked.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -83,3 +85,5 @@ Implementation has not begun despite the existing scope. The requested end-to-en
 - 2026-11-23T23:21:06Z plucky-khaki-wren: wrote the plan
 - 2026-11-23T23:23:48Z plucky-khaki-wren: changed owner, notes
 - 2026-11-23T23:23:48Z plucky-khaki-wren doing → planning
+- 2026-11-26T20:08:13Z zesty-ginger-newt: changed notes
+- 2026-11-26T20:08:13Z zesty-ginger-newt planning → to-plan
