@@ -52,7 +52,7 @@ class TestCriteriaLimit(RepoTestCase):
                 archived_path.parent.mkdir(parents=True, exist_ok=True)
                 path.rename(archived_path)
                 path = archived_path
-            if status in {"planning", "todo"} and len(criteria) > MAX_CRITERIA:
+            if status in {"to-plan", "planning", "todo"} and len(criteria) > MAX_CRITERIA:
                 expected[path] = f"{len(criteria)} acceptance criteria; split tickets above 5"
 
         problems = check(repo, repo.contexts(), [])

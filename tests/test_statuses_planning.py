@@ -20,6 +20,13 @@ def call(name: str, **arguments: Any) -> Any:
 
 
 class TestPlanningStatuses(CliTestCase):
+    def test_to_plan_is_listed_but_not_selected_next(self):
+        self.run_cli("add", "Awaiting planning", "-s", "to-plan", "-d", "x")
+        self.run_cli("add", "Ready", "-s", "todo", "-d", "x", "--ac", "Works")
+        self.assertIn("📥 plan", self.run_cli("list").stdout)
+        self.assertEqual(sorted(task["id"] for task in call("list")), ["TASK-1", "TASK-2"])
+        self.assertIn("TASK-2", self.run_cli("next").stdout)
+
     def add_planning_and_cold_read(self):
         self.run_cli("add", "Plan me", "-s", "planning", "-d", "x")
         self.run_cli("add", "Read me", "-d", "x")
@@ -53,7 +60,7 @@ class TestPlanningStatuses(CliTestCase):
             "--override-review-independence",
         )
         output = self.run_cli("list").stdout
-        self.assertIn("📝 plan", output)
+        self.assertIn("📝 plnng", output)
         self.assertIn("🔎 cold", output)
         self.assertNotIn("bklog", output)
         self.assertNotIn("done", output)
@@ -84,7 +91,8 @@ class TestPlanningStatuses(CliTestCase):
         for name in ("docs/plan/cli.md", "README.md"):
             text = (REPO / name).read_text()
             with self.subTest(document=name):
-                self.assertIn("📝 plan", text)
+                self.assertIn("📥 plan", text)
+                self.assertIn("📝 plnng", text)
                 self.assertIn("🔎 cold", text)
 
 

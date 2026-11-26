@@ -1138,7 +1138,7 @@ class Repo:
             if any(not old for old, _ in edit.replace_in_description):
                 raise ChittyError("--replace-in-description OLD cannot be empty")
             replace_pairs(stored.task.section(DESCRIPTION) or "", edit.replace_in_description)
-        edit = check_edit(stored.task, edit, actor())
+        edit = check_edit(stored.task, edit, actor(), str(task_id))
         edit = replace(
             edit,
             depends_on=self._references(edit.depends_on),
@@ -1696,7 +1696,7 @@ class Repo:
 VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 
 
-def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
+def check_edit(task: Task, edit: Edit, reviewer: str, task_id: str = "the task") -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
     if edit.set_notes is not None and (edit.note is not None or edit.notes):
@@ -1713,15 +1713,17 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
                 raise ChittyError(f"{option} is not allowed while a task is in review")
     if edit.status == "blocked" and not (edit.note or edit.notes):
         raise ChittyError("setting status blocked requires --note with the reason")
-    returning_to_planning = previous_status in {"doing", "review"} and edit.status == "planning"
+    if previous_status in {"doing", "review"} and edit.status == "planning":
+        raise ChittyError(f"return {task_id} to `to-plan`; `planning` means a planner has taken it")
+    returning_to_planning = previous_status in {"doing", "review"} and edit.status == "to-plan"
     if returning_to_planning and not any(
         note and note.strip() for note in (edit.note, *edit.notes)
     ):
-        raise ChittyError(f"moving {previous_status} → planning requires --note with the reason")
+        raise ChittyError(f"moving {previous_status} → to-plan requires --note with the reason")
     is_review_transition = previous_status == "review" and edit.status in {
         "doing",
         "done",
-        "planning",
+        "to-plan",
     }
     if edit.status == "doing" and is_review_transition and not (edit.note or edit.notes):
         raise ChittyError("moving review → doing requires --note with the reason")
@@ -1745,7 +1747,11 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     if edit.status == "doing" and previous_status in {"review", "done"}:
         return _escalate_repeated_failure(task, edit)
     if returning_to_planning:
-        returns = _count_since_block(task, {("doing", "planning"), ("review", "planning")})
+        returns = _count_since_block(
+            task,
+            {("doing", "planning"), ("review", "planning"),
+             ("doing", "to-plan"), ("review", "to-plan")},
+        )
         if returns >= PLANNING_RETURN_LIMIT:
             reason = (
                 f"Escalated to human review: returned to planning {returns} times. "
@@ -1791,7 +1797,7 @@ def _validate_review_verdict(task: Task, edit: Edit) -> None:
     verdict_by_number = {number: verdict for number, verdict in verdicts}
     if edit.status == "done" and any(verdict == "fail" for verdict in verdict_by_number.values()):
         raise ChittyError("moving review → done requires every verdict to be pass")
-    if edit.status in {"doing", "planning"} and not any(
+    if edit.status in {"doing", "to-plan"} and not any(
         verdict == "fail" for verdict in verdict_by_number.values()
     ):
         raise ChittyError(f"moving review → {edit.status} requires at least one fail verdict")

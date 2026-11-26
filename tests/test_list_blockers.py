@@ -40,9 +40,9 @@ class TestListBlockers(CliTestCase):
         lines = self.run_cli("list", "--all").stdout.splitlines()
         expected = [
             "TASK-8  💤 bklog  🔗  Backlog eight",
-            "TASK-1  📝 plan   🚧  Blocker one",
-            "TASK-3  📝 plan   🔗  Dependent three",
-            "TASK-5  📝 plan       No dependent five",
+            "TASK-1  📝 plnng  🚧  Blocker one",
+            "TASK-3  📝 plnng  🔗  Dependent three",
+            "TASK-5  📝 plnng      No dependent five",
             "TASK-2  📋 todo   🔗  Dependent two",
             "TASK-7  📋 todo   🔗  Dependent seven",
             "TASK-6  🔨 doing  👤  Owned six",

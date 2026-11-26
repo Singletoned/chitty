@@ -31,7 +31,7 @@ TRANSITION = re.compile(r"^- (\d{4}-\d\d-\d\d)\S* \S+ (\S+) → (\S+)$", re.MULT
 VERDICT = re.compile(r"^(?:Reviewed:|Review failed \(([a-z]+)[^)]*\))", re.MULTILINE)
 COLD_READ_NOTE = re.compile(r"^cold read", re.IGNORECASE | re.MULTILINE)
 CREATED = re.compile(r"^created: (\d{4}-\d\d-\d\d)", re.MULTILINE)
-FAILED_REVIEW_TARGETS = {"doing", "planning", "blocked", "error"}
+FAILED_REVIEW_TARGETS = {"doing", "to-plan", "planning", "blocked", "error"}
 
 
 @dataclass(frozen=True)

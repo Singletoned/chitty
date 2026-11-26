@@ -75,8 +75,8 @@ class TestLeaveDoingClean(CliTestCase):
 
     def test_main_checkout_when_dirty(self):
         (self.root / "scratch.txt").write_text("scratch\n")
-        self.run_cli("edit", "TASK-1", "-s", "planning", "--note", "reason")
-        self.assertIn("status: planning", self.run_cli("show", "TASK-1").output)
+        self.run_cli("edit", "TASK-1", "-s", "to-plan", "--note", "reason")
+        self.assertIn("status: to-plan", self.run_cli("show", "TASK-1").output)
 
     def test_runner_edit_when_dirty(self):
         self.make_worktree()

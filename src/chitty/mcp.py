@@ -33,6 +33,7 @@ from chitty.store import (
 
 Status = Literal[
     "backlog",
+    "to-plan",
     "planning",
     "cold-read",
     "todo",
@@ -147,7 +148,7 @@ def add(
 @_tool(
     "list",
     "List tasks. `context` and `status` are repeatable; status defaults to "
-    "planning, cold-read, todo, doing, blocked, and review. `label`: all of; `search`: "
+    "to-plan, planning, cold-read, todo, doing, blocked, error, and review. `label`: all of; `search`: "
     "title and body.",
 )
 def list_(

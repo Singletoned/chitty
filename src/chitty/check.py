@@ -212,7 +212,7 @@ def check(
                     tasks[path] = task
                     problems += _markdown_warnings(path, task)
                     if (
-                        task.frontmatter.status in {"planning", "todo"}
+                        task.frontmatter.status in {"to-plan", "planning", "todo"}
                         and len(task.criteria) > MAX_CRITERIA
                     ):
                         problems.append(
@@ -227,7 +227,7 @@ def check(
                     spec_words = len((task.section("Description") or "").split()) + sum(
                         len(criterion.text.split()) for criterion in task.criteria
                     )
-                    if status in {"planning", "todo"} and spec_words > MAX_SPEC_WORDS:
+                    if status in {"to-plan", "planning", "todo"} and spec_words > MAX_SPEC_WORDS:
                         problems.append(Problem(
                             path, f"specification has {spec_words} words; simplify or split "
                             f"tickets above {MAX_SPEC_WORDS} words", "warning"
@@ -239,7 +239,7 @@ def check(
                             "--set-notes ''", "warning"
                         ))
                     cold_reads = sum(new == "cold-read" for _, new in task.transitions())
-                    if status in {"planning", "cold-read", "todo"} and cold_reads > MAX_COLD_READS:
+                    if status in {"to-plan", "planning", "cold-read", "todo"} and cold_reads > MAX_COLD_READS:
                         problems.append(Problem(
                             path, f"{cold_reads} cold reads; simplify or split instead of another read",
                             "warning"

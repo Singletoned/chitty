@@ -26,12 +26,12 @@ class TestRunReturnToPlanning(ReviewMergeTestCase):
             "from pathlib import Path\n"
             f"with Path({str(log)!r}).open('a') as stream:\n"
             "    stream.write(sys.argv[1] + '\\n')\n"
-            "subprocess.run(['chitty', 'edit', sys.argv[2], '-s', 'planning', '--note',\n"
+            "subprocess.run(['chitty', 'edit', sys.argv[2], '-s', 'to-plan', '--note',\n"
             "    'Review failed (design): contract missing; planning must choose it.\\n'\n"
             "    '1: fail - missing contract'], check=True)\n"
         )
         result = self.run_cli("run", "--ticket", "TASK-1")
-        self.assertEqual(result.stdout, f"TASK-1: {source} → planning\n")
+        self.assertEqual(result.stdout, f"TASK-1: {source} → to-plan\n")
         self.assertEqual(log.read_text(), f"{'review' if source == 'review' else 'work'}\n")
         self.assertEqual(self.git("rev-parse", "main"), main_head)
         self.assertTrue((self.worktree / ".git").exists())
@@ -40,11 +40,11 @@ class TestRunReturnToPlanning(ReviewMergeTestCase):
         self.assertEqual(len(self.git("worktree", "list", "--porcelain").split("worktree ")) - 1, 2)
         repo = Repo.open(self.root)
         stored = repo.find(repo.resolve("1"))
-        self.assertEqual(stored.task.frontmatter.status, "planning")
+        self.assertEqual(stored.task.frontmatter.status, "to-plan")
         self.assertIsNone(stored.task.frontmatter.owner)
-        self.assertIn("TASK-1", self.run_cli("list", "-s", "planning").stdout)
+        self.assertIn("TASK-1", self.run_cli("list", "-s", "to-plan").stdout)
         self.run_cli("next", exit_code=3)
-        with self.assertRaisesRegex(ChittyError, "status is planning"):
+        with self.assertRaisesRegex(ChittyError, "status is to-plan"):
             ticket_action(repo, repo.resolve("1"))
         # The returned ticket remains on its branch and can be planned there.
         os.chdir(self.worktree)

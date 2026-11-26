@@ -35,6 +35,20 @@ def return_note(count):
 
 
 class TestReturnValidation(unittest.TestCase):
+    @given(SOURCE, st.text(), st.text())
+    def test_direct_return_to_planning_is_refused(self, source, note, reviewer):
+        task = task_for_return(source, [], None)
+        with self.assertRaisesRegex(ChittyError, "to-plan"):
+            check_edit(task, Edit(status="planning", note=note), reviewer)
+
+    def test_mixed_old_and_new_returns_escalate(self):
+        task = task_for_return("doing", [], None)
+        when = datetime(2026, 1, 1, tzinfo=UTC)
+        task = task.with_history(when, "other", "doing", "planning")
+        task = task.with_history(when, "other", "doing", "to-plan")
+        result = check_edit(task, Edit(status="to-plan", note="Needs a decision"), "reviewer")
+        self.assertEqual((result.status, result.owner), ("blocked", "human"))
+
     @given(
         SOURCE,
         st.lists(TEXT, max_size=4),
@@ -48,11 +62,11 @@ class TestReturnValidation(unittest.TestCase):
         task = task_for_return(source, criteria, owner)
         original = task.render()
         edit = (
-            Edit(status="planning", notes=(() if reason is None else (reason,)))
+            Edit(status="to-plan", notes=(() if reason is None else (reason,)))
             if repeated
-            else Edit(status="planning", note=reason)
+            else Edit(status="to-plan", note=reason)
         )
-        with self.assertRaisesRegex(ChittyError, "planning requires --note"):
+        with self.assertRaisesRegex(ChittyError, "to-plan requires --note"):
             check_edit(task, edit, "fresh-reviewer")
         self.assertEqual(task.render(), original)
 
@@ -64,12 +78,10 @@ class TestReturnValidation(unittest.TestCase):
         original = task.render()
         note = reason.strip() + "\n" + return_note(len(criteria))
         edit = (
-            Edit(status="planning", notes=(note,))
-            if repeated
-            else Edit(status="planning", note=note)
+            Edit(status="to-plan", notes=(note,)) if repeated else Edit(status="to-plan", note=note)
         )
         result = check_edit(task, edit, "fresh-reviewer").apply(task)
-        self.assertEqual(result.frontmatter.status, "planning")
+        self.assertEqual(result.frontmatter.status, "to-plan")
         self.assertIsNone(result.frontmatter.owner)
         self.assertEqual(result.criteria, task.criteria)
         self.assertIn("Original description.", result.render())
@@ -88,14 +100,14 @@ class TestReturnValidation(unittest.TestCase):
         else:
             note += "\n1: fail - duplicated"
         with self.assertRaises(ChittyError):
-            check_edit(task, Edit(status="planning", note=note), "fresh-reviewer")
+            check_edit(task, Edit(status="to-plan", note=note), "fresh-reviewer")
 
     def test_reviewer_must_be_independent_but_worker_can_return_own_work(self):
         task = task_for_return("doing", [], "worker").with_history(
             datetime(2026, 1, 1, tzinfo=UTC), "worker", "todo", "doing"
         )
-        edit = Edit(status="planning", note="Missing contract; planning must choose it.")
-        self.assertEqual(check_edit(task, edit, "worker").status, "planning")
+        edit = Edit(status="to-plan", note="Missing contract; planning must choose it.")
+        self.assertEqual(check_edit(task, edit, "worker").status, "to-plan")
         task = task.with_field("status", "review").with_history(
             datetime(2026, 1, 1, tzinfo=UTC), "worker", "doing", "review"
         )
@@ -121,22 +133,22 @@ class TestReturnInterfaces(CliTestCase):
                     path = self.json("show", ticket)["path"]
                     before = self.root.joinpath(path).read_text()
                     if interface == "cli":
-                        self.run_cli("edit", ticket, "-s", "planning", exit_code=1)
+                        self.run_cli("edit", ticket, "-s", "to-plan", exit_code=1)
                         self.assertEqual(self.root.joinpath(path).read_text(), before)
-                        self.run_cli("edit", ticket, "-s", "planning", "--note", return_note(1))
+                        self.run_cli("edit", ticket, "-s", "to-plan", "--note", return_note(1))
                     else:
                         with self.assertRaises(ToolError):
-                            call("edit", id=ticket, status="planning")
+                            call("edit", id=ticket, status="to-plan")
                         self.assertEqual(self.root.joinpath(path).read_text(), before)
-                        call("edit", id=ticket, status="planning", note=return_note(1))
+                        call("edit", id=ticket, status="to-plan", note=return_note(1))
                     task = self.json("show", ticket)
-                    self.assertEqual(task["status"], "planning")
+                    self.assertEqual(task["status"], "to-plan")
                     self.assertIsNone(task["owner"])
                     text = self.root.joinpath(task["path"]).read_text()
-                    self.assertIn(f"{source} → planning", text)
+                    self.assertIn(f"{source} → to-plan", text)
                     self.assertIn("missing contract", text)
                     self.assertEqual(artifact.read_text(), "Partial implementation\n")
-                    self.assertIn(ticket, self.run_cli("list", "-s", "planning").stdout)
+                    self.assertIn(ticket, self.run_cli("list", "-s", "to-plan").stdout)
         self.run_cli("next", exit_code=3)
         self.assertFalse((self.root / ".worktrees").exists())
 
@@ -147,8 +159,8 @@ class TestReturnInterfaces(CliTestCase):
         path = self.root.joinpath(self.json("show", "1")["path"])
         before = path.read_text()
         note = "Review failed (design): missing contract"
-        self.run_cli("edit", "1", "-s", "planning", "--note", note, exit_code=1)
+        self.run_cli("edit", "1", "-s", "to-plan", "--note", note, exit_code=1)
         self.assertEqual(path.read_text(), before)
         with self.assertRaises(ToolError):
-            call("edit", id="TASK-1", status="planning", note=note)
+            call("edit", id="TASK-1", status="to-plan", note=note)
         self.assertEqual(path.read_text(), before)

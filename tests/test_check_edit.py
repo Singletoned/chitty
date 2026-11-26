@@ -103,6 +103,8 @@ class TestCheckEdit(unittest.TestCase):
                 (
                     ("doing", "planning"),
                     ("review", "planning"),
+                    ("doing", "to-plan"),
+                    ("review", "to-plan"),
                     ("doing", "blocked"),
                     ("blocked", "doing"),
                 )
@@ -119,14 +121,14 @@ class TestCheckEdit(unittest.TestCase):
             task = task.with_history(datetime(2026, 1, 1, tzinfo=UTC), "other", old, new)
             if new == "blocked":
                 count = 1
-            elif (old, new) in (("doing", "planning"), ("review", "planning")):
+            elif old in {"doing", "review"} and new in {"planning", "to-plan"}:
                 count += 1
         result = check_edit(
-            task, Edit(status="planning", note="\n reason\nmore", summary=summary), "fresh"
+            task, Edit(status="to-plan", note="\n reason\nmore", summary=summary), "fresh"
         )
         if count < 3:
             self.assertEqual(
-                (result.status, result.owner, result.summary), ("planning", "", summary)
+                (result.status, result.owner, result.summary), ("to-plan", "", summary)
             )
         else:
             self.assertEqual((result.status, result.owner), ("blocked", "human"))

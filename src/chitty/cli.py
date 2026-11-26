@@ -469,8 +469,8 @@ def add(
     multiple=True,
     type=click.Choice(STATUSES),
     help=(
-        "Status to include (repeatable; defaults to planning, cold-read, todo, doing, "
-        "blocked, and review)."
+        "Status to include (repeatable; defaults to to-plan, planning, cold-read, todo, doing, "
+        "blocked, error, and review)."
     ),
 )
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
@@ -874,7 +874,7 @@ def edit(
                 os.environ.pop("CHITTY_ACTOR", None)
             else:
                 os.environ["CHITTY_ACTOR"] = previous_actor
-    escalated = status in {"doing", "planning"} and change.task.task.frontmatter.status == "blocked"
+    escalated = status in {"doing", "to-plan"} and change.task.task.frontmatter.status == "blocked"
     _report(change, as_json, "escalated to human review" if escalated else "updated")
     if (
         not as_json

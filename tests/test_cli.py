@@ -1241,8 +1241,8 @@ class TestAddShowList(CliTestCase):
             lines,
             [
                 "TASK-1   💤 bklog  🚧  Backlog",
-                "TASK-8   📝 plan   🔗  Planning",
-                "TASK-12  📝 plan   💔  Planning broken",
+                "TASK-8   📝 plnng  🔗  Planning",
+                "TASK-12  📝 plnng  💔  Planning broken",
                 "TASK-9   🔎 cold   🔗  Cold read",
                 "TASK-3   📋 todo   🔗  Waiting",
                 "TASK-4   📋 todo   💔  Broken",
@@ -1319,7 +1319,8 @@ class TestAddShowList(CliTestCase):
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
         self.assertIn(
-            "no tasks: contexts=human; statuses=planning,cold-read,todo,doing,blocked,error,review",
+            "no tasks: contexts=human; "
+            "statuses=to-plan,planning,cold-read,todo,doing,blocked,error,review",
             empty.stderr,
         )
         self.assertEqual(self.json("list", "-c", "human"), [])
@@ -1408,9 +1409,9 @@ class TestReviewStatus(CliTestCase):
         self.run_cli("add", "Bounce", "-d", "x")
         self.run_cli("edit", "1", "-s", "doing")
         for _ in range(2):
-            self.run_cli("edit", "1", "-s", "planning", "--note", "Needs a decision")
+            self.run_cli("edit", "1", "-s", "to-plan", "--note", "Needs a decision")
             self.run_cli("edit", "1", "-s", "doing")
-        result = self.run_cli("edit", "1", "-s", "planning", "--note", "Needs a decision")
+        result = self.run_cli("edit", "1", "-s", "to-plan", "--note", "Needs a decision")
         self.assertIn("escalated to human review TASK-1", result.stdout)
         task = self.json("show", "1")
         self.assertEqual((task["status"], task["owner"]), ("blocked", "human"))

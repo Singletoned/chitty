@@ -91,7 +91,7 @@ Work, review, cold-read and rebase take an optional ticket ID; setup and plannin
 Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
-`📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
+`📥 plan`, `📝 plnng`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
 the priority
 as `⏫` high, `➖` medium or `⏬` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by

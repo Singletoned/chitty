@@ -24,6 +24,7 @@ from chitty.markdown import escape_literal_asterisks
 
 STATUSES = (
     "backlog",
+    "to-plan",
     "planning",
     "cold-read",
     "todo",
@@ -35,6 +36,7 @@ STATUSES = (
 )
 # What `list` shows without a status filter: every active status but backlog and done.
 DEFAULT_LIST_STATUSES = (
+    "to-plan",
     "planning",
     "cold-read",
     "todo",
@@ -45,6 +47,7 @@ DEFAULT_LIST_STATUSES = (
 )
 STATUS_GLYPHS = {
     "backlog": "💤",
+    "to-plan": "📥",
     "planning": "📝",
     "cold-read": "🔎",
     "todo": "📋",
@@ -56,7 +59,8 @@ STATUS_GLYPHS = {
 }
 STATUS_LABELS = {
     "backlog": "bklog",
-    "planning": "plan",
+    "to-plan": "plan",
+    "planning": "plnng",
     "cold-read": "cold",
     "todo": "todo",
     "doing": "doing",
@@ -172,6 +176,7 @@ class Frontmatter(BaseModel):
     title: str
     status: Literal[
         "backlog",
+        "to-plan",
         "planning",
         "cold-read",
         "todo",

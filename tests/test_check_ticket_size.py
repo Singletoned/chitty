@@ -62,12 +62,14 @@ class TestTicketSizeWarnings(RepoTestCase):
         notes = [p for p in warnings if "notes have" in p.message]
         reads = [p for p in warnings if "cold reads;" in p.message]
         self.assertEqual(
-            bool(spec), status in {"planning", "todo"} and description_words + criterion_words > 500
+            bool(spec),
+            status in {"to-plan", "planning", "todo"} and description_words + criterion_words > 500,
         )
         self.assertEqual(bool(notes), status == "todo" and notes_words > 200)
         self.assertEqual(
             bool(reads),
-            status in {"planning", "cold-read", "todo"} and history.count("cold-read") > 2,
+            status in {"to-plan", "planning", "cold-read", "todo"}
+            and history.count("cold-read") > 2,
         )
         for group in (spec, notes, reads):
             self.assertLessEqual(len(group), 1)
