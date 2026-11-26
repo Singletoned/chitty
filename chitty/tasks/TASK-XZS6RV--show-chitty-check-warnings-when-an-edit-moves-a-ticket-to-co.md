@@ -1,6 +1,6 @@
 ---
 title: Show `chitty check` warnings when an edit moves a ticket to `cold-read` or `todo`
-status: review
+status: done
 created: 2026-11-26
 provisional: true
 ---
@@ -26,8 +26,8 @@ Running the configured repository check; warnings for other statuses or other co
 
 ## Acceptance Criteria
 
-- [ ] In a new `tests/test_edit_warnings.py` (`RepoTestCase`, default config with `autocommit = false`), a ticket in `planning` with 6 acceptance criteria is moved with `chitty edit <ID> -s cold-read`, then `-s planning`, then `-s todo`, through the CLI runner. The `cold-read` and `todo` moves exit 0 and print a line containing `warning: 6 acceptance criteria`; the `planning` move does not, and `chitty add` of a 6-criterion ticket with `-s todo` prints no warning. Through `mcp.edit(id, status="todo")` on the same ticket after moving it back to `planning`, the result has `warnings` containing that message, and an edit that does not move the ticket into `cold-read` or `todo` has no `warnings` key. Fails without the change.
-- [ ] A `planning` ticket whose `depends_on` names a missing ticket (written into the file directly, as `test_limits` writes History, since `chitty add` and `chitty edit --depends-on` refuse it) is refused by `chitty edit <ID> -s todo` with `autocommit = false`; the output names the problem, and the file still has `status: planning`. Fails without the change. Regression tests: `TestTicketSizeWarnings.test_limits` passes with its expected warning statuses updated to include `cold-read`. `make check` passes.
+- [x] In a new `tests/test_edit_warnings.py` (`RepoTestCase`, default config with `autocommit = false`), a ticket in `planning` with 6 acceptance criteria is moved with `chitty edit <ID> -s cold-read`, then `-s planning`, then `-s todo`, through the CLI runner. The `cold-read` and `todo` moves exit 0 and print a line containing `warning: 6 acceptance criteria`; the `planning` move does not, and `chitty add` of a 6-criterion ticket with `-s todo` prints no warning. Through `mcp.edit(id, status="todo")` on the same ticket after moving it back to `planning`, the result has `warnings` containing that message, and an edit that does not move the ticket into `cold-read` or `todo` has no `warnings` key. Fails without the change.
+- [x] A `planning` ticket whose `depends_on` names a missing ticket (written into the file directly, as `test_limits` writes History, since `chitty add` and `chitty edit --depends-on` refuse it) is refused by `chitty edit <ID> -s todo` with `autocommit = false`; the output names the problem, and the file still has `status: planning`. Fails without the change. Regression tests: `TestTicketSizeWarnings.test_limits` passes with its expected warning statuses updated to include `cold-read`. `make check` passes.
 
 ## Plan
 
@@ -36,6 +36,10 @@ Add failing CLI and MCP coverage for checked status moves, then propagate check 
 ## Notes
 
 Before the fix, both new tests fail: checked moves omit warnings and accept a missing dependency.
+
+Reviewed: complete diff inspected; checks passed.
+1: pass - `make check` passes the CLI and MCP transition tests; applying `tests/test_edit_warnings.py` to the merge base and running `python -m pytest tests/test_edit_warnings.py -q` fails because the cold-read warning is absent.
+2: pass - `make check` passes, including `TestTicketSizeWarnings.test_limits`; the same merge-base test run fails because the missing-dependency edit exits 0 instead of 1.
 
 ## Summary
 
@@ -57,3 +61,5 @@ Checked moves to cold-read or todo now refuse errors and surface warnings in CLI
 - 2026-11-26T15:30:45Z rosy-pearl-toad: changed notes
 - 2026-11-26T15:39:40Z rosy-pearl-toad: changed summary
 - 2026-11-26T15:42:08Z rosy-pearl-toad doing → review
+- 2026-11-26T15:48:11Z sunny-maroon-crane: changed notes; ticked acceptance criteria
+- 2026-11-26T15:48:11Z sunny-maroon-crane review → done
