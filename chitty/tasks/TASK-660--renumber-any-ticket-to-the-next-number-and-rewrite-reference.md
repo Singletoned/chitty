@@ -31,6 +31,10 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 - [ ] In a new `CliTestCase` subclass in `tests/test_renumber.py` (no Git, so numbers are sequential as on `main`), a test adds a ticket `Target` and a ticket `Uses` with `--depends-on` naming `Target` and a Description mentioning `Target`'s ID. `chitty renumber <Target path>` gives `Target` the next number, records `moved_from` with the old ID, and rewrites the old ID to the new one in `Uses`'s `depends_on` and Description; `chitty check` then exits 0. The same works for a ticket made provisional (`provisional: true` written into its file directly), and clears `provisional`. In `TestRenumber`, drop the `TASK-3 is used by no other file` case from `test_refuses_without_changing_anything` and update `test_help` for the new help text. Fails without the change.
 - [ ] In `tests/test_provisional_preflight_errors.py`, using the Git fixture helpers of `TestProvisionalPreflight` (`init_git`, `file`, `commit`), a test on a feature branch runs `chitty renumber <path>` for a numbered ticket with a unique ID: it exits 1 with the `ProvisionalOffMain` message and the files are unchanged. Regression tests: `test_renumbers_only_that_file_and_lists_references`, and the provisional-renumbering tests after passing the candidates argument, pass. `make check` passes.
 
+## Plan
+
+Extend the existing provisional renumber planner and execution to accept explicit candidates, route unique IDs through it, and retain duplicate-ID behavior. Add CLI and preflight regression tests, verify they fail before the fix, then run formatting and checks.
+
 ## History
 
 - 2026-11-24T22:21:23Z zesty-coral-newt → backlog
@@ -44,3 +48,4 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 - 2026-11-26T11:22:30Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:22:30Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:55:31Z zesty-zinc-puffin todo → doing
+- 2026-11-26T11:59:52Z zesty-zinc-puffin: wrote the plan
