@@ -11,7 +11,9 @@ install: ## install Python and node dev dependencies
 	npm ci
 
 check: ## lint, type-check and run the tests
+	@if test -L "$(CURDIR)/.venv"; then echo '.venv is a symlink; run `rm .venv`, then `make install`' >&2; exit 1; fi
 	! git grep -nE '^(<<<<<<< |>>>>>>> |=======$$)'
+	uv sync --all-extras --quiet
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
 	uv run pyright
