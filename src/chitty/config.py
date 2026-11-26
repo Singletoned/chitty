@@ -407,6 +407,13 @@ def register_project(project: str, root: Path | None) -> Path:
     owner = directory / "repo"
     resolved = str(root.resolve()) if root is not None else ""
     current = owner.read_text().strip() if owner.exists() else ""
+    if current and root is not None and not Path(current).is_dir():
+        print(
+            f"warning: project {project} was registered to {current}, which no longer exists; "
+            f"registered {resolved} instead",
+            file=sys.stderr,
+        )
+        current = ""
     if current and current != resolved and not _same_git_repository(Path(current), root):
         raise ChittyError(
             f"project {project!r} is registered to {current}; choose explicit project = name"

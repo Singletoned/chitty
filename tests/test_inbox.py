@@ -1,7 +1,11 @@
 import os
+import subprocess
 from pathlib import Path
 from unittest import mock
 
+from click.testing import CliRunner
+
+from chitty.cli import cli
 from chitty.config import inbox_path, load_repo_config, register_project
 from chitty.errors import ChittyError
 from chitty.inbox import list_waiting, pull, suggest
@@ -15,6 +19,50 @@ class TestInbox(RepoTestCase):
         self._actor = mock.patch.dict(os.environ, {"CHITTY_ACTOR": "test-agent"})
         self._actor.start()
         self.addCleanup(self._actor.stop)
+
+    def test_pull_replaces_stale_registration(self):
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        old = self.tmp / "deleted"
+        owner = inbox_path("target") / "repo"
+        owner.parent.mkdir(parents=True)
+        owner.write_text(f"{old}\n")
+
+        with mock.patch.dict(os.environ, {"CHITTY_ROOT": str(self.root)}):
+            result = CliRunner().invoke(cli, ["inbox", "--pull"])
+
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(owner.read_text().strip(), str(self.root.resolve()))
+        self.assertIn(
+            f"warning: project target was registered to {old}, which no longer exists; "
+            f"registered {self.root.resolve()} instead",
+            result.stderr,
+        )
+
+    def test_pull_refuses_existing_other_repository(self):
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        other = self.tmp / "other"
+        other.mkdir()
+        subprocess.run(["git", "init", "-q", str(other)], check=True)
+        owner = inbox_path("target") / "repo"
+        owner.parent.mkdir(parents=True)
+        owner.write_text(f"{other}\n")
+
+        with mock.patch.dict(os.environ, {"CHITTY_ROOT": str(self.root)}):
+            result = CliRunner().invoke(cli, ["inbox", "--pull"])
+
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn("is registered to", result.output)
+        self.assertEqual(owner.read_text().strip(), str(other))
 
     def test_suggestion_is_written_to_this_test_inbox(self):
         real_inbox = Path.home() / ".local/share/chitty/inbox"
