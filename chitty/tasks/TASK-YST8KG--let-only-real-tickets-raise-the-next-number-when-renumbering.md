@@ -35,6 +35,8 @@ Add property and CLI regression tests and verify they fail; separate mentioned n
 
 Before the fix the CLI regression produced TASK-10000 instead of TASK-3; the fixed planner case failed because the required avoid argument did not exist.
 
+The example-count enforcement test assumed the helper is always named examples; updated it to recognize imports aliased from tests, as required by this ticket.
+
 ## History
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
@@ -49,3 +51,4 @@ Before the fix the CLI regression produced TASK-10000 instead of TASK-3; the fix
 - 2026-11-26T11:23:24Z golden-fawn-dormouse todo → doing
 - 2026-11-26T11:28:09Z golden-fawn-dormouse: wrote the plan
 - 2026-11-26T11:28:48Z golden-fawn-dormouse: changed notes
+- 2026-11-26T11:33:31Z golden-fawn-dormouse: changed notes
