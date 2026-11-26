@@ -46,6 +46,10 @@ Add a first-line symlink guard and sync all extras before check's uv commands. V
 
 Before the fix, the scratch symlink check ran uv and changed the linked venv listing; removing mcp from the scratch venv made pyright report the missing import. Surprise: an initial uv pip uninstall inherited VIRTUAL_ENV and removed mcp from this ticket worktree instead of scratch; the check below restores it. Repeated with explicit scratch VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT.
 
+## Summary
+
+`make check` now rejects a symlinked `.venv` before running uv and syncs all extras before checks. Scratch verification reproduced both bugs before the fix: the symlinked venv listing changed and missing mcp caused pyright import errors. After the fix the symlink is rejected without changes, and the scratch check reinstalls mcp and passes. Ticket worktree `make check` passed; `mate --list` retains the check description.
+
 ## History
 
 - 2026-11-21T07:58:04Z nimble-umber-gannet → backlog
@@ -57,3 +61,4 @@ Before the fix, the scratch symlink check ran uv and changed the linked venv lis
 - 2026-11-26T18:38:04Z mellow-silver-eel todo → doing
 - 2026-11-26T18:42:02Z mellow-silver-eel: wrote the plan
 - 2026-11-26T18:49:59Z mellow-silver-eel: changed notes
+- 2026-11-26T19:00:02Z mellow-silver-eel: changed summary
