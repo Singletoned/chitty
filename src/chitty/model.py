@@ -881,7 +881,7 @@ def _parse_questions(sections: list[_Section]) -> tuple[Question, ...]:
     section = next((s for s in sections if s.name == QUESTIONS), None)
     if section is None:
         return ()
-    items: list[tuple[bool, list[str]]] = []
+    items: list[tuple[bool, list[str], list[str]]] = []
     continuing = False
     for line in section.lines[1:]:
         stripped = line.strip()
@@ -891,17 +891,27 @@ def _parse_questions(sections: list[_Section]) -> tuple[Question, ...]:
         elif match:
             if not match[2]:
                 raise TaskError(f"question {len(items) + 1} has no text")
-            items.append((match[1] != " ", [match[2]]))
+            items.append((match[1] != " ", [match[2]], []))
             continuing = True
-        elif line[0] in " \t" and continuing:
-            if LIST_MARKER_RE.match(stripped):
-                raise TaskError(f"question {len(items)}: nested lists are not allowed")
-            items[-1][1].append(stripped)
+        elif line[0] in " \t" and items:
+            _, text, answer = items[-1]
+            if not answer and continuing:
+                if LIST_MARKER_RE.match(stripped):
+                    raise TaskError(f"question {len(items)}: nested lists are not allowed")
+                text.append(stripped)
+            else:
+                if answer and not continuing:
+                    raise TaskError(f"question {len(items)}: an answer must be one paragraph")
+                answer.append(stripped)
+                continuing = True
         else:
             raise TaskError(
                 f"'## {QUESTIONS}' may only contain '- [ ] ...' items; found {stripped!r}"
             )
-    return tuple(Question(checked, " ".join(text), None) for checked, text in items)
+    return tuple(
+        Question(checked, " ".join(text), " ".join(answer) if answer else None)
+        for checked, text, answer in items
+    )
 
 
 # -- rendering --------------------------------------------------------------

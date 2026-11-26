@@ -11,7 +11,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from chitty.model import Task, new_task, parse
+from chitty.model import QUESTIONS, Task, new_task, parse
 
 PRETTIER = Path(__file__).resolve().parent.parent / "node_modules" / ".bin" / "prettier"
 LONG = "a criterion long enough that prettier with proseWrap always has to wrap it " * 2
@@ -55,6 +55,11 @@ def sample() -> Task:
     )
     task = task.with_criteria(add=(), remove=(), set_criteria=(), check=[3], uncheck=())
     task = task.with_section("Plan", "- First\n- Second")
+    task = task.with_section(
+        QUESTIONS,
+        "- [x] Which database?\n\n  Postgres, because we already run it.\n\n"
+        "- [ ] Who owns the migration?",
+    )
     return task.with_note("A note.").with_note("Another note.")
 
 
