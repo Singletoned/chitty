@@ -28,6 +28,10 @@ Out of scope: listing tickets whose copies really differ (TASK-472).
 
 Add a real Git CLI regression for identical independently committed ticket edits and confirm it fails. Compare selected ticket paths at both tips before checking divergence, reusing Git diff error handling; run focused regressions and full checks, then hand off for review.
 
+## Notes
+
+Regression confirmed: the new real-Git test fails before the fix because show reports changed on both; list already returns a conflict entry. Distinct commit messages ensure the two commits do not collapse to the same Git object.
+
 ## History
 
 - 2026-11-24T22:21:30Z zesty-coral-newt → backlog
@@ -41,3 +45,4 @@ Add a real Git CLI regression for identical independently committed ticket edits
 - 2026-11-26T00:24:12Z calm-ochre-quail cold-read → todo
 - 2026-11-26T00:27:42Z upbeat-amber-vole todo → doing
 - 2026-11-26T00:31:59Z upbeat-amber-vole: wrote the plan
+- 2026-11-26T00:32:34Z upbeat-amber-vole: changed notes
