@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-24
@@ -76,3 +76,4 @@ Review gate refusals now say the edit was not saved; failed checks also suggest 
 - 2026-11-26T11:45:49Z plucky-bronze-quail: wrote the plan
 - 2026-11-26T11:46:52Z plucky-bronze-quail: changed notes
 - 2026-11-26T11:51:13Z plucky-bronze-quail: changed summary
+- 2026-11-26T11:54:14Z plucky-bronze-quail doing → review
