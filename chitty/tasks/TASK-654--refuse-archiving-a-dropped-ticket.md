@@ -1,6 +1,6 @@
 ---
 title: Refuse archiving a `dropped` ticket
-status: planning
+status: to-plan
 priority: high
 depends_on:
   - TASK-599
@@ -34,8 +34,12 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 
 Planner, 2026-11-24: `TASK-655` now lets a criterion mark tests that pin kept behaviour as regression tests, which must pass but need not fail without the change. When re-planning, mark such tests that way instead of requiring wrong-version runs as review evidence.
 
+Released a planning claim idle since 2026-11-24; TASK-599 and TASK-655 have landed.
+
 ## History
 
 - 2026-11-24T08:45:30Z sunny-hazel-gannet → planning
 - 2026-11-24T09:27:49Z sunny-hazel-gannet: changed dependencies
 - 2026-11-24T22:32:19Z sunny-hazel-gannet: changed notes
+- 2026-11-26T19:00:44Z zesty-ginger-newt: changed notes
+- 2026-11-26T19:00:44Z zesty-ginger-newt planning → to-plan
