@@ -81,6 +81,10 @@ RANDOM_ID_MAX = 99_999_999
 # Collisions are vanishingly rare, so many failed draws mean something is wrong.
 RANDOM_ID_ATTEMPTS = 100
 
+def has_fix_since(failed_at: int, commits: list[tuple[int, str]]) -> bool:
+    return any(when > failed_at and not subject.startswith("chitty: ") for when, subject in commits)
+
+
 Which = Literal["active", "archived", "all"]
 
 
@@ -1068,6 +1072,26 @@ class Repo:
         if leaving_doing:
             require_clean()
         entering_review = edit.status == "review" and previous_status != "review"
+        if (
+            entering_review
+            and previous_status == "doing"
+            and self._current_branch() == str(task_id).lower()
+        ):
+            transitions = [t for t in stored.task.timed_transitions() if t[2] == "doing"]
+            if transitions and transitions[-1][1] == "review":
+                failed_at = transitions[-1][0]
+                result = subprocess.run(
+                    ["git", "log", "--format=%at %s", f"{self._main_branch()}..HEAD"], cwd=self.root,
+                    check=True, capture_output=True, text=True,
+                )
+                commits = [(int(timestamp), subject) for timestamp, _, subject in
+                           (line.partition(" ") for line in result.stdout.splitlines())]
+                if not has_fix_since(int(failed_at.timestamp()), commits):
+                    timestamp = failed_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    raise ChittyError(
+                        f"cannot move {task_id} to review: no commit since the failed review "
+                        f"at {timestamp}; commit the fix first"
+                    )
         passing_review = previous_status == "review" and edit.status == "done"
         if (
             (entering_review or passing_review)

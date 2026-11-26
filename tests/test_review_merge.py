@@ -3,6 +3,7 @@ import re
 import stat
 import subprocess
 import sys
+import time
 from pathlib import Path
 from unittest import mock
 
@@ -148,6 +149,10 @@ class ReviewMergeTestCase(CliTestCase):
                 f"Review failed (work): {number}.",
                 "--override-review-independence",
             )
+            with mock.patch.dict(
+                os.environ, {"GIT_AUTHOR_DATE": f"@{int(time.time()) + 60} +0000"}
+            ):
+                self.git("commit", "--quiet", "--allow-empty", "-m", "fix review")
             self.run_cli("edit", "1", "-s", "review")
         self.git("switch", "--quiet", "main")
 
