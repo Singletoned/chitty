@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: to-plan
+status: planning
 labels:
   - bug
 created: 2026-11-24
@@ -67,3 +67,4 @@ Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
 - 2026-11-24T23:25:59Z calm-white-raven doing → planning
 - 2026-11-26T11:36:50Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:36:50Z brisk-bronze-adder planning → to-plan
+- 2026-11-26T11:36:56Z brisk-bronze-adder to-plan → planning
