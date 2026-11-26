@@ -38,6 +38,10 @@ Add failing landing and branch-renumber tests, then permit renumbering when HEAD
 
 Before the fix, both new tests failed: landing left TASK-ABCDEF unnumbered and renumber on a fresh branch produced no changes.
 
+## Summary
+
+Renumber provisional tickets on branches containing main and under the landing lock before fast-forwarding. Added landing and branch tests; both failed before the fix. Updated stale-branch coverage and CLI documentation. make check passes.
+
 ## History
 
 - 2026-11-26T17:46:59Z calm-ochre-quail → backlog
@@ -48,3 +52,4 @@ Before the fix, both new tests failed: landing left TASK-ABCDEF unnumbered and r
 - 2026-11-26T17:54:27Z youthful-white-puffin todo → doing
 - 2026-11-26T17:57:12Z youthful-white-puffin: wrote the plan
 - 2026-11-26T17:57:39Z youthful-white-puffin: changed notes
+- 2026-11-26T18:07:11Z youthful-white-puffin: changed summary
