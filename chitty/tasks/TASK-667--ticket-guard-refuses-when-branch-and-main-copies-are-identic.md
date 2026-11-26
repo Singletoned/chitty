@@ -24,6 +24,10 @@ Out of scope: listing tickets whose copies really differ (TASK-472).
 - [ ] A real-Git test: commit ticket `TASK-1` on `main`, branch `task-1`, make the same ticket edit on both `main` and `task-1` as separate commits (byte-identical files, both sides changed since the split): `chitty list` and `chitty show TASK-1` succeed and show that copy. Fails today with ``ticket `TASK-1` changed on both `task-1` and `main` ``.
 - [ ] Regression tests: when the two copies differ, `changed on both` is still raised, as `tests/test_authoritative_listing.py` and `tests/test_source_copy_errors.py` expect; `tests/test_property_ticket_source.py` passes; `make check` passes.
 
+## Plan
+
+Add a real Git CLI regression for identical independently committed ticket edits and confirm it fails. Compare selected ticket paths at both tips before checking divergence, reusing Git diff error handling; run focused regressions and full checks, then hand off for review.
+
 ## History
 
 - 2026-11-24T22:21:30Z zesty-coral-newt → backlog
@@ -36,3 +40,4 @@ Out of scope: listing tickets whose copies really differ (TASK-472).
 - 2026-11-26T00:24:12Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T00:24:12Z calm-ochre-quail cold-read → todo
 - 2026-11-26T00:27:42Z upbeat-amber-vole todo → doing
+- 2026-11-26T00:31:59Z upbeat-amber-vole: wrote the plan
