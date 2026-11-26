@@ -1,6 +1,6 @@
 ---
 title: Renumbering jumps to TASK-10000 because an archived ticket mentions `TASK-9999`
-status: backlog
+status: to-plan
 labels:
   - bug
 created: 2026-11-26
@@ -15,8 +15,12 @@ Seen 2026-11-25: `chitty renumber` on `main` gave provisional tickets `TASK-1000
 
 Suggestion origin: chitty
 
+Decided (the person, 2026-11-26): only actual tickets (files or refs) raise the next number; mentions never do. Do not renumber TASK-10000 onwards back down.
+
 ## History
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:44Z calm-ochre-quail: changed notes
 - 2026-11-26T10:56:45Z calm-ochre-quail: changed labels
+- 2026-11-26T11:11:25Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:25Z calm-ochre-quail backlog → to-plan
