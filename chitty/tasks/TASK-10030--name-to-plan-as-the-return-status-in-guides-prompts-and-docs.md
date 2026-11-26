@@ -1,6 +1,6 @@
 ---
 title: Name `to-plan` as the return status in guides, prompts and docs
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -24,3 +24,4 @@ Word for word replacements only, so the guides do not grow. Out of scope: `src/c
 - 2026-11-25T23:09:28Z golden-coral-stoat → backlog
 - 2026-11-25T23:12:24Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-MHMNG8
+- 2026-11-26T10:55:25Z tidy-silver-puffin todo → doing
