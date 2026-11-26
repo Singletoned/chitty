@@ -25,3 +25,4 @@ Fixed directly on `hotfix/git-editor` (decided with the person, 2026-11-26): the
 - 2026-11-26T18:06:06Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:31Z calm-ochre-quail: changed labels
 - 2026-11-26T18:22:56Z calm-ochre-quail: changed notes
+- 2026-11-26T18:23:19Z calm-ochre-quail backlog → archived
