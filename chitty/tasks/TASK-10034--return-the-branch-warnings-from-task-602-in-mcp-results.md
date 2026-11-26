@@ -1,6 +1,6 @@
 ---
 title: Return the branch warnings from TASK-602 in MCP results
-status: backlog
+status: planning
 depends_on:
   - TASK-602
 created: 2026-11-25
@@ -21,3 +21,4 @@ Update 2026-11-26: after the replan, TASK-602 and TASK-10040 put the warnings in
 - 2026-11-25T23:32:09Z calm-ochre-quail: renumbered from TASK-N6YMT2
 - 2026-11-26T18:02:47Z brisk-bronze-adder: changed dependencies, description
 - 2026-11-26T18:03:07Z brisk-bronze-adder: changed dependencies, notes
+- 2026-11-26T18:13:23Z brisk-bronze-adder backlog → planning
