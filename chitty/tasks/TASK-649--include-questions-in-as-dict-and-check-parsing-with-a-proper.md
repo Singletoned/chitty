@@ -29,6 +29,10 @@ Out of scope: `chitty show` text output (TASK-C) and CLI and MCP options (TASK-6
 - [ ] The example and property tests in `tests/test_questions_section.py` pass, and each fails before the change with `KeyError: 'questions'`; record the failure messages in a note
 - [ ] `make check` passes
 
+## Plan
+
+Add example and generated round-trip serialization tests, verify both fail on the baseline, then serialize questions alongside criteria and run formatting and checks.
+
 ## Notes
 
 Second cold read (2026-11-23): nothing serious. Its baseline point repeats one already settled (the Description names the baseline, and `depends_on: TASK-629` stops early starts); added the word generator for continuation and answer lines, an optional trailing blank line, and tick independence.
@@ -45,3 +49,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline point repeats one a
 - 2026-11-23T19:47:07Z friendly-coral-badger planning → todo
 - 2026-11-26T11:27:40Z brisk-bronze-adder: changed dependencies
 - 2026-11-26T14:22:23Z youthful-yellow-wren todo → doing
+- 2026-11-26T14:26:41Z youthful-yellow-wren: wrote the plan
