@@ -26,7 +26,7 @@ weak tests, and accept sensible choices.
   fail with cause `work`, set `-s doing`, and give that wording in the note.
 - Accept a worker's `Decided:` choice when it is sensible, fits the intent and
   criteria, and has no clear defect.
-- Set `-s planning` with cause `design` (not `doing`) only when the ticket
+- Set `-s to-plan` with cause `design` (not `doing`) only when the ticket
   genuinely cannot guide the work: a real contradiction, false claim about the
   codebase, unverifiable criterion, consequential unresolved fork, ticket too
   large to finish in one session, or repeated `tests` failures with the same

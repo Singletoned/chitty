@@ -35,7 +35,7 @@ file holds the decisions behind them.
 
 ## `list`
 
-- Non-archived tickets only. Default statuses: `planning`, `cold-read`,
+- Non-archived tickets only. Default statuses: `to-plan`, `planning`, `cold-read`,
   `todo`, `doing`, `blocked`, `error`, `review`, from every context. `-c` and `-s`
   narrow and repeat; `-s` can add `backlog` and `done`. `--all` is every
   status, still without archives.

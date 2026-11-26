@@ -57,8 +57,8 @@ Strict: unknown keys are an error.
 | `moved_from` | ID                  | no       | set by `move`: the ID in the old context |
 | `provisional` | `true`              | no       | marks a provisional ID for renumbering |
 
-- Statuses: `backlog` (needs refining), `planning` and `cold-read` (being
-  written), `todo`, `doing`, `error` (recoverable automation failure),
+- Statuses: `backlog` (needs refining), `to-plan` (waiting for a planner),
+  `planning` (a planner has it) and `cold-read` (being written), `todo`, `doing`, `error` (recoverable automation failure),
   `blocked` (needs a human or external prerequisite), `review`, `done`.
 - An owner reserves `todo` and `doing` tickets for that agent: see
   [Next action and runner](next-action-and-runner.md). `chitty run --ticket ID`

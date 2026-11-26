@@ -88,7 +88,7 @@ need `workflow = "runner"`: under `workflow = "tickets"`, `chitty guide <role>`
 refuses and only plain `chitty guide` works. Under the runner workflow the short
 block in `AGENTS.md` points agents started by hand to their matching role guide.
 Work, review, cold-read and rebase take an optional ticket ID; setup and planning do not.
-Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
+Plain `chitty list` shows non-archived `to-plan`, `planning`, `cold-read`, `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
 `📥 plan`, `📝 plnng`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
@@ -119,12 +119,12 @@ Workers and reviewers can return a ticket for missing or contradictory
 requirements, an unresolved design decision, a wrong claim about the code, files
 or other tickets, a criterion that cannot be verified as written or would pass
 with nothing built, or a ticket too large to finish in one session with
-`chitty edit ID -s planning --note TEXT`. The note must explain what was
+`chitty edit ID -s to-plan --note TEXT`. The note must explain what was
 discovered, why the ticket cannot guide the work, and the decision needed. Reviewers still supply an independent
 review note with one verdict per criterion, including at least one fail when
 criteria exist. The return clears ownership, preserves the branch, worktree and
 implementation, and ends the run without landing or starting another worker.
-Find returned tickets with `chitty list -s planning`; `next` and `run` do not
+Find returned tickets with `chitty list -s to-plan`; `next` and `run` do not
 select them. Resume planning in the existing ticket worktree, then follow normal
 planning and cold-read readiness before `todo`. Implementation defects against
 clear requirements return to `doing`; external obstacles requiring help use

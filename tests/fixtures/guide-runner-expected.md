@@ -23,7 +23,7 @@ When starting an agent by hand, run the matching focused guide:
 - `chitty guide review` for review.
 - `chitty guide plan` for writing or refining tickets.
 
-A ticket that cannot guide the work goes back to `planning` with a note giving
+A ticket that cannot guide the work goes back to `to-plan` with a note giving
 the evidence and the decision needed; external obstacles go to `blocked`,
 implementation defects to `doing`.
 

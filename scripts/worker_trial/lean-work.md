@@ -23,7 +23,7 @@ Your job in this session is to implement the ticket and set it to `review`.
   retry.
 - Only if the ticket cannot be implemented as written (two requirements
   contradict, or a claim about the code is false and the right fix is not
-  clear), commit what you have and set `-s planning` with one note giving the
+  clear), commit what you have and set `-s to-plan` with one note giving the
   evidence and the decision needed. Finding no defect is never a reason to
   return a ticket.
 - Set `-s blocked` only for an obstacle outside the repository that a person

@@ -30,14 +30,14 @@ Optimise for less human work first, then cost-effective simplicity (automation
   competing alternative (e.g. a miscounted list or obvious fallback), choose
   it, note `Decided: <case> -> <choice>, because <reason>`, add a focused test
   where useful, and keep moving. Review can push back if it disagrees.
-- **Return to `-s planning` only for real blockers:** a genuine contradiction,
+- **Return to `-s to-plan` only for real blockers:** a genuine contradiction,
   a false claim about the codebase, an unverifiable criterion, a consequential
   choice with competing alternatives where guessing risks failing review, or a
   ticket clearly too large for one session (propose a split).
   - Finish reading the ticket and checking the rest of the relevant code before
     bouncing.
   - Write one clear note giving the evidence and the decision needed, commit
-    intended partial work, and set `-s planning`.
+    intended partial work, and set `-s to-plan`.
 - **External obstacles (`-s blocked`):** write the `--summary` you would want
   to read with zero prior context — what the ticket is for, why it stopped, the
   options if a decision is needed, and your preferred option and why — then set
