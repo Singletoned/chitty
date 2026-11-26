@@ -31,6 +31,10 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 
 Add property and CLI regression tests and verify they fail; separate mentioned numbers from used numbers in renumbering, skip mentions during allocation, then format and run checks.
 
+## Notes
+
+Before the fix the CLI regression produced TASK-10000 instead of TASK-3; the fixed planner case failed because the required avoid argument did not exist.
+
 ## History
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
@@ -44,3 +48,4 @@ Add property and CLI regression tests and verify they fail; separate mentioned n
 - 2026-11-26T11:17:28Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:23:24Z golden-fawn-dormouse todo → doing
 - 2026-11-26T11:28:09Z golden-fawn-dormouse: wrote the plan
+- 2026-11-26T11:28:48Z golden-fawn-dormouse: changed notes
