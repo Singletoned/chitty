@@ -1,6 +1,6 @@
 ---
 title: Skip ticket IDs cited with another project's name in the `edit -s todo` listing
-status: todo
+status: doing
 labels:
   - bug
 depends_on:
@@ -44,3 +44,4 @@ Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TA
 - 2026-11-26T11:18:23Z calm-ochre-quail: changed acceptance criteria
 - 2026-11-26T11:19:56Z calm-ochre-quail: changed dependencies, description, acceptance criteria
 - 2026-11-26T11:19:56Z calm-ochre-quail cold-read → todo
+- 2026-11-26T12:12:20Z vivid-indigo-gannet todo → doing
