@@ -4,6 +4,7 @@ status: todo
 depends_on:
   - TASK-649
   - TASK-629
+  - TASK-10035
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -42,3 +43,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline and `SECTION_ORDER`
 - 2026-11-23T19:47:23Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:47:23Z friendly-coral-badger cold-read → planning
 - 2026-11-23T19:47:26Z friendly-coral-badger planning → todo
+- 2026-11-26T11:27:48Z brisk-bronze-adder: changed dependencies
