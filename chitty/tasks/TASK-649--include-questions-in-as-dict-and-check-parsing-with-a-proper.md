@@ -26,8 +26,8 @@ Out of scope: `chitty show` text output (TASK-C) and CLI and MCP options (TASK-6
 
 ## Acceptance Criteria
 
-- [ ] The example and property tests in `tests/test_questions_section.py` pass, and each fails before the change with `KeyError: 'questions'`; record the failure messages in a note
-- [ ] `make check` passes
+- [x] The example and property tests in `tests/test_questions_section.py` pass, and each fails before the change with `KeyError: 'questions'`; record the failure messages in a note
+- [x] `make check` passes
 
 ## Plan
 
@@ -38,6 +38,10 @@ Add example and generated round-trip serialization tests, verify both fail on th
 Second cold read (2026-11-23): nothing serious. Its baseline point repeats one already settled (the Description names the baseline, and `depends_on: TASK-629` stops early starts); added the word generator for continuation and answer lines, an optional trailing blank line, and tick independence.
 
 Baseline: test_as_dict and test_generated_questions both failed with KeyError: 'questions' before the serialization change.
+
+## Summary
+
+Added question serialization and example and property tests covering parsing and round trips. Both new tests failed with the expected KeyError before the change; make check passes.
 
 ## History
 
@@ -53,3 +57,4 @@ Baseline: test_as_dict and test_generated_questions both failed with KeyError: '
 - 2026-11-26T14:22:23Z youthful-yellow-wren todo → doing
 - 2026-11-26T14:26:41Z youthful-yellow-wren: wrote the plan
 - 2026-11-26T14:27:09Z youthful-yellow-wren: changed notes
+- 2026-11-26T14:30:46Z youthful-yellow-wren: changed summary; ticked acceptance criteria
