@@ -31,6 +31,13 @@ class TestExampleCounts(unittest.TestCase):
         violations = []
         for path in (ROOT / "tests").rglob("*.py"):
             tree = ast.parse(path.read_text())
+            example_names = {
+                alias.asname or alias.name
+                for node in ast.walk(tree)
+                if isinstance(node, ast.ImportFrom) and node.module == "tests"
+                for alias in node.names
+                if alias.name == "examples"
+            }
             for node in ast.walk(tree):
                 for decorator in getattr(node, "decorator_list", []):
                     if not (
@@ -43,7 +50,7 @@ class TestExampleCounts(unittest.TestCase):
                         if keyword.arg == "max_examples" and not (
                             isinstance(keyword.value, ast.Call)
                             and isinstance(keyword.value.func, ast.Name)
-                            and keyword.value.func.id == "examples"
+                            and keyword.value.func.id in example_names
                         ):
                             violations.append(f"{path.relative_to(ROOT)}:{decorator.lineno}")
         self.assertEqual(violations, [])

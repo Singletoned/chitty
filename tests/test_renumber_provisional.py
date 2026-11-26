@@ -244,6 +244,15 @@ class TestCliProvisionalRenumbering(CliTestCase):
         finally:
             os.chdir(previous)
 
+    def test_mentions_are_skipped_but_do_not_raise_start(self):
+        build_provisional_repo(self.root, 1)
+        numbered = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        numbered.write_text(numbered.read_text().replace("Fixture.", "TASK-9999 and TASK-2."))
+        self.git("add", str(numbered))
+        self.git("commit", "-m", "Mention unused numbers")
+        result = self.run_cli("renumber", "--json")
+        self.assertEqual([item["id"] for item in json.loads(result.stdout)], ["TASK-3"])
+
     def test_main(self):
         self.fixture()
         old = sorted(p.name.split("--")[0] for p in (self.root / "chitty/tasks").glob("TASK-*.md"))

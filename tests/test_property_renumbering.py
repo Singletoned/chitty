@@ -11,6 +11,7 @@ from chitty.errors import ChittyError
 from chitty.ids import TaskId, provisional_suffix
 from chitty.model import SECTION_ORDER, Frontmatter, Task, parse
 from chitty.renumbering import blocking_link, plan_renumbering, replace_ids, rewrite_task
+from tests import examples as example_count
 from tests.ticket_strategies import ticket_texts
 
 PREFIX = st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1, max_size=4)
@@ -155,7 +156,7 @@ class TestRenumberingProperties(unittest.TestCase):
     )
     def test_plan_allocates_sorted_ids_after_highest_used(self, prefix, used_numbers, seed):
         ids = provisional_ids(prefix, seed, 1 + seed.randrange(5))
-        mapping = plan_renumbering({prefix: used_numbers}, ids)
+        mapping = plan_renumbering({prefix: used_numbers}, ids, avoid={})
         start = max(used_numbers) + 1
         self.assertEqual(
             mapping,
@@ -163,6 +164,29 @@ class TestRenumberingProperties(unittest.TestCase):
         )
         self.assertEqual(len(mapping), len(ids))
         self.assertTrue(all(new_id.number not in used_numbers for new_id in mapping.values()))
+
+    @settings(max_examples=example_count(100))
+    @given(
+        used_numbers=st.sets(st.integers(1, 100), max_size=20),
+        avoid_numbers=st.sets(st.one_of(st.integers(1, 110), st.just(9999)), max_size=30),
+        seed=st.randoms(),
+    )
+    def test_plan_skips_mentions_without_raising_start(self, used_numbers, avoid_numbers, seed):
+        ids = provisional_ids("TASK", seed, 1 + seed.randrange(5))
+        mapping = plan_renumbering({"TASK": used_numbers}, ids, avoid={"TASK": avoid_numbers})
+        values = [mapping[task_id].number for task_id in ids]
+        self.assertTrue(all(isinstance(n, int) for n in values))
+        numbers = [n for n in values if isinstance(n, int)]
+        start = max(used_numbers, default=0) + 1
+        self.assertEqual(numbers, sorted(set(numbers)))
+        self.assertTrue(all(n >= start for n in numbers))
+        self.assertTrue(set(numbers).isdisjoint(used_numbers | avoid_numbers))
+        self.assertTrue(set(range(start, max(numbers) + 1)) <= set(numbers) | avoid_numbers)
+
+    def test_distant_mention_does_not_raise_start(self):
+        task_id = TaskId("TASK", "ABCDEF")
+        mapping = plan_renumbering({"TASK": {1}}, [task_id], avoid={"TASK": {9999}})
+        self.assertEqual(mapping[task_id], TaskId("TASK", 2))
 
     @given(seed=st.randoms())
     def test_mixed_prefix_shuffled_ids_allocate_independently(self, seed):
@@ -174,7 +198,7 @@ class TestRenumberingProperties(unittest.TestCase):
         seed.shuffle(provisional)
         used = {"A": {1, 5}, "BC": {2, 8, 11}, "UNUSED": {4}}
 
-        mapping = plan_renumbering(used, provisional)
+        mapping = plan_renumbering(used, provisional, avoid={})
 
         expected = {}
         for prefix, ids in ids_by_prefix.items():
@@ -193,7 +217,7 @@ class TestRenumberingProperties(unittest.TestCase):
     def test_missing_prefix_starts_at_one(self, prefix, seed):
         ids = provisional_ids(prefix, seed, 1 + seed.randrange(4))
         self.assertEqual(
-            list(plan_renumbering({}, ids).values()),
+            list(plan_renumbering({}, ids, avoid={}).values()),
             [TaskId(prefix, number) for number in range(1, len(ids) + 1)],
         )
 
@@ -202,9 +226,9 @@ class TestRenumberingProperties(unittest.TestCase):
     def test_duplicate_and_numeric_ids_are_errors(self, prefix, seed):
         task_id = provisional_ids(prefix, seed, 1)[0]
         with self.assertRaisesRegex(ChittyError, str(task_id)):
-            plan_renumbering({}, [task_id, task_id])
+            plan_renumbering({}, [task_id, task_id], avoid={})
         with self.assertRaises(ChittyError):
-            plan_renumbering({}, [TaskId(prefix, 1)])
+            plan_renumbering({}, [TaskId(prefix, 1)], avoid={})
 
     @given(
         seed=st.randoms(),

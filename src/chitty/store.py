@@ -1294,9 +1294,10 @@ class Repo:
 
         used = {context.prefix: self._used_numbers(context) for context in sequential.values()}
         self._reserve_numbers(used, self.ticket_ids())
+        avoid: dict[str, set[int]] = {prefix: set() for prefix in used}
         for path in disk_paths:
-            self._reserve_numbers(used, ids.ticket_references(path.read_text(), used.keys()))
-        mapping = plan_renumbering(used, candidates)
+            self._reserve_numbers(avoid, ids.ticket_references(path.read_text(), used.keys()))
+        mapping = plan_renumbering(used, candidates, avoid=avoid)
         self._guard_untouched_disk_links(disk_entries, {item.path for item in writable}, mapping)
         self._guard_ref_links(mapping)
         return mapping, tuple(writable)

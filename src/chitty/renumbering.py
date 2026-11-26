@@ -23,7 +23,7 @@ def blocking_link(
 
 
 def plan_renumbering(
-    used: Mapping[str, set[int]], provisional: Sequence[TaskId]
+    used: Mapping[str, set[int]], provisional: Sequence[TaskId], *, avoid: Mapping[str, set[int]]
 ) -> dict[TaskId, TaskId]:
     seen: set[TaskId] = set()
     for task_id in provisional:
@@ -41,6 +41,8 @@ def plan_renumbering(
         number = max(used.get(prefix, set()), default=0)
         for task_id in sorted(task_ids):
             number += 1
+            while number in avoid.get(prefix, set()) or number in used.get(prefix, set()):
+                number += 1
             result[task_id] = TaskId(prefix, number)
     return result
 
