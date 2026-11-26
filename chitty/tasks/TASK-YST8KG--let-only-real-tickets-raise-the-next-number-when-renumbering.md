@@ -27,6 +27,10 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 - [ ] In `tests/test_property_renumbering.py`, a Hypothesis property test of `plan_renumbering` draws `used` and `avoid` number sets for one prefix (with `avoid` numbers both below and above `max(used)`, including very large ones such as 9999) and 1 to 5 provisional IDs. The new numbers are distinct and above `max(used)` (or from 1 when `used` is empty), none is in `used` or `avoid`, they follow the sorted provisional IDs in increasing order, and every number from `max(used) + 1` up to the largest new number is either new or in `avoid`. That file already defines its own `examples` decorator, so import the example-count helper as `from tests import examples as example_count` and use `@settings(max_examples=example_count(N))`. A fixed case, `used={1}`, `avoid={9999}`, one provisional ID, gives number 2; it fails today because mentions raise the start.
 - [ ] In `tests/test_renumber_provisional.py`, on `main`, with real ticket `TASK-1` whose Description mentions `TASK-9999` and `TASK-2` (written into its file directly, as the existing fixtures cannot add that text) and one provisional ticket, `chitty renumber` gives the provisional ticket `TASK-3`, not `TASK-10000` (today) or `TASK-2`. Fails without the change. Regression tests: the existing renumbering tests pass after passing `avoid={}` at each `plan_renumbering` call. `make check` passes.
 
+## Plan
+
+Add property and CLI regression tests and verify they fail; separate mentioned numbers from used numbers in renumbering, skip mentions during allocation, then format and run checks.
+
 ## History
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
@@ -39,3 +43,4 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 - 2026-11-26T11:17:28Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:17:28Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:23:24Z golden-fawn-dormouse todo → doing
+- 2026-11-26T11:28:09Z golden-fawn-dormouse: wrote the plan
