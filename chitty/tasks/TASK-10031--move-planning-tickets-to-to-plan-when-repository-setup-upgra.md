@@ -1,6 +1,6 @@
 ---
 title: Move `planning` tickets to `to-plan` when repository setup upgrades
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -27,8 +27,8 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 
 ## Acceptance Criteria
 
-- [ ] The three cases in `tests/test_init_workflow.py` pass, and the first fails before the change. Regression tests: the other two cases
-- [ ] `make check` passes
+- [x] The three cases in `tests/test_init_workflow.py` pass, and the first fails before the change. Regression tests: the other two cases
+- [x] `make check` passes
 
 ## Plan
 
@@ -37,6 +37,10 @@ Add fixed upgrade tests at the real version, verify migration fails before imple
 ## Notes
 
 Before the fix, the three fixed tests produced one failure: the old setup retained planning instead of to-plan; the two regression cases passed.
+
+Reviewed: The migration and its version gate match the ticket.
+1: pass - The three cases pass in make check; applying the test diff at the merge base and running PYTHONPATH=<merge-base>/src:<merge-base> .venv/bin/python -m pytest -q tests/test_init_workflow.py::TestSharedPlanningUpgrade produced 1 failed, 2 passed: the old setup left status planning instead of to-plan.
+2: pass - make check: 1237 passed, 655 subtests passed; ruff and pyright passed.
 
 ## Summary
 
@@ -54,3 +58,5 @@ Setup upgrades migrate active planning tickets from shared-planning versions to 
 - 2026-11-26T02:39:15Z rosy-dusky-vole: changed notes
 - 2026-11-26T02:42:21Z rosy-dusky-vole: changed summary
 - 2026-11-26T02:44:44Z rosy-dusky-vole doing → review
+- 2026-11-26T02:50:31Z upbeat-bronze-gannet: changed notes; ticked acceptance criteria
+- 2026-11-26T02:50:31Z upbeat-bronze-gannet review → done
