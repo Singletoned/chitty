@@ -1,6 +1,6 @@
 ---
 title: "`git.worktree_for_branch` hides `git worktree list` failures"
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -18,8 +18,8 @@ No property test: one external process failure, covered by an example.
 
 ## Acceptance Criteria
 
-- [ ] A test calls `git.worktree_for_branch` on a temporary directory that is not a Git repository and expects `ChittyError` naming `git worktree list`. Fails today: it returns `None`.
-- [ ] Regression tests: the tests that reach the callers (`src/chitty/run.py` lines near 345, 495, 508 and 1263; `src/chitty/store.py` near 799 and 1594) pass; `make check` passes.
+- [x] A test calls `git.worktree_for_branch` on a temporary directory that is not a Git repository and expects `ChittyError` naming `git worktree list`. Fails today: it returns `None`.
+- [x] Regression tests: the tests that reach the callers (`src/chitty/run.py` lines near 345, 495, 508 and 1263; `src/chitty/store.py` near 799 and 1594) pass; `make check` passes.
 
 ## Plan
 
@@ -28,6 +28,10 @@ Inspect all callers, add a failing non-repository example, propagate the Git err
 ## Notes
 
 The new non-repository test failed before the fix with ChittyError not raised, then passed. Checked all six call sites: runner roots are Git checkouts; store calls only reach branch lookup after discovering a Git branch. None needs a fallback.
+
+Reviewed: Worktree listing errors propagate, and all six callers were inspected; none needs a fallback.
+1: pass - New test passes in make check; on the merge base with the test applied, PYTHONPATH pointing to that checkout and pytest tests/test_git.py::TestWorktreeForBranch::test_non_repository_surfaces_git_failure -q fails with AssertionError: ChittyError not raised.
+2: pass - make check: 1211 passed, 640 subtests passed; includes caller regression tests.
 
 ## Summary
 
@@ -48,3 +52,5 @@ Git worktree listing failures now propagate instead of appearing as a missing wo
 - 2026-11-26T00:56:23Z youthful-amber-falcon: changed notes
 - 2026-11-26T00:59:50Z youthful-amber-falcon: changed summary
 - 2026-11-26T01:02:36Z youthful-amber-falcon doing → review
+- 2026-11-26T01:10:02Z brisk-silver-newt: changed notes; ticked acceptance criteria
+- 2026-11-26T01:10:02Z brisk-silver-newt review → done
