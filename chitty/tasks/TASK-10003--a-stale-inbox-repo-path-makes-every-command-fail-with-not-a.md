@@ -27,6 +27,10 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 
 Add CLI regression tests for stale and live inbox owners, demonstrate the stale case fails, then replace stale registrations with a warning while preserving existing ownership behavior. Run formatting and checks.
 
+## Notes
+
+Before the fix, the stale-registration CLI test failed with Not a directory; the existing-other-repository regression passed.
+
 ## History
 
 - 2026-11-25T22:28:31Z calm-ochre-quail → backlog
@@ -39,3 +43,4 @@ Add CLI regression tests for stale and live inbox owners, demonstrate the stale 
 - 2026-11-26T00:22:59Z calm-ochre-quail cold-read → todo
 - 2026-11-26T00:40:30Z zesty-jade-wren todo → doing
 - 2026-11-26T00:44:07Z zesty-jade-wren: wrote the plan
+- 2026-11-26T00:44:38Z zesty-jade-wren: changed notes
