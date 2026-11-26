@@ -30,8 +30,6 @@ def plan_renumbering(
         if task_id in seen:
             raise ChittyError(f"duplicate provisional task ID {task_id}")
         seen.add(task_id)
-        if isinstance(task_id.number, int):
-            raise ChittyError(f"task ID {task_id} is not provisional")
 
     result: dict[TaskId, TaskId] = {}
     by_prefix: dict[str, list[TaskId]] = {}

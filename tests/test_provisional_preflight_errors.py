@@ -1,3 +1,8 @@
+import os
+
+from click.testing import CliRunner
+
+from chitty.cli import cli
 from chitty.errors import ChittyError, ProvisionalOffMain
 from chitty.store import Repo
 from tests.support import RepoTestCase
@@ -36,7 +41,7 @@ class TestProvisionalPreflightErrors(RepoTestCase):
     def check_error(self, expected, *parts):
         before = self.snapshot()
         with self.assertRaises(expected) as caught:
-            Repo.open(self.root)._plan_provisional_renumbering()
+            Repo.open(self.root)._plan_provisional_renumbering(None)
         for part in parts:
             self.assertIn(str(part), str(caught.exception))
         self.assertEqual(before, self.snapshot())
@@ -45,6 +50,19 @@ class TestProvisionalPreflightErrors(RepoTestCase):
     def test_feature(self):
         self.git("switch", "-c", "feature")
         self.check_error(ProvisionalOffMain, "feature")
+
+    def test_unique_numbered_ticket_on_feature_branch(self):
+        path = self.file("tasks", "TASK-1")
+        self.commit()
+        self.git("switch", "-c", "feature")
+        before = self.snapshot()
+        previous = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, previous)
+        result = CliRunner().invoke(cli, ["renumber", str(path)])
+        self.assertEqual(result.exit_code, 1, result.output)
+        self.assertIn("provisional tickets are renumbered on", result.output)
+        self.assertEqual(before, self.snapshot())
 
     def test_detached(self):
         self.git("checkout", "--detach")

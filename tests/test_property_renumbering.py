@@ -223,12 +223,10 @@ class TestRenumberingProperties(unittest.TestCase):
 
     @given(prefix=PREFIX, seed=st.randoms())
     @settings(deadline=None)
-    def test_duplicate_and_numeric_ids_are_errors(self, prefix, seed):
+    def test_duplicate_ids_are_errors(self, prefix, seed):
         task_id = provisional_ids(prefix, seed, 1)[0]
         with self.assertRaisesRegex(ChittyError, str(task_id)):
             plan_renumbering({}, [task_id, task_id], avoid={})
-        with self.assertRaises(ChittyError):
-            plan_renumbering({}, [TaskId(prefix, 1)], avoid={})
 
     @given(
         seed=st.randoms(),

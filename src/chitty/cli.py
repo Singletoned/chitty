@@ -1011,12 +1011,11 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 def renumber(path: Path | None, as_json: bool) -> None:
     """Renumber provisional tickets on main, or one of several files sharing an ID.
 
-    PATH is the task file to change. Its new ID follows the context's allocation
-    rules: random numeric IDs in random_ids contexts, sequential numbers on the
-    configured main branch (or outside Git), and provisional IDs otherwise.
-    It keeps its slug and records moved_from.
-    References are not rewritten, because a reference to a shared ID cannot say
-    which file it meant: each ticket naming the old ID is listed to check.
+    PATH identifies a ticket. A unique ID is renumbered on main (or outside Git)
+    in a sequential context, and its references are rewritten. For a shared ID,
+    the new ID follows the context's allocation rules; references are not
+    rewritten because they are ambiguous, and tickets naming it are listed to
+    check. Both forms record moved_from.
     """
     if path is None:
         try:

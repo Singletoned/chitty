@@ -66,7 +66,7 @@ class TestProvisionalLinkGuard(TestProvisionalPreflight):
         self.ref_fixture(case)
         before = self.state()
         with self.assertRaises(ChittyError) as error:
-            Repo.open(self.root)._plan_provisional_renumbering()
+            Repo.open(self.root)._plan_provisional_renumbering(None)
         self.assertEqual(
             str(error.exception), f"cannot renumber TASK-AAAAAA: TASK-3 links to it in {field}"
         )
@@ -81,7 +81,7 @@ class TestProvisionalLinkGuard(TestProvisionalPreflight):
     def test_branch_only_prose(self):
         self.ref_fixture("branch-only-prose")
         before = self.state()
-        mapping, _ = Repo.open(self.root)._plan_provisional_renumbering()
+        mapping, _ = Repo.open(self.root)._plan_provisional_renumbering(None)
         self.assertEqual(mapping, {TaskId.parse("TASK-AAAAAA"): TaskId.parse("TASK-4")})
         self.assertEqual(self.state(), before)
 
@@ -112,14 +112,14 @@ class TestProvisionalLinkGuard(TestProvisionalPreflight):
             else "cannot renumber TASK-BAAAAA: OTHER-1 links to it in depends_on"
         )
         with self.assertRaises(ChittyError) as error:
-            Repo.open(self.root)._plan_provisional_renumbering()
+            Repo.open(self.root)._plan_provisional_renumbering(None)
         self.assertEqual(str(error.exception), expected)
         self.assertEqual(self.state(), before)
 
     def check_success(self, stale, link):
         path = self.fixture(stale, link)
         before = self.state()
-        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering()
+        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering(None)
         expected = {"TASK-AAAAAA": "TASK-4" if stale else "TASK-1"}
         if not stale:
             expected["TASK-BAAAAA"] = "TASK-2"

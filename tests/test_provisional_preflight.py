@@ -45,7 +45,7 @@ class TestProvisionalPreflight(RepoTestCase):
 
     def check_plan(self, files: set[Path], first: int):
         before = self.snapshot()
-        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering()
+        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering(None)
         self.assertEqual(
             [(str(old), str(new)) for old, new in mapping.items()],
             [("TASK-AAAAAA", f"TASK-{first}"), ("TASK-BAAAAA", f"TASK-{first + 1}")],
@@ -122,14 +122,14 @@ class TestProvisionalPreflight(RepoTestCase):
             repo.source_of(TaskId.parse("TASK-3"))
         before = self.snapshot()
         with self.assertRaisesRegex(ChittyError, pattern):
-            repo._plan_provisional_renumbering()
+            repo._plan_provisional_renumbering(None)
         self.assertEqual(self.snapshot(), before)
 
     def test_standalone(self):
-        self.assertEqual(Repo.open(self.root)._plan_provisional_renumbering(), ({}, ()))
+        self.assertEqual(Repo.open(self.root)._plan_provisional_renumbering(None), ({}, ()))
         path = self.file("tasks", "TASK-AAAAAA", provisional=True)
         before = path.read_bytes()
-        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering()
+        mapping, writable = Repo.open(self.root)._plan_provisional_renumbering(None)
         self.assertEqual(mapping, {TaskId.parse("TASK-AAAAAA"): TaskId.parse("TASK-1")})
         self.assertEqual([t.path for t in writable], [path])
         self.assertEqual(path.read_bytes(), before)

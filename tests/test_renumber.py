@@ -60,7 +60,6 @@ class TestRenumber(CliTestCase):
         before = self.snapshot()
         cases = (
             ("chitty.toml", "not a task file in a context"),
-            ("chitty/tasks/TASK-3--dependent.md", "TASK-3 is used by no other file"),
             ("chitty/tasks/TASK-99--missing.md", "not a task file in a context"),
         )
         for path, message in cases:
@@ -108,10 +107,48 @@ class TestRenumber(CliTestCase):
         )
 
     def test_help(self):
-        self.assertIn(
-            "Renumber provisional tickets on main, or one of several files sharing an ID.",
-            self.run_cli("renumber", "--help").stdout,
+        help_text = self.run_cli("renumber", "--help").stdout
+        self.assertIn("A unique ID is renumbered", help_text)
+        self.assertIn("its references are rewritten", help_text)
+
+
+class TestRenumberUnique(CliTestCase):
+    def test_rewrites_references_for_numbered_and_provisional_tickets(self):
+        for provisional in (False, True):
+            with self.subTest(provisional=provisional):
+                target = self.json("add", f"Target {provisional}", "-d", "Description.")
+                old = target["id"]
+                self.run_cli("add", f"Uses {provisional}", "-d", f"See {old}.", "--depends-on", old)
+                path = Path(target["path"])
+                if provisional:
+                    path.write_text(
+                        path.read_text().replace(
+                            "status: todo\n", "status: todo\nprovisional: true\n"
+                        )
+                    )
+                result = self.json("renumber", str(path))
+                new = result["task"]["id"]
+                self.assertEqual(new, f"TASK-{int(old.split('-')[1]) + 2}")
+                self.assertEqual(result["task"]["moved_from"], old)
+                self.assertFalse(result["task"].get("provisional"))
+                self.assertEqual(result["references"], [])
+                uses = self.json("show", f"TASK-{int(old.split('-')[1]) + 1}")
+                self.assertEqual(uses["depends_on"], [new])
+                self.assertIn(new, uses["description"])
+                self.assertNotIn(old, uses["description"])
+                self.run_cli("check")
+
+    def test_refuses_unique_ticket_in_random_id_context(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("[contexts.tasks]", "[contexts.tasks]\nrandom_ids = true")
         )
+        target = self.json("add", "Target", "-d", "Description.")
+        path = Path(target["path"])
+        before = path.read_bytes()
+        result = self.run_cli("renumber", str(path), exit_code=1)
+        self.assertIn("random-ID context", result.stderr)
+        self.assertEqual(path.read_bytes(), before)
 
 
 class TestMoveReportsTheMovedTask(CliTestCase):

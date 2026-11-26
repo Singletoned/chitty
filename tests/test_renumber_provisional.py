@@ -104,7 +104,7 @@ class TestPrepareRenumbering(RepoTestCase):
         self.fixture()
         before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
         repo = Repo.open(self.root)
-        mapping, writable = repo._plan_provisional_renumbering()
+        mapping, writable = repo._plan_provisional_renumbering(None)
         self.assertEqual(
             {str(k): str(v) for k, v in mapping.items()},
             {"TASK-AAAAAA": "TASK-5", "TASK-BAAAAA": "TASK-6"},
@@ -171,7 +171,7 @@ class TestPrepareRenumbering(RepoTestCase):
         repo = Repo.open(self.root)
         human = self.root / "chitty/human/HUMAN-1--old-name.md"
         human_before = human.read_bytes()
-        mapping, writable = repo._plan_provisional_renumbering()
+        mapping, writable = repo._plan_provisional_renumbering(None)
         with (
             mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"}),
             mock.patch("chitty.store.datetime") as clock,

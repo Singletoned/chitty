@@ -1256,7 +1256,9 @@ class Repo:
                 result.append((stored, final, path))
         return result
 
-    def _plan_provisional_renumbering(self) -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]:
+    def _plan_provisional_renumbering(
+        self, candidates: tuple[TaskId, ...] | None
+    ) -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]:
         """Select writable disk tickets and allocate fresh sequential IDs without writing."""
         if git.is_repository(self.root):
             branch = git.current_branch(self.root)
@@ -1274,7 +1276,7 @@ class Repo:
         disk_paths: list[Path] = []
         disk_entries: list[tuple[Context, Path, bool]] = []
         writable: list[StoredTask] = []
-        candidates: list[TaskId] = []
+        selected: list[TaskId] = []
         for context in self.discovered_contexts():
             for archived in (False, True):
                 for path in self._files(context, archived):
@@ -1287,13 +1289,18 @@ class Repo:
                         continue
                     stored = self._load(context, path, archived)
                     writable.append(stored)
-                    if context.name in sequential and stored.task.frontmatter.provisional:
-                        candidates.append(task_id)
-        if not candidates:
+                    if candidates is None:
+                        if context.name in sequential and stored.task.frontmatter.provisional:
+                            selected.append(task_id)
+                    elif task_id in candidates:
+                        if context.name not in sequential:
+                            raise ChittyError(f"cannot renumber {task_id} in random-ID context {context.name}")
+                        selected.append(task_id)
+        if not selected:
             return {}, ()
 
         seen: dict[TaskId, Path] = {}
-        candidate_ids = set(candidates)
+        candidate_ids = set(selected)
         for path in disk_paths:
             task_id, _ = ids.parse_filename(path.name)
             if task_id in candidate_ids:
@@ -1308,7 +1315,7 @@ class Repo:
         avoid: dict[str, set[int]] = {prefix: set() for prefix in used}
         for path in disk_paths:
             self._reserve_numbers(avoid, ids.ticket_references(path.read_text(), used.keys()))
-        mapping = plan_renumbering(used, candidates, avoid=avoid)
+        mapping = plan_renumbering(used, selected, avoid=avoid)
         self._guard_untouched_disk_links(disk_entries, {item.path for item in writable}, mapping)
         self._guard_ref_links(mapping)
         return mapping, tuple(writable)
@@ -1389,7 +1396,10 @@ class Repo:
             return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
 
     def renumber_provisional(self) -> tuple[Change, ...]:
-        mapping, writable = self._plan_provisional_renumbering()
+        return self._renumber_candidates(None)
+
+    def _renumber_candidates(self, candidates: tuple[TaskId, ...] | None) -> tuple[Change, ...]:
+        mapping, writable = self._plan_provisional_renumbering(candidates)
         if not mapping:
             return ()
         self._prepare_write()
@@ -1415,7 +1425,8 @@ class Repo:
                 for old, _, path in prepared
                 for p in ((old.path, path) if old.path != path else (path,))
             )
-            self._commit(Change(changes[0].task, paths, final), "renumber provisional tickets")
+            verb = "renumber" if candidates is not None else "renumber provisional tickets"
+            self._commit(Change(changes[0].task, paths, final), verb)
             return changes
 
     def archive_done(self) -> tuple[Change, ...]:
@@ -1536,12 +1547,10 @@ class Repo:
             return self._commit(Change(moved, tuple(touched), tasks), "move")
 
     def renumber(self, path: Path) -> tuple[Change, tuple[StoredTask, ...]]:
-        """Give one of several files sharing an ID the next number in its context.
+        """Renumber a file, rewriting references unless its ID is shared.
 
-        The file is found through `scan`, because `find` and `all_tasks` collapse
-        files sharing an ID into one. References are not rewritten: a reference
-        to a shared ID cannot say which file it meant, so the tickets naming the
-        old ID are returned for a person to check.
+        Scan finds files sharing an ID, which lookup collapses. References to a
+        shared ID are ambiguous, so tickets naming it are returned for review.
         """
         context, archived, found = self._locate_task_file(path.resolve())
         directory = context.archive_directory if archived else context.directory
@@ -1554,9 +1563,10 @@ class Repo:
             if other != found and ids.parse_filename(other.name)[0] == task_id
         ]
         if not others:
-            raise ChittyError(
-                f"{task_id} is used by no other file; use `chitty move` to give it a new ID"
-            )
+            changes = self._renumber_candidates((task_id,))
+            if not changes:
+                raise ChittyError(f"cannot renumber {task_id}: ticket is not writable")
+            return changes[0], ()
         # Refuse before preparing the write, so a refused renumber changes nothing.
         self._prepare_write()
         new_id, provisional = self.new_id(context)
