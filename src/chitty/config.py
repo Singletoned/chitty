@@ -61,6 +61,19 @@ random_ids = true
 """
 
 
+def agent_command_warnings(
+    agent_command: str | None, agent_commands: Mapping[str, str]
+) -> list[str]:
+    commands = [("agent_command", agent_command)]
+    commands.extend((f"agent_commands.{name}", value) for name, value in sorted(agent_commands.items()))
+    return [
+        f"{setting} has no {{prompt}}; Chitty no longer manages the Pi extension that "
+        "`{mode}`/`{id}` commands relied on, so use a print-mode command such as `pi -p {prompt}`"
+        for setting, command in commands
+        if command is not None and command.strip() and "{prompt}" not in command
+    ]
+
+
 class ContextConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
 

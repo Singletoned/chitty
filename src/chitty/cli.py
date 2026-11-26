@@ -19,6 +19,7 @@ from chitty.check import errors
 from chitty.check import fix as fix_repo
 from chitty.config import (
     CHITTY_VERSION,
+    agent_command_warnings,
     configured_workflow,
     find_root,
     load_repo_config,
@@ -292,6 +293,9 @@ def init(enable_autocommit: bool) -> None:
         enable_autocommit,
         "chitty: initialize and enable autocommit" if enable_autocommit else None,
     )
+    config = load_repo_config(Path.cwd())
+    for warning in agent_command_warnings(config.agent_command, config.agent_commands):
+        click.echo(f"warning: {warning}", err=True)
     if not paths:
         click.echo("already up to date")
     for path in paths:

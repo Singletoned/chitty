@@ -117,6 +117,19 @@ class TestSetupVersion(CliTestCase):
 
 
 class TestInit(CliTestCase):
+    def test_warns_for_agent_command_without_prompt(self):
+        result = self.run_cli("init")
+        self.assertIn("warning: agent_command has no {prompt}", result.stderr)
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "pi -p {prompt}"',
+            )
+        )
+        result = self.run_cli("init")
+        self.assertNotIn("has no {prompt}", result.stderr)
+
     def test_init_without_autocommit_does_not_commit(self):
         import subprocess
 
