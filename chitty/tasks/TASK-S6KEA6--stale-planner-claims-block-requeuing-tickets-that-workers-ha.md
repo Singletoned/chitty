@@ -17,8 +17,11 @@ Suggestion origin: chitty
 
 Mostly addressed since: TASK-10030 tells workers to return tickets to `to-plan`, and TASK-10031 moved old `planning` tickets to `to-plan` on setup upgrade; of the seven tickets named, six are now done. What is left: `claim_refusal` in `src/chitty/model.py` still treats a `doing -> planning` transition as a planning claim.
 
+Decided (the person, 2026-11-26): wait and see; probably a glitch from the move to `to-plan`. Re-check on 2026-12-03: if no `doing -> planning` claim has blocked anyone since 2026-11-26, archive this; otherwise plan option A (only a move into `planning` from `to-plan`, `backlog` or `cold-read` counts as a claim). Chitty has no due dates yet (TASK-619).
+
 ## History
 
 - 2026-11-26T18:06:12Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:14Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:28Z calm-ochre-quail: changed labels, notes
+- 2026-11-26T18:17:06Z calm-ochre-quail: changed notes
