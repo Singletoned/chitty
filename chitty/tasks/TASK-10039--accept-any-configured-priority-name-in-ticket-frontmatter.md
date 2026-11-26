@@ -1,6 +1,6 @@
 ---
 title: Accept any configured priority name in ticket frontmatter
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -57,3 +57,4 @@ Frontmatter accepts non-empty priority names; list displays unknown names withou
 - 2026-11-26T14:39:44Z plucky-maroon-urchin: wrote the plan
 - 2026-11-26T14:40:32Z plucky-maroon-urchin: changed notes
 - 2026-11-26T14:44:33Z plucky-maroon-urchin: changed summary
+- 2026-11-26T14:47:07Z plucky-maroon-urchin doing → review
