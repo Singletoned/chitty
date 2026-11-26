@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: planning
+status: todo
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -48,3 +48,4 @@ Out of scope: calling it from landing (`TASK-573`).
 - 2026-11-26T20:07:39Z zesty-ginger-newt planning → to-plan
 - 2026-11-26T20:07:42Z zesty-ginger-newt: replaced notes; changed description, acceptance criteria; wrote the plan
 - 2026-11-26T20:07:42Z zesty-ginger-newt to-plan → planning
+- 2026-11-26T20:07:44Z zesty-ginger-newt planning → todo
