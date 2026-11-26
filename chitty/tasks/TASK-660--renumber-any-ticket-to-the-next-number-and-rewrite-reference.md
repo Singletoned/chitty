@@ -26,7 +26,7 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_renumber.py` (no Git, so numbers are sequential as on `main`), with `TASK-3` named by `TASK-4`'s `depends_on` and Description: `chitty renumber chitty/tasks/TASK-3--dependent.md` gives it the next number, records `moved_from: TASK-3`, and rewrites `TASK-3` to the new ID in the other ticket's `depends_on` and Description; `chitty check` passes. The same works for a provisional ticket (`provisional: true`, written into the file directly) and clears `provisional`. Replace the `TASK-3 is used by no other file` case in `test_refuses_without_changing_anything`. Fails without the change.
+- [ ] In `tests/test_renumber.py` (no Git, so numbers are sequential as on `main`), a new test adds a ticket `Target` and a ticket `Uses` with `--depends-on` naming `Target` and a Description mentioning `Target`'s ID. `chitty renumber <Target path>` gives `Target` the next number, records `moved_from` with the old ID, and rewrites the old ID to the new one in `Uses`'s `depends_on` and Description; `chitty check` reports no new problems for those two files. The same works for a ticket made provisional (`provisional: true` written into its file directly), and clears `provisional`. Replace the `TASK-3 is used by no other file` case in `test_refuses_without_changing_anything`. Fails without the change.
 - [ ] In a Git repository on a branch other than `main`, `chitty renumber <path>` of a ticket whose ID is used by no other file exits 1 with the `ProvisionalOffMain` message and changes nothing. Regression tests: `test_renumbers_only_that_file_and_lists_references` and the other renumber and provisional-renumbering tests pass. `make check` passes.
 
 ## History
@@ -38,3 +38,4 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 - 2026-11-26T11:11:51Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:20:40Z calm-ochre-quail: replaced notes; changed dependencies, description, acceptance criteria
 - 2026-11-26T11:20:40Z calm-ochre-quail to-plan → cold-read
+- 2026-11-26T11:20:52Z calm-ochre-quail: changed acceptance criteria
