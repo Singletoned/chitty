@@ -37,6 +37,10 @@ Add property and check integration tests, verify they fail before the fix, then 
 
 Before the fix, the property test failed because the function was absent and the integration test failed because the retitled ticket still warned.
 
+## Summary
+
+Cold-read warnings now count transitions since the latest title-change event. Property and integration tests cover resets; both failed before the fix. make check passed.
+
 ## History
 
 - 2026-11-26T10:54:47Z calm-ochre-quail → backlog
@@ -50,3 +54,4 @@ Before the fix, the property test failed because the function was absent and the
 - 2026-11-26T15:14:09Z youthful-maroon-zander todo → doing
 - 2026-11-26T15:18:02Z youthful-maroon-zander: wrote the plan
 - 2026-11-26T15:18:34Z youthful-maroon-zander: changed notes
+- 2026-11-26T15:22:04Z youthful-maroon-zander: changed summary
