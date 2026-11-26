@@ -37,6 +37,10 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 - [ ] The write, check and MCP tests in `tests/test_priorities_config.py` pass and fail before the change; record the failures in a note
 - [ ] The `-p urgent` test expects the new message; `make check` passes
 
+## Plan
+
+Add CLI, check and MCP regression tests and record their pre-fix failures; validate priorities centrally in store writes, report unconfigured values in check, remove frontend restrictions, then format and run make check.
+
 ## History
 
 - 2026-11-26T11:40:59Z brisk-bronze-adder → planning
@@ -45,3 +49,4 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 - 2026-11-26T11:46:15Z brisk-bronze-adder: changed dependencies, description
 - 2026-11-26T11:46:15Z brisk-bronze-adder planning → todo
 - 2026-11-26T15:01:18Z intrepid-teal-yellowhammer todo → doing
+- 2026-11-26T15:05:33Z intrepid-teal-yellowhammer: wrote the plan
