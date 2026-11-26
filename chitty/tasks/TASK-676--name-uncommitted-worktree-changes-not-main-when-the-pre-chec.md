@@ -31,6 +31,10 @@ Add the requested reused-worktree regression test and verify it fails before the
 
 Before the fix, the new regression test failed: the note blamed main and omitted the uncommitted path.
 
+## Summary
+
+Snapshot uncommitted paths before the pre-check and name them on failure instead of blaming main. The new regression failed before the fix; both focused tests and make check pass.
+
 ## History
 
 - 2026-11-24T22:21:39Z zesty-coral-newt → backlog
@@ -45,3 +49,4 @@ Before the fix, the new regression test failed: the note blamed main and omitted
 - 2026-11-26T01:16:50Z able-umber-wren todo → doing
 - 2026-11-26T01:19:27Z able-umber-wren: wrote the plan
 - 2026-11-26T01:19:45Z able-umber-wren: changed notes
+- 2026-11-26T01:22:22Z able-umber-wren: changed summary
