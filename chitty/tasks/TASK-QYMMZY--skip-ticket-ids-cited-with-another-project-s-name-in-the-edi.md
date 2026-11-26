@@ -27,7 +27,7 @@ Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TA
 ## Acceptance Criteria
 
 - [ ] In `tests/test_promote_references.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) builds text from the same parts and `SEPARATORS` as the existing tests, putting a name from a drawn set of foreign names (any case), then a space and optionally a backtick, before some of the references. `ticket_references(text, PREFIXES, foreign=names)` returns exactly the other references, in order and without repeats; with `foreign=()` it returns what it returns today. Fails without the change.
-- [ ] In `tests/test_promote_references_cli.py`, after `register_project("other", <a temporary directory>)`, a `planning` ticket whose Description says `See other TASK-2 and TASK-2.`... is not used; instead its Description says ``See other `TASK-9`.`` and its criterion mentions `TASK-2`: `chitty edit TASK-1 -s todo` lists `TASK-2 doing Second task` and does not list `TASK-9`. Fails without the change. Regression tests: the existing tests in both files pass after passing `foreign=()` where they call `ticket_references`. `make check` passes.
+- [ ] In `tests/test_promote_references_cli.py`, after `register_project("other", <a temporary directory>)`, a `planning` ticket `TASK-1` whose Description says ``See other `TASK-9` and TASK-2.`` is moved with `chitty edit TASK-1 -s todo`: the output lists `TASK-2 doing Second task` and has no line for `TASK-9`. Fails without the change. Regression tests: the existing tests in both files pass after passing `foreign=()` where they call `ticket_references`. `make check` passes.
 
 ## History
 
@@ -38,3 +38,4 @@ Placeholder IDs in examples; other forms such as `other#TASK-4`; renumbering (TA
 - 2026-11-26T11:11:27Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:18:12Z calm-ochre-quail: replaced notes; changed title, description, acceptance criteria
 - 2026-11-26T11:18:12Z calm-ochre-quail to-plan → cold-read
+- 2026-11-26T11:18:23Z calm-ochre-quail: changed acceptance criteria
