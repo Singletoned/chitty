@@ -34,6 +34,10 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 - [ ] The `priority: ""` and custom-name list and next tests in `tests/test_priorities_config.py` pass and fail before the change (record the failures in a note)
 - [ ] The `task-file.md` priority row is updated; `make check` passes
 
+## Plan
+
+Add hand-written frontmatter and CLI ordering regression tests and record their failures; allow non-empty priority strings, safely render unknown glyphs, update the task-file specification, then format and run checks.
+
 ## History
 
 - 2026-11-26T11:45:33Z brisk-bronze-adder → planning
@@ -42,3 +46,4 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 - 2026-11-26T11:48:00Z brisk-bronze-adder: changed description
 - 2026-11-26T11:48:00Z brisk-bronze-adder planning → todo
 - 2026-11-26T14:35:35Z plucky-maroon-urchin todo → doing
+- 2026-11-26T14:39:44Z plucky-maroon-urchin: wrote the plan
