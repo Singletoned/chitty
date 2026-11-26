@@ -44,6 +44,10 @@ Out of scope: answers (TASK-10035), the formatter tests, renumbering, `as_dict`,
 - [ ] The parse, continuation, refusal and unknown-section tests in `tests/test_questions_section.py` pass, and each fails before the change; record the failure messages in a note
 - [ ] `make check` passes
 
+## Plan
+
+Add focused failing parser tests, then introduce the Questions section and immutable question model with strict continuation and error handling. Run formatting and checks, commit, and hand off for review.
+
 ## Notes
 
 Split 2026-11-26 after four stalled worker runs: answers, the formatter sample and the renumbering test moved to TASK-10035.
@@ -109,3 +113,4 @@ Split 2026-11-26 after four stalled worker runs: answers, the formatter sample a
 - 2026-11-26T11:30:33Z brisk-bronze-adder: changed owner
 - 2026-11-26T11:30:33Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:03:07Z lively-dusky-quail todo → doing
+- 2026-11-26T13:07:03Z lively-dusky-quail: wrote the plan
