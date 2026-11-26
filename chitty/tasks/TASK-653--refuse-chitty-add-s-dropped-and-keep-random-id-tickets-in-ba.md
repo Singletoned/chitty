@@ -1,6 +1,6 @@
 ---
 title: Refuse `chitty add -s dropped`, and keep random-ID tickets in `backlog`
-status: planning
+status: cold-read
 priority: high
 depends_on:
   - TASK-599
@@ -34,3 +34,4 @@ Out of scope: `chitty edit` rules for dropping (`TASK-652`), archiving (`TASK-65
 - 2026-11-26T19:00:12Z zesty-ginger-newt planning → to-plan
 - 2026-11-26T19:00:20Z zesty-ginger-newt: replaced notes; changed dependencies, description, acceptance criteria
 - 2026-11-26T19:00:20Z zesty-ginger-newt to-plan → planning
+- 2026-11-26T19:00:29Z zesty-ginger-newt planning → cold-read
