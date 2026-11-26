@@ -1,6 +1,6 @@
 ---
 title: Let only real tickets raise the next number when renumbering
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-26
@@ -38,3 +38,4 @@ Renumbering `TASK-10000` onwards back down; treating mentions of other repositor
 - 2026-11-26T11:16:15Z calm-ochre-quail to-plan → cold-read
 - 2026-11-26T11:17:28Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:17:28Z calm-ochre-quail cold-read → todo
+- 2026-11-26T11:23:24Z golden-fawn-dormouse todo → doing
