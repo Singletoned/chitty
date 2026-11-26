@@ -1,6 +1,6 @@
 ---
 title: Accept `difficulty` in the MCP add and edit tools, and draw it in ticket strategies
-status: cold-read
+status: planning
 depends_on:
   - TASK-311
 parent: TASK-308
@@ -14,10 +14,10 @@ Part of `TASK-308`, split from `TASK-311`, which adds the `difficulty` field (`D
 
 Change:
 
-- `src/chitty/mcp.py`: `Difficulty = Literal["low", "medium", "high"]`. The add tool takes `difficulty: Difficulty | None = None` and the edit tool `difficulty: Difficulty | Literal[""] | None = None`, passed through as `priority` is. Add `difficulty` to the edit tool's `'' unsets priority/owner/plan` description.
-- `tests/ticket_strategies.py`: `_ticket_texts` sometimes adds `difficulty: <one of DIFFICULTIES>`, drawn independently of `priority`, placed straight after the `priority` line (or where it would be), following `FIELD_ORDER`.
+- `src/chitty/mcp.py`: `Difficulty = Literal["low", "medium", "high"]`. The add tool takes `difficulty: Difficulty | None = None` and the edit tool `difficulty: Difficulty | Literal[""] | None = None`, passed into the add tool's `fields` dict and the edit tool's `Edit` as `priority` is (`Priority` is a plain `str`; the `Literal` here is deliberately stricter). Use `Literal` values matching `DIFFICULTIES`. Add `difficulty` to the edit tool's `'' unsets priority/owner/plan` description.
+- `tests/ticket_strategies.py`: `_ticket_texts` sometimes adds `difficulty: <one of DIFFICULTIES>`, drawn independently of `priority`, appended straight after the `priority` draw.
 
-Tests: the MCP cases in `tests/test_mcp.py`'s style; a `check_find` case in `tests/test_ticket_strategies.py` beside `test_plan_present`. Without the change, the MCP tools reject or drop the unknown argument and the strategy never draws the line. No new property: the strategy change feeds the existing ones.
+Tests: the MCP cases in `tests/test_mcp.py`'s style; a `check_find` case in `tests/test_ticket_strategies.py` beside `test_plan_present`. Without the change, the add tool silently drops the unknown argument and the edit tool fails with `nothing to change`, and the strategy never draws the line. No new property: the strategy change feeds the existing ones.
 
 Out of scope: the field, CLI and docs (`TASK-311`).
 
@@ -30,3 +30,5 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 
 - 2026-11-26T20:08:38Z zesty-ginger-newt → planning
 - 2026-11-26T20:08:50Z zesty-ginger-newt planning → cold-read
+- 2026-11-26T20:10:17Z zesty-ginger-newt: changed description
+- 2026-11-26T20:10:17Z zesty-ginger-newt cold-read → planning
