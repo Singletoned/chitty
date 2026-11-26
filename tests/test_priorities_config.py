@@ -13,11 +13,11 @@ from pydantic import ValidationError
 from chitty.cli import cli
 from chitty.config import RepoConfig
 from chitty.ids import TaskId
-from chitty.model import parse
+from chitty.model import TaskError, parse
 from chitty.selection import TicketFacts, choose, priority_rank
 from chitty.store import StoredTask, ordered
 from tests import examples
-from tests.support import RepoTestCase
+from tests.support import CONFIG, RepoTestCase
 
 
 class PriorityOrderingCliTests(RepoTestCase):
@@ -39,6 +39,51 @@ class PriorityOrderingCliTests(RepoTestCase):
             [task["priority"] for task in json.loads(result.stdout)],
             ["high", "medium", None, "low"],
         )
+
+
+class CustomPriorityTests(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        config = CONFIG.replace(
+            "[contexts.tasks]", 'priorities = ["now", "soon", "", "later"]\n\n[contexts.tasks]', 1
+        )
+        (self.root / "chitty.toml").write_text(config)
+        previous = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, previous)
+        self.runner = CliRunner()
+
+    def test_empty_priority_is_rejected(self) -> None:
+        with self.assertRaisesRegex(
+            TaskError, "priority must not be empty; remove the key instead"
+        ):
+            parse('---\ntitle: Empty\nstatus: todo\npriority: ""\ncreated: 2026-01-01\n---\n')
+
+    def test_custom_priorities_list_and_next(self) -> None:
+        tasks = self.root / "chitty" / "tasks"
+        tasks.mkdir(parents=True)
+        for number, priority in enumerate(("later", None, "soon", "now", "high"), 1):
+            field = f"priority: {priority}\n" if priority else ""
+            (tasks / f"TASK-{number}--ticket.md").write_text(
+                f"---\ntitle: {priority}\nstatus: todo\n{field}created: 2026-01-0{number}\n---\n"
+                "\n## Description\n\nTest.\n"
+            )
+        result = self.runner.invoke(cli, ["list", "--json"], catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(
+            [task["priority"] for task in json.loads(result.stdout)],
+            ["now", "soon", None, "later", "high"],
+        )
+        result = self.runner.invoke(cli, ["list"], catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0, result.output)
+        now = next(line for line in result.output.splitlines() if "TASK-4" in line)
+        high = next(line for line in result.output.splitlines() if "TASK-5" in line)
+        for glyph in ("⏫", "➖", "⏬"):
+            self.assertNotIn(glyph, now)
+        self.assertIn("⏫", high)
+        result = self.runner.invoke(cli, ["next", "--mode", "work"], catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(result.stdout, "work TASK-4\n")
 
 
 class PriorityOrderingProperties(unittest.TestCase):

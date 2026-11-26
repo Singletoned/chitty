@@ -49,7 +49,7 @@ Strict: unknown keys are an error.
 | `title`      | string              | yes      | non-empty, one line                     |
 | `status`     | see below           | yes      |                                         |
 | `labels`     | list[string]        | no       | absent means `[]`                       |
-| `priority`   | `low\|medium\|high` | no       | absent means unset                      |
+| `priority`   | any non-empty name | no       | absent means unset; configured names are checked on write and by `chitty check` (TASK-10038) |
 | `owner`      | string              | no       | one line: `human`, a name, an agent     |
 | `depends_on` | list[ID]            | no       | any context in the same repo            |
 | `parent`     | ID                  | no       | groups tickets; same repo               |

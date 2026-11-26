@@ -527,7 +527,7 @@ def list_(
         fm = stored.task.frontmatter
         line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {STATUS_LABELS[fm.status]:<5}"
         if show_priority:
-            line += f"  {_two_columns(PRIORITY_GLYPHS[fm.priority])}"
+            line += f"  {_two_columns(PRIORITY_GLYPHS.get(fm.priority, ""))}"
         if show_markers:
             line += f"  {_two_columns(reason.split()[0] if reason else '')}"
         label_text = f"  [{','.join(sorted(fm.labels))}]" if fm.labels else ""

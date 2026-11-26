@@ -195,7 +195,7 @@ class Frontmatter(BaseModel):
         "dropped",
     ]
     labels: list[str] = []
-    priority: Literal["low", "medium", "high"] | None = None
+    priority: str | None = None
     owner: str | None = None
     depends_on: list[str] = []
     parent: str | None = None
@@ -208,6 +208,13 @@ class Frontmatter(BaseModel):
     @classmethod
     def _provisional(cls, value: object) -> object:
         return True if value == "true" else value
+
+    @field_validator("priority")
+    @classmethod
+    def _priority(cls, value: str | None) -> str | None:
+        if value == "":
+            raise ValueError("priority must not be empty; remove the key instead")
+        return value
 
     @field_validator("title", "owner")
     @classmethod
