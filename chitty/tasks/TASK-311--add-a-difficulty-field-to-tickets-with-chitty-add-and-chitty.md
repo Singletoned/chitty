@@ -1,6 +1,6 @@
 ---
 title: Add a `difficulty` field to tickets, with `chitty add` and `chitty edit` options
-status: cold-read
+status: planning
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -57,3 +57,4 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 - 2026-11-26T20:08:16Z zesty-ginger-newt: replaced notes; changed title, description, acceptance criteria; wrote the plan
 - 2026-11-26T20:08:16Z zesty-ginger-newt to-plan → planning
 - 2026-11-26T20:08:18Z zesty-ginger-newt planning → cold-read
+- 2026-11-26T20:09:23Z zesty-ginger-newt cold-read → planning
