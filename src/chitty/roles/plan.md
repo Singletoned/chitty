@@ -34,7 +34,8 @@ guide or prompt text says what it cuts to make room, or why they should grow.
   main checkout, plan on a `plan/` branch, and edit its text only when finished.
   Use `-s cold-read`, `-s planning` to settle findings, then `-s todo` and land.
   Leave other planners' tickets alone. Change status in the same edit as the
-  text it depends on. Use `parent` to group flat IDs.
+  text it depends on. Chain dependent Chitty commands with `&&` so a refusal
+  stops the rest. Use `parent` to group flat IDs.
 - Cold-read every ticket. If a change is too small to justify a ticket and cold
   read, do it directly (e.g. on a `hotfix/` branch) rather than ticketing it.
 - Plan one ticket at a time. Check every claim about code, commands, tests, or
@@ -62,9 +63,9 @@ guide or prompt text says what it cuts to make room, or why they should grow.
   can call it directly.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
   session; make that a separate `-c human` ticket that depends on this one.
-- Check tickets mentioned by `chitty edit -s todo`. If a ticket relies on a
-  contract an unfinished ticket is building, return it to `to-plan` with a
-  note naming that ticket and re-check once it lands (`depends_on` alone is
-  enough for plain ordering).
+- Check tickets mentioned by `chitty edit -s todo`. A ticket may go to `todo`
+  with `depends_on` alone when its dependency pins the contract (names,
+  signatures, formats); return it to `to-plan` only while that contract is
+  vague, noting the ticket that must settle it.
 - Skip cold-reading a ticket given to you to work on or review. Run
   `chitty archive` with no ID before preparing a merge request.
