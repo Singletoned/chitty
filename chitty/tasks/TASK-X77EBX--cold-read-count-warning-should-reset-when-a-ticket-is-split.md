@@ -1,6 +1,6 @@
 ---
 title: Cold-read count warning should reset when a ticket is split
-status: backlog
+status: to-plan
 created: 2026-11-26
 provisional: true
 ---
@@ -13,7 +13,11 @@ In echonomicon on 2026-11-25, TASK-235 was cold-read once, then split (half move
 
 Suggestion origin: echonomicon
 
+Decided (the person, 2026-11-26): count only cold reads since the last title change.
+
 ## History
 
 - 2026-11-26T10:54:47Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:50Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:13Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:13Z calm-ochre-quail backlog → to-plan
