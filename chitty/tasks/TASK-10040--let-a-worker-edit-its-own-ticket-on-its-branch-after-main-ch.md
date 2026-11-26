@@ -1,6 +1,6 @@
 ---
 title: Let a worker edit its own ticket on its branch after `main` changed it, with a warning to merge
-status: cold-read
+status: planning
 depends_on:
   - TASK-602
 created: 2026-11-26
@@ -35,3 +35,4 @@ Out of scope: rebasing or merging automatically, the runner, other tickets on a 
 
 - 2026-11-26T18:00:46Z brisk-bronze-adder → planning
 - 2026-11-26T18:01:32Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T18:03:58Z brisk-bronze-adder cold-read → planning
