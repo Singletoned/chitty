@@ -27,12 +27,20 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 
 ## Acceptance Criteria
 
-- [ ] The `chitty add`, `chitty edit` (set, unset, refusal), `chitty show`, `--json` and `chitty check` cases in `tests/test_difficulty.py` pass and fail before the change
-- [ ] The `Edit.apply` property passes; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
+- [x] The `chitty add`, `chitty edit` (set, unset, refusal), `chitty show`, `--json` and `chitty check` cases in `tests/test_difficulty.py` pass and fail before the change
+- [x] The `Edit.apply` property passes; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
 
 ## Plan
 
 Add failing CLI and property coverage first, then implement the validated frontmatter field, edit and CLI plumbing, and document it. Format, run checks, and hand off for review.
+
+## Notes
+
+Before implementation, tests/test_difficulty.py failed all four tests: the CLI did not recognize the option, check rejected the unknown key, and Edit lacked the field. After implementation all four pass; make check passed.
+
+## Summary
+
+Added validated optional difficulty frontmatter, add/edit CLI options, history recording, documentation and property and CLI tests. MCP and strategy changes remain for the follow-up ticket.
 
 ## History
 
@@ -66,3 +74,4 @@ Add failing CLI and property coverage first, then implement the validated frontm
 - 2026-11-26T20:09:55Z zesty-ginger-newt: changed title
 - 2026-11-26T23:47:08Z golden-hazel-vole todo → doing
 - 2026-11-26T23:50:18Z golden-hazel-vole: wrote the plan
+- 2026-11-26T23:54:55Z golden-hazel-vole: changed notes, summary; ticked acceptance criteria
