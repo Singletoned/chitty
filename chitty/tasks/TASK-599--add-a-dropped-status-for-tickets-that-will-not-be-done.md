@@ -35,6 +35,10 @@ Out of scope: rules for dropping, `chitty add -s dropped`, archiving, and the gu
 - [ ] The `tests/test_status_dropped.py` cases for `-s dropped`, `-s todo` from `dropped`, `chitty list` and the round trip pass, and each fails before the change (record the run in a note); the dependency regression test passes
 - [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` names `dropped`; `make check` passes
 
+## Plan
+
+Add focused CLI and round-trip tests and confirm they fail before adding the status; then update the model and task-file design, run formatting and checks, and submit for review.
+
 ## Notes
 
 Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (its order follows from `STATUSES`), the dependency check is now a regression test, and the close-from-`main` request moved to TASK-10036.
@@ -117,3 +121,4 @@ Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (
 - 2026-11-26T12:03:45Z brisk-bronze-adder: changed description
 - 2026-11-26T12:03:45Z brisk-bronze-adder planning → todo
 - 2026-11-26T12:28:23Z zesty-indigo-vole todo → doing
+- 2026-11-26T12:32:32Z zesty-indigo-vole: wrote the plan
