@@ -22,6 +22,10 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 - [ ] A real-Git test on branch `task-1`: after `review -> doing` with a `Review failed (work):` note and only Chitty bookkeeping commits since, `chitty edit TASK-1 -s review` exits 1 with `cannot move TASK-1 to review: no commit since the failed review at <time>; commit the fix first` and changes nothing. It still refuses after `main` gains a commit and `task-1` is rebased onto it (the rebased code commits are older fixes). After one new code commit it succeeds. Fails today: the first move succeeds.
 - [ ] Regression tests: a first move to `review` (no earlier failed review) works as today; existing review and status tests pass; `make check` passes.
 
+## Plan
+
+Use the latest timed transition into doing and Git author timestamps to reject a repeat review without a subsequent non-bookkeeping commit. Add a property test and a real-Git CLI regression covering rebase and first review, then run formatting and checks.
+
 ## History
 
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
@@ -35,3 +39,4 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 - 2026-11-26T00:23:27Z calm-ochre-quail cold-read → planning
 - 2026-11-26T00:23:34Z calm-ochre-quail planning → todo
 - 2026-11-26T01:25:59Z rosy-jade-marten todo → doing
+- 2026-11-26T01:29:56Z rosy-jade-marten: wrote the plan
