@@ -1,5 +1,5 @@
 ---
-title: Add a `difficulty` field to tickets, with `chitty add` and `chitty edit` options
+title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
 status: todo
 parent: TASK-308
 created: 2026-11-12
@@ -59,3 +59,4 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 - 2026-11-26T20:08:18Z zesty-ginger-newt planning → cold-read
 - 2026-11-26T20:09:23Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T20:09:28Z zesty-ginger-newt planning → todo
+- 2026-11-26T20:09:55Z zesty-ginger-newt: changed title
