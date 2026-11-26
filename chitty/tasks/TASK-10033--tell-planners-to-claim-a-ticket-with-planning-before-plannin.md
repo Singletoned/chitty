@@ -1,9 +1,9 @@
 ---
 title: Tell planners to claim a ticket with `planning` before planning it on a branch
-status: doing
+status: review
 labels:
   - untestable
-owner: untestable
+owner: human
 depends_on:
   - TASK-10032
 parent: TASK-10026
@@ -35,9 +35,17 @@ Review failed (work): The new bullet in `src/chitty/roles/plan.md` can be 12 wor
 
 ## Summary
 
-In `src/chitty/roles/plan.md`, replaced the "Keep a new ticket in `backlog` until you work on it" bullet with the ticket's wording: take `to-plan` before `backlog`, claim with `-s planning` in the main checkout, plan on a `plan/` branch changing text only when finished, cold-read and settle, `-s todo`, land the branch, and leave other planners' tickets alone. In the "Check tickets mentioned by `chitty edit -s todo`" bullet, "keep it in `planning` with a note" is now "return it to `to-plan` with a note". The guide grows by two wrapped lines.
+Replaced the planning-claim bullet in `src/chitty/roles/plan.md` with the shorter 5-line wording from review (12 words and 1 wrapped line shorter):
 
-`make check` passed (1237 tests).
+- Take `to-plan` tickets before `backlog`: claim one with `-s planning` in the
+  main checkout, plan on a `plan/` branch, and edit its text only when finished.
+  Use `-s cold-read`, `-s planning` to settle findings, then `-s todo` and land.
+  Leave other planners' tickets alone. Change status in the same edit as the
+  text it depends on. Use `parent` to group flat IDs.
+
+Kept the approved "return it to `to-plan` with a note" change in the `chitty edit -s todo` bullet.
+
+Branch `task-10033` (worktree `.worktrees/task-10033`). `make check` passed via `chitty edit -s review`.
 
 ## History
 
@@ -49,3 +57,5 @@ In `src/chitty/roles/plan.md`, replaced the "Keep a new ticket in `backlog` unti
 - 2026-11-26T11:06:56Z tidy-silver-puffin doing → review
 - 2026-11-26T11:29:38Z human: changed owner, notes
 - 2026-11-26T11:29:38Z human review → doing
+- 2026-11-26T18:33:06Z calm-russet-badger: changed owner, summary
+- 2026-11-26T18:33:06Z calm-russet-badger doing → review
