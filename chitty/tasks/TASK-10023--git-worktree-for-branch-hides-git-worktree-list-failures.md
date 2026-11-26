@@ -1,6 +1,6 @@
 ---
 title: "`git.worktree_for_branch` hides `git worktree list` failures"
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -31,3 +31,4 @@ No property test: one external process failure, covered by an example.
 - 2026-11-25T23:32:55Z calm-ochre-quail backlog → planning
 - 2026-11-25T23:33:07Z calm-ochre-quail planning → cold-read
 - 2026-11-25T23:34:16Z calm-ochre-quail cold-read → todo
+- 2026-11-26T00:51:53Z youthful-amber-falcon todo → doing
