@@ -1,6 +1,6 @@
 ---
 title: Parse answers in the `## Questions` section
-status: review
+status: done
 depends_on:
   - TASK-629
 parent: TASK-621
@@ -54,6 +54,10 @@ Add focused parsing, refusal, round-trip, formatter and renumbering tests; recor
 
 Before the fix, .venv/bin/pytest -q tests/test_questions_section.py -k answer_or_renumber (using the expression answer or renumber) failed the example, both blank-line variants, renumbering, and refusal: each received the may only contain error.
 
+Reviewed: implementation and complete diff checked.
+1: pass - make check passes answer, refusal, formatter and renumbering tests. In a merge-base worktree with the branch tests applied, pytest -q tests/test_questions_section.py -k 'answer or renumber' produced 5 failures: answer examples, both blank variants, renumbering and refusal all encountered the prior may only contain error. pytest -q tests/test_formatters.py produced 4 failures because the prior parser rejected the answer.
+2: pass - make check: 1277 passed, 684 subtests passed; ruff and pyright passed.
+
 ## Summary
 
 Parse single-paragraph answers independently of question ticks, preserving round trips and renumbering. Added formatter and parsing coverage; make check passes.
@@ -71,3 +75,5 @@ Parse single-paragraph answers independently of question ticks, preserving round
 - 2026-11-26T13:59:00Z upbeat-zinc-wren: changed notes
 - 2026-11-26T14:02:07Z upbeat-zinc-wren: changed summary; ticked acceptance criteria
 - 2026-11-26T14:05:53Z upbeat-zinc-wren doing → review
+- 2026-11-26T14:13:03Z calm-bronze-eel: changed notes
+- 2026-11-26T14:13:03Z calm-bronze-eel review → done
