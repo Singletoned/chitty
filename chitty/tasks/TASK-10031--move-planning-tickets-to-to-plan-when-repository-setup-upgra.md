@@ -30,6 +30,10 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 - [ ] The three cases in `tests/test_init_workflow.py` pass, and the first fails before the change. Regression tests: the other two cases
 - [ ] `make check` passes
 
+## Plan
+
+Add fixed upgrade tests at the real version, verify migration fails before implementation, then migrate active planning tickets at the version boundary using existing task parsing and history methods. Preserve rollback and include migrated paths in the upgrade commit; run formatting and checks.
+
 ## History
 
 - 2026-11-25T23:07:24Z golden-coral-stoat → backlog
@@ -38,3 +42,4 @@ Tests, in `tests/test_init_workflow.py` (no property: three fixed cases, each te
 - 2026-11-25T23:12:35Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-QZ7SD8
 - 2026-11-26T02:35:50Z rosy-dusky-vole todo → doing
+- 2026-11-26T02:38:38Z rosy-dusky-vole: wrote the plan
