@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: doing
+status: review
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -75,3 +75,4 @@ Added validated optional difficulty frontmatter, add/edit CLI options, history r
 - 2026-11-26T23:47:08Z golden-hazel-vole todo → doing
 - 2026-11-26T23:50:18Z golden-hazel-vole: wrote the plan
 - 2026-11-26T23:54:55Z golden-hazel-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-26T23:56:58Z golden-hazel-vole doing → review
