@@ -1,6 +1,6 @@
 ---
 title: Tell planners to claim a ticket with `planning` before planning it on a branch
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -33,6 +33,10 @@ Review failed (work): The new bullet in `src/chitty/roles/plan.md` can be 12 wor
   Leave other planners' tickets alone. Change status in the same edit as the
   text it depends on. Use `parent` to group flat IDs.
 
+Reviewed: diff of `main...task-10033` changes two bullets in `src/chitty/roles/plan.md`, using the 5-line wording from the previous review note and "return it to `to-plan` with a note". `TASK-10032` is `done`.
+1: pass - the claim bullet says to take `to-plan` before `backlog`, claim with `-s planning` in the main checkout, plan on a `plan/` branch, edit text at the end, use `cold-read`/`planning`/`todo`, land, and leave other planners' tickets alone.
+2: pass - the `chitty edit -s todo` bullet says "return it to `to-plan` with a note".
+
 ## Summary
 
 Replaced the planning-claim bullet in `src/chitty/roles/plan.md` with the shorter 5-line wording from review (12 words and 1 wrapped line shorter):
@@ -59,3 +63,5 @@ Branch `task-10033` (worktree `.worktrees/task-10033`). `make check` passed via 
 - 2026-11-26T11:29:38Z human review → doing
 - 2026-11-26T18:33:06Z calm-russet-badger: changed owner, summary
 - 2026-11-26T18:33:06Z calm-russet-badger doing → review
+- 2026-11-26T18:57:32Z intrepid-russet-falcon: changed notes
+- 2026-11-26T18:57:32Z intrepid-russet-falcon review → done
