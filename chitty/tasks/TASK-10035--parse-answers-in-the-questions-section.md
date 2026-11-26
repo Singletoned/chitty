@@ -43,8 +43,8 @@ Out of scope: `as_dict` (TASK-649), `chitty show` (TASK-650), CLI and MCP option
 
 ## Acceptance Criteria
 
-- [ ] The answer, refusal, formatter and renumbering tests pass; each answer and refusal test fails before the change, with the failure recorded in a note
-- [ ] `make check` passes
+- [x] The answer, refusal, formatter and renumbering tests pass; each answer and refusal test fails before the change, with the failure recorded in a note
+- [x] `make check` passes
 
 ## Plan
 
@@ -53,6 +53,10 @@ Add focused parsing, refusal, round-trip, formatter and renumbering tests; recor
 ## Notes
 
 Before the fix, .venv/bin/pytest -q tests/test_questions_section.py -k answer_or_renumber (using the expression answer or renumber) failed the example, both blank-line variants, renumbering, and refusal: each received the may only contain error.
+
+## Summary
+
+Parse single-paragraph answers independently of question ticks, preserving round trips and renumbering. Added formatter and parsing coverage; make check passes.
 
 ## History
 
@@ -65,3 +69,4 @@ Before the fix, .venv/bin/pytest -q tests/test_questions_section.py -k answer_or
 - 2026-11-26T13:54:31Z upbeat-zinc-wren todo → doing
 - 2026-11-26T13:58:30Z upbeat-zinc-wren: wrote the plan
 - 2026-11-26T13:59:00Z upbeat-zinc-wren: changed notes
+- 2026-11-26T14:02:07Z upbeat-zinc-wren: changed summary; ticked acceptance criteria
