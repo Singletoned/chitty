@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: planning
+status: to-plan
 created: 2026-11-24
 ---
 
@@ -48,6 +48,8 @@ Suggestion origin: chitty
 
 -
 
+Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
+
 ## History
 
 - 2026-11-24T22:21:50Z zesty-coral-newt → backlog
@@ -64,3 +66,5 @@ Suggestion origin: chitty
 - 2026-11-24T23:58:04Z eager-indigo-vole: wrote the plan
 - 2026-11-25T00:01:37Z eager-indigo-vole: changed owner, notes
 - 2026-11-25T00:01:37Z eager-indigo-vole doing → planning
+- 2026-11-26T11:36:24Z brisk-bronze-adder: changed notes
+- 2026-11-26T11:36:24Z brisk-bronze-adder planning → to-plan
