@@ -1,6 +1,6 @@
 ---
 title: Order tickets by the configured `priorities` list
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -31,8 +31,8 @@ Out of scope: custom priority names and their display (TASK-10039), and write va
 
 ## Acceptance Criteria
 
-- [ ] The default-config ordering test and the property in `tests/test_priorities_config.py` pass; the ordering test fails before the change (record it in a note); the three existing tests named in the Description are updated
-- [ ] `docs/plan/next-action-and-runner.md` describes the configured order; `make check` passes
+- [x] The default-config ordering test and the property in `tests/test_priorities_config.py` pass; the ordering test fails before the change (record it in a note); the three existing tests named in the Description are updated
+- [x] `docs/plan/next-action-and-runner.md` describes the configured order; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,10 @@ Add a CLI regression test and verify it fails; implement shared configurable ran
 ## Notes
 
 Before the fix, the default CLI ordering regression failed: actual high, unset, medium, low; expected high, medium, unset, low.
+
+Reviewed: Configurable ordering meets the ticket requirements.
+1: pass - make check passes. On the merge base, pytest tests/test_priorities_config.py::PriorityOrderingCliTests::test_default_priority_order fails with high, unset, medium, low. In a temporary worktree, replacing priority_rank with the old fixed ranks makes both PriorityOrderingProperties tests fail; the existing expectations and choose calls are updated.
+2: pass - docs/plan/next-action-and-runner.md describes configured priority order; make check passes (1280 tests).
 
 ## Summary
 
@@ -59,3 +63,5 @@ List and next selection now use configured priority order, including unlisted na
 - 2026-11-26T14:11:56Z witty-white-kestrel: changed notes
 - 2026-11-26T14:18:43Z witty-white-kestrel: changed summary
 - 2026-11-26T14:21:09Z witty-white-kestrel doing → review
+- 2026-11-26T14:30:02Z witty-coral-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-26T14:30:02Z witty-coral-lapwing review → done
