@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: cold-read
+status: planning
 depends_on:
   - TASK-358
   - TASK-572
@@ -10,23 +10,22 @@ created: 2026-11-22
 
 ## Description
 
-After `TASK-10002` (`git.trailer_commits`, split from `TASK-358` on 2026-11-23) and `TASK-572` (`check.unfinished_landed`) land, make `chitty check` warn on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`). Split from `TASK-358` on 2026-11-22.
+`TASK-572` added `check.unfinished_landed` and `TASK-10002` added `git.trailer_commits`. Wire them into `chitty check` so it warns on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`).
 
-Decisions:
+Change, in `src/chitty/check.py`: a helper called from `check()` (which is already long), only when `include_worktree_state` is true and `git.current_branch(repo.root)` equals `repo.config.main_branch`. It calls `unfinished_landed(git.trailer_commits(repo.root, main_branch), statuses, ticket_directories)` and adds one warning per returned ticket, on that ticket's file: `commit <first 10 characters of SHA> on <main_branch> has work for <ID>, which is <status>`. Warnings do not change the exit code.
 
-- In `check()` in `src/chitty/check.py`, only when `include_worktree_state` is true and `git.current_branch(repo.root)` equals `repo.config.main_branch`, call `unfinished_landed(git.trailer_commits(repo.root, main_branch), statuses, ticket_directories)` and add one warning per returned ticket, on that ticket's file path: `commit <first 10 characters of SHA> on <main_branch> has work for <ID>, which is <status>`. Warnings do not change the exit code.
-- `statuses`: the active (not archived) ticket files `check()` already parsed, by ID. Archived tickets never warn: archiving closes a ticket, and on 2026-11-22 four old archived tickets (`TASK-106`, `TASK-171`, `TASK-231`, `TASK-372`) are archived without being `done` and have code commits. An ID with more than one file, which `check()` already reports as an error, is left out.
-- `ticket_directories`: the `directory` of each of `repo.discovered_contexts()`, relative to `repo.root`, including its `archive/` directory (in this repository `chitty/tasks`, `chitty/human`, `chitty/backlog`).
-- `include_worktree_state` is false when a write runs the check (`Repo` in `src/chitty/store.py`, where it calls `check(..., include_worktree_state=False)`); that is wanted here too, so writes do not pay for a history scan (about 0.3 s on this repository). Add a comment saying the flag gates both. `check()` is already long, so put the new warnings in a helper called from it.
-- Out of scope: commits on other branches; `chitty run` behaviour.
+- `statuses`: ID to status, from the `tasks` that `check()` already parsed, leaving out archived files (`path.parent.name == ARCHIVE_DIR`) and any ID with more than one path in `by_id` (already reported as an error). Archived tickets never warn: archiving closes a ticket, and some old archived tickets were never `done`.
+- `ticket_directories`: each `context.directory` and `context.archive_directory` of `repo.discovered_contexts()`, made relative with `.relative_to(repo.root)` (they are absolute).
+- Writes call `check(..., include_worktree_state=False)` in `src/chitty/store.py`, so they skip the history scan (about 0.3 s here). Add a comment that the flag gates both.
 
-Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheriting `CliTestCase` from `tests/test_cli.py`, real Git on branch `main`. No property: `TASK-358` covers the rule with properties; these check the wiring, a fixed set of cases.
+Out of scope: commits on other branches; `chitty run`.
+
+Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTestCase` from `tests/test_cli.py`, real Git on branch `main`. For the worktree case, `git worktree add -b task-1 <dir>` as `tests/test_cli.py` does, and run the check from that directory (check how `run_cli` takes its working directory). No property: `TASK-572` covers the rule with properties; these check the wiring.
 
 ## Acceptance Criteria
 
 - [ ] On `main`, with `TASK-1` `todo` and a commit of `src/x.py` whose message ends `Task: TASK-1`, `chitty check` exits 0 and prints the warning naming `TASK-1` and `todo`; this fails before the change
-- [ ] No warning when the only trailer commits are a commit of `TASK-1`'s own ticket file, or a `chitty: ` commit of `src/x.py`; nor for the `src/x.py` commit after `chitty archive TASK-1`; nor after `TASK-1` is moved to `done` (through `review`, with `--override-review-independence` as other CLI tests do); nor in a linked worktree on branch `task-1`
-- [ ] `make check` passes
+- [ ] Regression tests, each its own test: no warning when the only trailer commit touches only `TASK-1`'s ticket file; nor for a `chitty: ` commit of `src/x.py`; nor after `chitty archive TASK-1`; nor when `chitty check` runs in a linked worktree on branch `task-1`. `make check` passes
 
 ## History
 
@@ -42,3 +41,5 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 - 2026-11-26T18:58:32Z zesty-ginger-newt to-plan → planning
 - 2026-11-26T18:58:44Z zesty-ginger-newt: changed description
 - 2026-11-26T18:58:44Z zesty-ginger-newt planning → cold-read
+- 2026-11-26T19:02:35Z zesty-ginger-newt: changed description, acceptance criteria
+- 2026-11-26T19:02:35Z zesty-ginger-newt cold-read → planning
