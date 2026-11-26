@@ -1,6 +1,6 @@
 ---
 title: Show `chitty check` warnings when an edit moves a ticket to `cold-read` or `todo`
-status: doing
+status: review
 created: 2026-11-26
 provisional: true
 ---
@@ -56,3 +56,4 @@ Checked moves to cold-read or todo now refuse errors and surface warnings in CLI
 - 2026-11-26T15:30:03Z rosy-pearl-toad: wrote the plan
 - 2026-11-26T15:30:45Z rosy-pearl-toad: changed notes
 - 2026-11-26T15:39:40Z rosy-pearl-toad: changed summary
+- 2026-11-26T15:42:08Z rosy-pearl-toad doing → review
