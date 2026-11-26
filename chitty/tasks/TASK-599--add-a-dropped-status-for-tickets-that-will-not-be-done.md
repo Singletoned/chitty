@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: to-plan
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -154,3 +154,4 @@ Released 2026-11-26: stale claim from 2026-11-24.
 - 2026-11-25T20:44:38Z golden-coral-stoat: changed notes
 - 2026-11-26T11:38:45Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:38:45Z brisk-bronze-adder planning → to-plan
+- 2026-11-26T11:38:52Z brisk-bronze-adder to-plan → planning
