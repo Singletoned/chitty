@@ -1,6 +1,6 @@
 ---
 title: Require a Summary to drop a ticket, and refuse dropping a `done` one
-status: planning
+status: to-plan
 labels:
   - needs-minor
 priority: high
@@ -34,7 +34,13 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 - [ ] The summary refusals (none, `""`, whitespace, a whitespace-only Summary in the file), `-s dropped` and `--summary ""` on a dropped ticket, and `--note` on a dropped ticket with no Summary pass, each asserting its message and an unchanged file, and each refusal fails before the change. Record both runs in a note
 - [ ] `make check` passes
 
+## Notes
+
+Released a planning claim idle since 2026-11-24; TASK-599 has landed.
+
 ## History
 
 - 2026-11-24T08:45:25Z sunny-hazel-gannet → planning
 - 2026-11-24T08:45:42Z sunny-hazel-gannet: changed description
+- 2026-11-26T18:59:24Z zesty-ginger-newt: changed notes
+- 2026-11-26T18:59:24Z zesty-ginger-newt planning → to-plan
