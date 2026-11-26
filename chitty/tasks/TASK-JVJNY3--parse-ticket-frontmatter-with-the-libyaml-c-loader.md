@@ -32,6 +32,10 @@ Decided: restrict generated values to printable nonempty single-line text -> exe
 
 Decided: generate literal Unicode in the existing provisional-field property -> avoid JSON surrogate escape pairs, because libyaml rejects those malformed YAML escapes while the test targets field validation. The prior check exposed this accepted loader difference.
 
+## Summary
+
+Uses the libyaml safe loader when available, retaining string-only resolution and the pure Python fallback. Added loader selection and rendered-frontmatter equivalence tests; adjusted the existing provisional property for loader differences. Loader selection failed before the change. make check passed. Reported existing rendering failures for DEL and NEL separately.
+
 ## History
 
 - 2026-11-26T21:56:05Z youthful-lilac-heron → cold-read
@@ -41,3 +45,4 @@ Decided: generate literal Unicode in the existing provisional-field property -> 
 - 2026-11-26T23:19:02Z nimble-violet-crane: wrote the plan
 - 2026-11-26T23:19:47Z nimble-violet-crane: changed notes
 - 2026-11-26T23:23:59Z nimble-violet-crane: changed notes
+- 2026-11-26T23:28:20Z nimble-violet-crane: changed summary
