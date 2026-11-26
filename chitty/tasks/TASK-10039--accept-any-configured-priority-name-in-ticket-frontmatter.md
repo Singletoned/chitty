@@ -1,6 +1,6 @@
 ---
 title: Accept any configured priority name in ticket frontmatter
-status: cold-read
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -38,3 +38,4 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 
 - 2026-11-26T11:45:33Z brisk-bronze-adder → planning
 - 2026-11-26T11:46:52Z brisk-bronze-adder planning → cold-read
+- 2026-11-26T11:47:55Z brisk-bronze-adder cold-read → planning
