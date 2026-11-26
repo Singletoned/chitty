@@ -13,7 +13,10 @@ On 2026-11-24, `chitty run` set TASK-651 to `error` with: "check exited with sta
 
 Suggestion origin: chitty
 
+Already fixed: commit af2680bc (TASK-676, 2026-11-26) makes `_run_check` in `src/chitty/run.py` record the worktree's uncommitted paths before the check and report them instead of blaming `main`.
+
 ## History
 
 - 2026-11-26T18:06:09Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:12Z calm-ochre-quail: changed notes
+- 2026-11-26T18:07:18Z calm-ochre-quail: changed notes
