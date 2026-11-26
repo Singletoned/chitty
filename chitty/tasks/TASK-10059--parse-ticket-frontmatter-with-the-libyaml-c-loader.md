@@ -3,7 +3,7 @@ title: Parse ticket frontmatter with the libyaml C loader
 status: done
 priority: high
 created: 2026-11-26
-provisional: true
+moved_from: TASK-JVJNY3
 ---
 
 ## Description
@@ -54,3 +54,4 @@ Uses the libyaml safe loader when available, retaining string-only resolution an
 - 2026-11-26T23:30:56Z nimble-violet-crane doing → review
 - 2026-11-26T23:38:10Z daring-violet-raven: changed notes; ticked acceptance criteria
 - 2026-11-26T23:38:10Z daring-violet-raven review → done
+- 2026-11-26T23:41:53Z daring-violet-raven: renumbered from TASK-JVJNY3
