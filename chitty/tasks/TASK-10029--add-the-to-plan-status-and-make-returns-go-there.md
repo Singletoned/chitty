@@ -1,6 +1,6 @@
 ---
 title: Add the `to-plan` status and make returns go there
-status: doing
+status: review
 labels:
   - needs-minor
 parent: TASK-10026
@@ -57,3 +57,4 @@ Added to-plan as the default-listed waiting status, routed returns and escalatio
 - 2026-11-26T01:57:55Z daring-ginger-ibis: wrote the plan
 - 2026-11-26T01:58:30Z daring-ginger-ibis: changed notes
 - 2026-11-26T02:08:17Z daring-ginger-ibis: changed summary
+- 2026-11-26T02:10:36Z daring-ginger-ibis doing → review
