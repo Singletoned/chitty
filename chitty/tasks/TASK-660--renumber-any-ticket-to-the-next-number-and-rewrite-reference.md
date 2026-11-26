@@ -1,6 +1,6 @@
 ---
 title: Renumber any ticket to the next number and rewrite references to it
-status: doing
+status: review
 labels:
   - bug
 depends_on:
@@ -59,3 +59,4 @@ Unique sequential-context tickets now renumber through the existing reference-re
 - 2026-11-26T11:59:52Z zesty-zinc-puffin: wrote the plan
 - 2026-11-26T12:00:46Z zesty-zinc-puffin: changed notes
 - 2026-11-26T12:08:41Z zesty-zinc-puffin: changed summary; ticked acceptance criteria
+- 2026-11-26T12:11:02Z zesty-zinc-puffin doing → review
