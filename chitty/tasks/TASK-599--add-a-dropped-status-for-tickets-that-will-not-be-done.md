@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: planning
+status: to-plan
 labels:
   - needs-minor
 priority: high
@@ -81,6 +81,8 @@ Planning blocker: the ticket requires before-change evidence that a broad new te
 
 Folded in from TASK-681 (echonomicon, 2026-11-23): TASK-160 and TASK-164 sat in `planning` though their work had already landed on `main` (`022f1db`, `0426d87`). Closing them was awkward: `chitty edit -s done` from `planning` is refused ("setting status done requires -s review first"), and `review` would make a reviewer fail criteria that need the code to fail first; `chitty archive` on `main` is refused while the latest version is on the ticket branch; archiving in the ticket worktree only commits on that branch, so `main` needs a rebase and fast-forward, and fails if the branch also holds superseded code. Asked for: a supported "close as already done or superseded" path from `planning`, run from `main`, that records the reason and retires or flags the ticket branch. Also from TASK-662 (shelfpath): there is no way to cancel from `main` a ticket whose latest version is on its ticket branch, short of deleting that branch by hand. The identical-copies failure in the same report is TASK-667.
 
+Released 2026-11-26: stale claim from 2026-11-24.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -150,3 +152,5 @@ Folded in from TASK-681 (echonomicon, 2026-11-23): TASK-160 and TASK-164 sat in 
 - 2026-11-24T09:30:16Z rosy-russet-wren: changed owner, notes
 - 2026-11-24T09:30:16Z rosy-russet-wren doing → planning
 - 2026-11-25T20:44:38Z golden-coral-stoat: changed notes
+- 2026-11-26T11:38:45Z brisk-bronze-adder: changed notes
+- 2026-11-26T11:38:45Z brisk-bronze-adder planning → to-plan
