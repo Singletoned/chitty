@@ -1,6 +1,6 @@
 ---
 title: Refuse writes to a ticket another actor is planning
-status: doing
+status: review
 depends_on:
   - TASK-10029
 parent: TASK-10026
@@ -57,3 +57,4 @@ Added a pure planning-claim rule and enforced it for edits, moves, archives and 
 - 2026-11-26T02:21:31Z sunny-umber-jay: wrote the plan
 - 2026-11-26T02:22:01Z sunny-umber-jay: changed notes
 - 2026-11-26T02:25:03Z sunny-umber-jay: changed summary; ticked acceptance criteria
+- 2026-11-26T02:27:24Z sunny-umber-jay doing → review
