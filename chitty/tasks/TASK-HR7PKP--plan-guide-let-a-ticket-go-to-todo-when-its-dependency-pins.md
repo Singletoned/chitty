@@ -1,9 +1,9 @@
 ---
 title: "Plan guide: let a ticket go to `todo` when its dependency pins the contract"
-status: doing
+status: review
 labels:
   - untestable
-owner: untestable
+owner: human
 created: 2026-11-26
 provisional: true
 ---
@@ -38,6 +38,17 @@ Update two bullets in `src/chitty/roles/plan.md`: allow `todo` with `depends_on`
 
 Decided: "Keep it in `planning`" in the ticket draft -> "return it to `to-plan`", because `TASK-10029` and `TASK-10032` (now on `main`) made `planning` an exclusive planner claim and `to-plan` the waiting status, matching `TASK-10033`. Note that `TASK-10033` (also in review) edits the same two bullets in `src/chitty/roles/plan.md`.
 
+## Summary
+
+Updated two bullets in `src/chitty/roles/plan.md`:
+
+- Added `Chain dependent Chitty commands with && so a refusal stops the rest.` after `Change status in the same edit as the text it depends on.` in the backlog/workflow bullet.
+- Replaced the `chitty edit -s todo` bullet with a tighter 4-line wording allowing `todo` with `depends_on` alone when the dependency pins the contract (names, signatures, formats), and returning to `to-plan` (matching `TASK-10029`, `TASK-10032`, and `TASK-10033`) only while vague, noting the ticket that must settle it.
+
+Note: `TASK-10033` (also in review) edits the same two bullets in `src/chitty/roles/plan.md`.
+
+Branch `task-hr7pkp` (worktree `.worktrees/task-hr7pkp`). `make check` passed via `chitty edit -s review`.
+
 ## History
 
 - 2026-11-26T10:54:38Z calm-ochre-quail → backlog
@@ -50,3 +61,5 @@ Decided: "Keep it in `planning`" in the ticket draft -> "return it to `to-plan`"
 - 2026-11-26T18:18:04Z calm-russet-badger: wrote the plan
 - 2026-11-26T18:18:04Z calm-russet-badger todo → doing
 - 2026-11-26T18:22:34Z calm-russet-badger: changed notes
+- 2026-11-26T18:34:21Z calm-russet-badger: changed owner, summary
+- 2026-11-26T18:34:21Z calm-russet-badger doing → review
