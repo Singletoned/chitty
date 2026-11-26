@@ -1,6 +1,6 @@
 ---
 title: Include `## Questions` in `as_dict` and check parsing with a property test
-status: doing
+status: review
 depends_on:
   - TASK-629
   - TASK-10035
@@ -58,3 +58,4 @@ Added question serialization and example and property tests covering parsing and
 - 2026-11-26T14:26:41Z youthful-yellow-wren: wrote the plan
 - 2026-11-26T14:27:09Z youthful-yellow-wren: changed notes
 - 2026-11-26T14:30:46Z youthful-yellow-wren: changed summary; ticked acceptance criteria
+- 2026-11-26T14:34:21Z youthful-yellow-wren doing → review
