@@ -1,6 +1,6 @@
 ---
 title: Refuse unconfigured priority names on write and report them in `chitty check`
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -34,8 +34,8 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 
 ## Acceptance Criteria
 
-- [ ] The write, check and MCP tests in `tests/test_priorities_config.py` pass and fail before the change; record the failures in a note
-- [ ] The `-p urgent` test expects the new message; `make check` passes
+- [x] The write, check and MCP tests in `tests/test_priorities_config.py` pass and fail before the change; record the failures in a note
+- [x] The `-p urgent` test expects the new message; `make check` passes
 
 ## Plan
 
@@ -44,6 +44,10 @@ Add CLI, check and MCP regression tests and record their pre-fix failures; valid
 ## Notes
 
 Before the fix, the three new priority tests failed: CLI accepted high, check returned success for high, and MCP rejected now as a literal validation error.
+
+Reviewed: Implementation and full diff inspected.
+1: pass - `make check` passes the three tests; applying their diff to merge-base and running `pytest -q tests/test_priorities_config.py -k 'test_write_configured_priorities or test_check_unconfigured_priority or test_mcp_configured_priorities'` produced three failures: high was accepted on write, check returned 0, and MCP rejected now as a literal.
+2: pass - `tests/test_cli.py` expects the configured-name message for urgent; `make check` passed (1289 tests, 684 subtests, ruff and pyright).
 
 ## Summary
 
@@ -61,3 +65,5 @@ Store writes validate configured priority names; CLI and MCP accept custom names
 - 2026-11-26T15:06:08Z intrepid-teal-yellowhammer: changed notes
 - 2026-11-26T15:10:35Z intrepid-teal-yellowhammer: changed summary
 - 2026-11-26T15:12:55Z intrepid-teal-yellowhammer doing → review
+- 2026-11-26T15:19:49Z honest-khaki-badger: changed notes; ticked acceptance criteria
+- 2026-11-26T15:19:49Z honest-khaki-badger review → done
