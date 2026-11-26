@@ -33,6 +33,10 @@ Saving any part of a refused edit; running `setup` automatically; refusals outsi
 - [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: worktree already dirty (an untracked file created after `prepare`, so `require_clean` refuses before the check runs), check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket moved to `review` by a passing check and an untracked file created afterwards, `chitty edit 1 -s done --note Reviewed.` exits 1, its output contains the sentence, and the ticket file still contains `status: review`. These fail without the change.
 - [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found, dirty and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
+## Plan
+
+Add focused refusal tests and confirm they fail; wrap review gate errors with the unsaved-edit message, adding setup guidance only for nonzero checks; format, check, commit, and hand off.
+
 ## Notes
 
 Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/store.py` by accident; this worktree is clean at the committed version, so start from it. No ticket defect was found.
@@ -63,3 +67,4 @@ Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/stor
 - 2026-11-26T11:37:02Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
 - 2026-11-26T11:37:02Z brisk-bronze-adder planning → todo
 - 2026-11-26T11:41:15Z plucky-bronze-quail todo → doing
+- 2026-11-26T11:45:49Z plucky-bronze-quail: wrote the plan
