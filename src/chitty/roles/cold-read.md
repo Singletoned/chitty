@@ -15,9 +15,8 @@ equal jobs:
 Read the ticket with `chitty show <ID>`. Work from Description and Acceptance
 Criteria only; skip Notes.
 
-- Read the ticket as if every ticket in its `depends_on` has landed as its own
-  text describes. Report contradictions between this ticket and theirs, not
-  their absence from `main`.
+- Assume `depends_on` tickets have landed as their text describes; report
+  contradictions with them, not their absence from `main`.
 - Run no Chitty writes (`add`, `edit`, `note`, `fix`, etc.).
 - Make no worktree, branch, ref, or commit, and leave `git status` unchanged.
   You may write a throwaway probe outside the checkout when it settles a doubt
