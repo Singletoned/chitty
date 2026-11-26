@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: planning
+status: todo
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -106,3 +106,5 @@ Split 2026-11-26 after four stalled worker runs: answers, the formatter sample a
 - 2026-11-26T11:28:26Z brisk-bronze-adder planning → cold-read
 - 2026-11-26T11:30:27Z brisk-bronze-adder: changed description
 - 2026-11-26T11:30:27Z brisk-bronze-adder cold-read → planning
+- 2026-11-26T11:30:33Z brisk-bronze-adder: changed owner
+- 2026-11-26T11:30:33Z brisk-bronze-adder planning → todo
