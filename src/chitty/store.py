@@ -27,6 +27,7 @@ from chitty.config import (
     INITIAL_CONFIG,
     RepoConfig,
     check_setup_version,
+    find_root,
     load_repo_config,
     resolve_workflow,
     runner_required_message,
@@ -1885,6 +1886,16 @@ def guide(role: str, ticket_id: str | None = None, *, directory: Path, workflow:
         raise ChittyError(runner_required_message(f"guide {role}"))
     if ticket_id is not None and role in {"plan", "setup"}:
         raise ChittyError(f"the {role} role does not take a ticket ID")
+
+    if role == "cold-read" and ticket_id is not None:
+        repo = Repo.open(find_root(directory))
+        stored = repo.find_for_show(repo.resolve(ticket_id))
+        status = stored.task.frontmatter.status
+        if status != "cold-read":
+            raise ChittyError(
+                f"{ticket_id} is {status} in this checkout, not cold-read; "
+                "run this in the checkout where it is being planned (see git worktree list)"
+            )
 
     roles = files("chitty").joinpath("roles")
     text = roles.joinpath(f"{role}.md").read_text()

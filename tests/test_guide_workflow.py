@@ -83,7 +83,7 @@ class TestRoleGuidesRunnerCompatibility(GuideWorkflowTestCase):
         for role in ROLE_NAMES:
             text = (roles / f"{role}.md").read_text().replace("<!-- property-signals -->", signals)
             cases: list[tuple[str, ...]] = [()]
-            if role not in {"plan", "setup"}:
+            if role not in {"plan", "setup", "cold-read"}:
                 cases.append(("TASK-1",))
             for args in cases:
                 with self.subTest(role=role, args=args):
