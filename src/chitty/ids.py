@@ -65,13 +65,21 @@ def provisional_suffix(draw: Callable[[int], int]) -> str:
     )
 
 
-def ticket_references(text: str, prefixes: Collection[str]) -> list[TaskId]:
+def ticket_references(
+    text: str, prefixes: Collection[str], *, foreign: Collection[str]
+) -> list[TaskId]:
     """Find valid, case-sensitive ticket references in text, in appearance order."""
     allowed = set(prefixes)
+    foreign_pattern = (
+        re.compile(r"(?<![A-Za-z0-9._-])(?:" + "|".join(map(re.escape, foreign)) + r") `?\Z", re.IGNORECASE)
+        if foreign else None
+    )
     found: list[TaskId] = []
     seen: set[TaskId] = set()
     for match in re.finditer(r"(?<![A-Za-z0-9-])([A-Za-z]+)-([A-Za-z0-9]+)", text):
-        if match[1] not in allowed:
+        if match[1] not in allowed or (
+            foreign_pattern is not None and foreign_pattern.search(text[:match.start()])
+        ):
             continue
         try:
             task_id = TaskId.parse(match[0])

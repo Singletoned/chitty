@@ -30,6 +30,7 @@ from chitty.config import (
     check_setup_version,
     find_root,
     load_repo_config,
+    registered_projects,
     resolve_workflow,
     runner_required_message,
     search_root,
@@ -793,7 +794,8 @@ class Repo:
             ]
         )
         references: list[tuple[TaskId, StoredTask | ChittyError | None]] = []
-        for task_id in ids.ticket_references(text, prefixes):
+        foreign = set(registered_projects()) - {self.config.project}
+        for task_id in ids.ticket_references(text, prefixes, foreign=foreign):
             if task_id != stored.id:
                 try:
                     result = self.lookup(task_id)
@@ -1314,7 +1316,7 @@ class Repo:
         self._reserve_numbers(used, self.ticket_ids())
         avoid: dict[str, set[int]] = {prefix: set() for prefix in used}
         for path in disk_paths:
-            self._reserve_numbers(avoid, ids.ticket_references(path.read_text(), used.keys()))
+            self._reserve_numbers(avoid, ids.ticket_references(path.read_text(), used.keys(), foreign=()))
         mapping = plan_renumbering(used, selected, avoid=avoid)
         self._guard_untouched_disk_links(disk_entries, {item.path for item in writable}, mapping)
         self._guard_ref_links(mapping)

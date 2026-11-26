@@ -3,6 +3,7 @@ import unittest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from chitty.config import PROJECT_NAME_RE
 from chitty.ids import TaskId, ticket_references
 from tests import examples
 
@@ -28,7 +29,7 @@ class TestTicketReferences(unittest.TestCase):
             for index, (prefix, number) in enumerate(parts)
         )
         expected = list(dict.fromkeys(TaskId(prefix, number) for prefix, number in parts))
-        self.assertEqual(ticket_references(text, PREFIXES), expected)
+        self.assertEqual(ticket_references(text, PREFIXES, foreign=()), expected)
 
     @settings(max_examples=examples(100))
     @given(
@@ -51,14 +52,58 @@ class TestTicketReferences(unittest.TestCase):
             for index, (prefix, number) in enumerate(parts)
             if index != selected
         ]
-        self.assertEqual(ticket_references(text, PREFIXES), expected)
+        self.assertEqual(ticket_references(text, PREFIXES, foreign=()), expected)
 
     @settings(max_examples=examples(200))
     @given(st.text(), st.sets(st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1)))
     def test_arbitrary_text_never_raises_and_matches_requested_prefix(self, text, prefixes):
-        result = ticket_references(text, prefixes)
+        result = ticket_references(text, prefixes, foreign=())
         self.assertTrue(all(task_id.prefix in prefixes for task_id in result))
         self.assertTrue(all(str(task_id) in text.upper() for task_id in result))
+
+    @settings(max_examples=examples(150))
+    @given(
+        st.lists(st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)), max_size=30),
+        st.from_regex(PROJECT_NAME_RE, fullmatch=True),
+        st.data(),
+    )
+    def test_foreign_qualified_references_are_excluded(self, parts, name, data):
+        separators = data.draw(
+            st.lists(st.sampled_from(SEPARATORS), min_size=len(parts), max_size=len(parts))
+        )
+        qualified = data.draw(st.lists(st.booleans(), min_size=len(parts), max_size=len(parts)))
+        quotes = data.draw(st.lists(st.booleans(), min_size=len(parts), max_size=len(parts)))
+        fragments = [
+            (name.title() + " " + ("`" if quote else "") if foreign else "") + f"{prefix}-{number}"
+            for (prefix, number), foreign, quote in zip(parts, qualified, quotes, strict=True)
+        ]
+        text = "".join(
+            ("," if foreign and sep == "." else sep) + fragment
+            for sep, fragment, foreign in zip(separators, fragments, qualified, strict=True)
+        )
+        expected = list(
+            dict.fromkeys(
+                TaskId(*part) for part, foreign in zip(parts, qualified, strict=True) if not foreign
+            )
+        )
+        all_ids = list(dict.fromkeys(TaskId(*part) for part in parts))
+        self.assertEqual(ticket_references(text, PREFIXES, foreign=(name,)), expected)
+        self.assertEqual(ticket_references(text, PREFIXES, foreign=()), all_ids)
+
+    def test_foreign_name_boundary(self):
+        for text in (
+            "x_other TASK-9",
+            ".other TASK-9",
+            "other\nTASK-9",
+            "other \nTASK-9",
+            "other\tTASK-9",
+            "other  TASK-9",
+        ):
+            with self.subTest(text=text):
+                self.assertEqual(
+                    ticket_references(text, PREFIXES, foreign=("other",)), [TaskId("TASK", 9)]
+                )
+        self.assertEqual(ticket_references("OTHER `TASK-9`", PREFIXES, foreign=("other",)), [])
 
     def test_documented_examples(self):
         cases = {
@@ -76,6 +121,6 @@ class TestTicketReferences(unittest.TestCase):
         for text, expected in cases.items():
             with self.subTest(text=text):
                 self.assertEqual(
-                    ticket_references(text, PREFIXES),
+                    ticket_references(text, PREFIXES, foreign=()),
                     [TaskId.parse(item) for item in expected],
                 )

@@ -1,5 +1,6 @@
 import json
 
+from chitty.config import register_project
 from tests.test_cli import CliTestCase
 
 
@@ -17,6 +18,15 @@ class TestPromoteReferencesCli(CliTestCase):
             "Mentions TASK-1, TASK-9 and TASK-2.",
         )
         self.run_cli("add", "Second task", "-s", "doing", "-d", "Work in progress.")
+
+    def test_promotion_omits_foreign_project_references(self):
+        register_project("other", self.root)
+        self.run_cli(
+            "edit", "TASK-1", "-d", "See other `TASK-9` and TASK-2.", "--set-ac", "1", "Done."
+        )
+        output = self.run_cli("edit", "TASK-1", "-s", "todo").stdout.splitlines()
+        self.assertIn("TASK-2 doing Second task", output)
+        self.assertFalse(any(line.startswith("TASK-9 ") for line in output))
 
     def test_promotion_lists_referenced_tasks_once_after_result(self):
         output = self.run_cli("edit", "TASK-1", "-s", "todo").stdout.splitlines()

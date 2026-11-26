@@ -15,7 +15,8 @@ guide or prompt text says what it cuts to make room, or why they should grow.
 - Put paths, globs, commands, IDs, and code in backticks in titles,
   descriptions, criteria, and notes. Pass text with backticks or apostrophes
   through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for
-  stdin.
+  stdin. Cite another project's ticket with its name first, for example
+  `other TASK-4`.
 - Write the ticket you would want to receive — short, simple, and easy for a
   human to read:
   - One outcome, 1–3 executable criteria, stated scope and out-of-scope, files
