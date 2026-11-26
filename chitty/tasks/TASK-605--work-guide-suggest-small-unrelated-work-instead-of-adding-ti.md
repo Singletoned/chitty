@@ -1,6 +1,6 @@
 ---
 title: "Work guide: suggest small unrelated work instead of adding tickets on a ticket branch"
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -18,6 +18,11 @@ Dropped on 2026-11-26: one line in each role guide on rebasing after an out-of-d
 ## Plan
 
 Replace the unrelated-work sentence in the last bullet of `src/chitty/roles/work.md` to direct small unrelated work to `chitty suggest`, big unrelated work to `to-plan`, and forbid adding tickets on a ticket branch, keeping the bullet at 2 lines and general. Verify with `make check` via `chitty edit -s review`.
+
+## Notes
+
+Reviewed: diff of `main...task-605` changes only the last bullet of `src/chitty/roles/work.md`; still 2 wrapped lines.
+1: pass - small unrelated work goes to `chitty suggest`, big to `to-plan`, and "never add tickets on a ticket branch"; `chitty add` and `-c human` are gone; wording is general.
 
 ## Summary
 
@@ -41,3 +46,5 @@ Branch `task-605` (worktree `.worktrees/task-605`). `make check` passed via `chi
 - 2026-11-26T18:17:03Z calm-russet-badger todo → doing
 - 2026-11-26T18:33:51Z calm-russet-badger: changed owner, summary
 - 2026-11-26T18:33:51Z calm-russet-badger doing → review
+- 2026-11-26T18:57:09Z intrepid-russet-falcon: changed notes
+- 2026-11-26T18:57:09Z intrepid-russet-falcon review → done
