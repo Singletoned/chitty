@@ -1,6 +1,6 @@
 ---
 title: Ticket guard refuses when branch and main copies are identical
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -32,6 +32,10 @@ Add a real Git CLI regression for identical independently committed ticket edits
 
 Regression confirmed: the new real-Git test fails before the fix because show reports changed on both; list already returns a conflict entry. Distinct commit messages ensure the two commits do not collapse to the same Git object.
 
+Reviewed: implementation and complete diff checked.
+1: pass - new real-Git test passes in `make check`; applied to merge-base, `python -m pytest -q tests/test_authoritative_listing.py::TestAuthoritativeListing::test_identical_edits_on_both_branches` fails with `conflict` unexpectedly found and `changed on both`.
+2: pass - `make check` passes (1208 tests), including authoritative listing, source copy errors and property ticket source regressions.
+
 ## Summary
 
 Compare ticket paths at branch tips before checking both sides for changes. Added a real-Git CLI regression; it failed before the fix and passes afterward. Focused regressions and make check pass.
@@ -52,3 +56,5 @@ Compare ticket paths at branch tips before checking both sides for changes. Adde
 - 2026-11-26T00:32:34Z upbeat-amber-vole: changed notes
 - 2026-11-26T00:36:09Z upbeat-amber-vole: changed summary; ticked acceptance criteria
 - 2026-11-26T00:39:15Z upbeat-amber-vole doing → review
+- 2026-11-26T00:45:37Z zesty-quartz-eel: changed notes
+- 2026-11-26T00:45:37Z zesty-quartz-eel review → done
