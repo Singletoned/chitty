@@ -40,6 +40,8 @@ Add property and CLI regression tests, verify they fail, then filter foreign-qua
 
 Decided: the renumbering call already exists on this branch -> pass foreign=() there, because the required deterministic behavior does not depend on its exact surrounding implementation.
 
+Before the fix, the boundary test failed with TypeError and the CLI regression listed TASK-9; both failures confirmed with pytest.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
@@ -55,3 +57,4 @@ Decided: the renumbering call already exists on this branch -> pass foreign=() t
 - 2026-11-26T12:12:20Z vivid-indigo-gannet todo → doing
 - 2026-11-26T12:16:09Z vivid-indigo-gannet: wrote the plan
 - 2026-11-26T12:16:43Z vivid-indigo-gannet: changed notes
+- 2026-11-26T12:17:15Z vivid-indigo-gannet: changed notes
