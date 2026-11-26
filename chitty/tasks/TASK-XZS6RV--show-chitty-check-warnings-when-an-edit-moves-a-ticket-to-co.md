@@ -29,6 +29,10 @@ Running the configured repository check; warnings for other statuses or other co
 - [ ] In a new `tests/test_edit_warnings.py` (`RepoTestCase`, default config with `autocommit = false`), a ticket in `planning` with 6 acceptance criteria is moved with `chitty edit <ID> -s cold-read`, then `-s planning`, then `-s todo`, through the CLI runner. The `cold-read` and `todo` moves exit 0 and print a line containing `warning: 6 acceptance criteria`; the `planning` move does not, and `chitty add` of a 6-criterion ticket with `-s todo` prints no warning. Through `mcp.edit(id, status="todo")` on the same ticket after moving it back to `planning`, the result has `warnings` containing that message, and an edit that does not move the ticket into `cold-read` or `todo` has no `warnings` key. Fails without the change.
 - [ ] A `planning` ticket whose `depends_on` names a missing ticket (written into the file directly, as `test_limits` writes History, since `chitty add` and `chitty edit --depends-on` refuse it) is refused by `chitty edit <ID> -s todo` with `autocommit = false`; the output names the problem, and the file still has `status: planning`. Fails without the change. Regression tests: `TestTicketSizeWarnings.test_limits` passes with its expected warning statuses updated to include `cold-read`. `make check` passes.
 
+## Plan
+
+Add failing CLI and MCP coverage for checked status moves, then propagate check warnings and errors through the store and front ends, update the guide and status regression test, and run formatting and checks.
+
 ## History
 
 - 2026-11-26T10:54:53Z calm-ochre-quail → backlog
@@ -41,3 +45,4 @@ Running the configured repository check; warnings for other statuses or other co
 - 2026-11-26T11:17:06Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:17:24Z calm-ochre-quail: changed description
 - 2026-11-26T15:26:07Z rosy-pearl-toad todo → doing
+- 2026-11-26T15:30:03Z rosy-pearl-toad: wrote the plan
