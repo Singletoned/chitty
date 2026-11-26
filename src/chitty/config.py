@@ -103,6 +103,7 @@ class RepoConfig(BaseModel):
     rebase_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     job_order: list[str] | None = None
+    priorities: list[str] = ["high", "medium", "", "low"]
     protected_paths: list[str] = []
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
@@ -187,6 +188,23 @@ class RepoConfig(BaseModel):
             raise ValueError("job_order must not be empty")
         if len(set(value)) != len(value):
             raise ValueError("job_order must not repeat statuses")
+        return value
+
+    @field_validator("priorities")
+    @classmethod
+    def _priorities(cls, value: list[str]) -> list[str]:
+        if value.count("") != 1:
+            raise ValueError('priorities must contain "" exactly once, to place tickets with no priority')
+        seen: set[str] = set()
+        for name in value:
+            if name in seen:
+                raise ValueError(f"priorities lists {name!r} twice")
+            if name != name.strip() or len(name.splitlines()) > 1:
+                raise ValueError(
+                    f"priority {name!r} must be one word or phrase on one line, "
+                    "without surrounding spaces"
+                )
+            seen.add(name)
         return value
 
     @model_validator(mode="after")
