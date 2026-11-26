@@ -1,6 +1,6 @@
 ---
 title: "`git.worktree_for_branch` hides `git worktree list` failures"
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -47,3 +47,4 @@ Git worktree listing failures now propagate instead of appearing as a missing wo
 - 2026-11-26T00:56:02Z youthful-amber-falcon: wrote the plan
 - 2026-11-26T00:56:23Z youthful-amber-falcon: changed notes
 - 2026-11-26T00:59:50Z youthful-amber-falcon: changed summary
+- 2026-11-26T01:02:36Z youthful-amber-falcon doing → review
