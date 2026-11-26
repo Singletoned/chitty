@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: todo
+status: doing
 created: 2026-11-24
 ---
 
@@ -61,3 +61,4 @@ Requeued 2026-11-26: the last worker returned it over tool failures, not a ticke
 - 2026-11-26T11:37:23Z brisk-bronze-adder to-plan → planning
 - 2026-11-26T11:37:29Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
 - 2026-11-26T11:37:29Z brisk-bronze-adder planning → todo
+- 2026-11-26T13:27:58Z tidy-umber-newt todo → doing
