@@ -1,6 +1,6 @@
 ---
 title: A stale inbox repo path makes every command fail with Not a directory
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -31,6 +31,10 @@ Add CLI regression tests for stale and live inbox owners, demonstrate the stale 
 
 Before the fix, the stale-registration CLI test failed with Not a directory; the existing-other-repository regression passed.
 
+Reviewed: stale registrations are replaced and live owners remain protected.
+1: pass - `make check` passes the CLI test; applying it at the merge base and running `pytest -q tests/test_inbox.py::TestInbox::test_pull_replaces_stale_registration` fails with `Error: Not a directory: .../deleted`.
+2: pass - `make check` passes, including `tests/test_inbox.py`, `tests/test_property_inbox.py` and the existing-other-repository regression (1210 passed).
+
 ## Summary
 
 Replace stale inbox repository registrations with the current resolved root and a stderr warning; preserve refusal for existing different repositories. The stale CLI regression failed before the fix, and both inbox suites and make check pass.
@@ -50,3 +54,5 @@ Replace stale inbox repository registrations with the current resolved root and 
 - 2026-11-26T00:44:38Z zesty-jade-wren: changed notes
 - 2026-11-26T00:48:17Z zesty-jade-wren: changed summary; ticked acceptance criteria
 - 2026-11-26T00:50:38Z zesty-jade-wren doing → review
+- 2026-11-26T00:57:53Z friendly-zinc-urchin: changed notes
+- 2026-11-26T00:57:53Z friendly-zinc-urchin review → done
