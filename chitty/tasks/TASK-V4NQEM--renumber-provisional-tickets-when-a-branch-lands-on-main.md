@@ -34,6 +34,10 @@ Plan and hotfix branches landed by hand get the same steps when TASK-340 adds `c
 
 Add failing landing and branch-renumber tests, then permit renumbering when HEAD contains main and run it under the landing lock before each fast-forward. Update stale-branch tests and messages, format, and run checks.
 
+## Notes
+
+Before the fix, both new tests failed: landing left TASK-ABCDEF unnumbered and renumber on a fresh branch produced no changes.
+
 ## History
 
 - 2026-11-26T17:46:59Z calm-ochre-quail → backlog
@@ -43,3 +47,4 @@ Add failing landing and branch-renumber tests, then permit renumbering when HEAD
 - 2026-11-26T17:49:57Z calm-ochre-quail cold-read → todo
 - 2026-11-26T17:54:27Z youthful-white-puffin todo → doing
 - 2026-11-26T17:57:12Z youthful-white-puffin: wrote the plan
+- 2026-11-26T17:57:39Z youthful-white-puffin: changed notes
