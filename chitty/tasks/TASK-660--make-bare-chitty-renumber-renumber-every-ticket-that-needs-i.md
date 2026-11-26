@@ -23,7 +23,7 @@ It prints the same lines as the path form and the provisional form today, and `n
 
 ### Out of scope
 
-Renumbering when a branch lands (TASK-HFFMPW); restarting numbering (TASK-W74AVC); renumbering a numbered ticket with a unique ID.
+Renumbering when a branch lands (TASK-V4NQEM); restarting numbering (TASK-W74AVC); renumbering a numbered ticket with a unique ID.
 
 ## Acceptance Criteria
 
@@ -67,3 +67,4 @@ Unique sequential-context tickets now renumber through the existing reference-re
 - 2026-11-26T12:17:42Z mellow-silver-crane review → done
 - 2026-11-26T17:46:58Z calm-ochre-quail: changed title, dependencies, description, acceptance criteria
 - 2026-11-26T17:46:58Z calm-ochre-quail done → cold-read
+- 2026-11-26T17:47:10Z calm-ochre-quail: changed description
