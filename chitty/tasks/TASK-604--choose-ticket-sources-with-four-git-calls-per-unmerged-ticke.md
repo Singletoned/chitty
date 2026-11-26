@@ -1,5 +1,5 @@
 ---
-title: Choose ticket sources with three Git calls per unmerged ticket branch
+title: Choose ticket sources with four Git calls per unmerged ticket branch
 status: todo
 priority: high
 depends_on:
@@ -41,3 +41,4 @@ Out of scope: reading every non-ticket branch (TASK-603), and `src/chitty/run.py
 - 2026-11-26T22:00:42Z youthful-lilac-heron: changed title, description, acceptance criteria
 - 2026-11-26T22:03:19Z youthful-lilac-heron: changed description
 - 2026-11-26T22:03:19Z youthful-lilac-heron cold-read → todo
+- 2026-11-26T22:03:31Z youthful-lilac-heron: changed title
