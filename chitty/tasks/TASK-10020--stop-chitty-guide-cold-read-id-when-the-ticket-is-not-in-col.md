@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty guide cold-read <ID>` when the ticket is not in `cold-read`
-status: doing
+status: review
 created: 2026-11-25
 moved_from: TASK-VKTREF
 ---
@@ -56,3 +56,4 @@ Cold-read guides with a ticket ID now resolve the checkout ticket like show and 
 - 2026-11-26T01:45:27Z calm-fawn-falcon: wrote the plan
 - 2026-11-26T01:46:15Z calm-fawn-falcon: changed notes
 - 2026-11-26T01:50:14Z calm-fawn-falcon: changed summary
+- 2026-11-26T01:52:37Z calm-fawn-falcon doing → review
