@@ -29,6 +29,10 @@ Out of scope: work guide advice about bare `pytest` (the trap goes away instead)
 
 Add integration coverage for work and review agent PATH resolution, verify it fails first, then share a temporary symlink directory across each agent session and run formatting and checks.
 
+## Notes
+
+Regression test failed before the fix for both work and review: the resolved chitty was not a symbolic link.
+
 ## History
 
 - 2026-11-25T22:28:25Z calm-ochre-quail → backlog
@@ -45,3 +49,4 @@ Add integration coverage for work and review agent PATH resolution, verify it fa
 - 2026-11-25T23:50:41Z calm-ochre-quail cold-read → todo
 - 2026-11-25T23:56:37Z calm-umber-adder todo → doing
 - 2026-11-26T00:00:41Z calm-umber-adder: wrote the plan
+- 2026-11-26T00:01:24Z calm-umber-adder: changed notes
