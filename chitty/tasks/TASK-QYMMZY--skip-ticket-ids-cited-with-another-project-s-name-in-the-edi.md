@@ -42,6 +42,8 @@ Decided: the renumbering call already exists on this branch -> pass foreign=() t
 
 Before the fix, the boundary test failed with TypeError and the CLI regression listed TASK-9; both failures confirmed with pytest.
 
+Decided: the existing guide-generalness test rejects the required example TASK-4 -> permit the explicit generic example while continuing to reject other ticket IDs, because it is an illustrative foreign citation, not a repository-specific instruction. Initial make check otherwise passed 1247 tests.
+
 ## History
 
 - 2026-11-26T10:54:44Z calm-ochre-quail → backlog
@@ -58,3 +60,4 @@ Before the fix, the boundary test failed with TypeError and the CLI regression l
 - 2026-11-26T12:16:09Z vivid-indigo-gannet: wrote the plan
 - 2026-11-26T12:16:43Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:17:15Z vivid-indigo-gannet: changed notes
+- 2026-11-26T12:22:10Z vivid-indigo-gannet: changed notes
