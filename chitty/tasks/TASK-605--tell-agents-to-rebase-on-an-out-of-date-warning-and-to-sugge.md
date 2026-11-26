@@ -1,6 +1,6 @@
 ---
 title: Tell agents to rebase on an out-of-date warning, and to suggest rather than file tickets
-status: doing
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -26,3 +26,5 @@ Size: the work guide stays the same length (one line replaced, one added, and it
 - 2026-11-25T23:50:22Z calm-ochre-quail: changed labels, owner, description
 - 2026-11-25T23:50:22Z calm-ochre-quail backlog → todo
 - 2026-11-26T10:55:31Z tidy-silver-puffin todo → doing
+- 2026-11-26T10:55:42Z tidy-silver-puffin: changed owner
+- 2026-11-26T10:55:42Z tidy-silver-puffin doing → todo
