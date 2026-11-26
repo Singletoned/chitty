@@ -26,6 +26,10 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 
 Use the latest timed transition into doing and Git author timestamps to reject a repeat review without a subsequent non-bookkeeping commit. Add a property test and a real-Git CLI regression covering rebase and first review, then run formatting and checks.
 
+## Notes
+
+Confirmed both new tests fail before the fix: the stub property assertion and the first CLI refusal (which instead succeeded).
+
 ## History
 
 - 2026-11-25T22:28:50Z calm-ochre-quail → backlog
@@ -40,3 +44,4 @@ Use the latest timed transition into doing and Git author timestamps to reject a
 - 2026-11-26T00:23:34Z calm-ochre-quail planning → todo
 - 2026-11-26T01:25:59Z rosy-jade-marten todo → doing
 - 2026-11-26T01:29:56Z rosy-jade-marten: wrote the plan
+- 2026-11-26T01:30:38Z rosy-jade-marten: changed notes
