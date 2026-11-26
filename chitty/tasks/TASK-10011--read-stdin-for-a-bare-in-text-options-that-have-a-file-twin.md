@@ -1,6 +1,6 @@
 ---
 title: Read stdin for a bare `-` in text options that have a `-file` twin
-status: todo
+status: doing
 labels:
   - bug
   - needs-minor
@@ -35,3 +35,4 @@ Out of scope: options with no `-file` twin (for example `--title`, `--ac`); the 
 - 2026-11-25T23:34:01Z calm-ochre-quail: changed labels, description, acceptance criteria
 - 2026-11-25T23:34:01Z calm-ochre-quail cold-read → planning
 - 2026-11-25T23:34:06Z calm-ochre-quail planning → todo
+- 2026-11-26T00:11:43Z zesty-fawn-toad todo → doing
