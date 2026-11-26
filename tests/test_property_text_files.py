@@ -10,6 +10,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty.cli import cli, reads_stdin
+from chitty.markdown import escape_literal_asterisks
 from tests import examples
 from tests.support import CONFIG, RepoTestCase
 
@@ -56,6 +57,35 @@ class TestTextFiles(RepoTestCase):
         self.assertEqual(results[0], results[1])
         self.assertEqual(results[0], results[2])
         self.assertEqual(results[2], results[3])
+
+    @settings(max_examples=examples(25), deadline=None)
+    @given(text=TEXT)
+    def test_note_text_file_and_stdin(self, text):
+        notes = []
+        for mode in ("inline", "file", "stdin"):
+            with tempfile.TemporaryDirectory(dir=self.tmp) as directory:
+                root = Path(directory)
+                (root / "chitty.toml").write_text(CONFIG)
+                file = root / "text.txt"
+                file.write_text(text, encoding="utf-8")
+                with mock.patch("pathlib.Path.cwd", return_value=root):
+                    task_id = self.run_cli("add", "T", "-d", "x", "--json")["id"]
+                    args = (
+                        [text]
+                        if mode == "inline"
+                        else ["--file", str(file) if mode == "file" else "-"]
+                    )
+                    self.run_cli("note", task_id, *args, input=text if mode == "stdin" else None)
+                    notes.append(self.run_cli("show", task_id, "--json")["notes"])
+        self.assertEqual(notes[0], notes[1])
+        self.assertEqual(notes[0], notes[2])
+        self.assertEqual(notes[0].split(), escape_literal_asterisks(text).split())
+
+    def test_note_dash_is_literal(self):
+        with mock.patch("pathlib.Path.cwd", return_value=self.root):
+            task_id = self.run_cli("add", "T", "-d", "x", "--json")["id"]
+            self.run_cli("note", task_id, "-")
+            self.assertEqual(self.run_cli("show", task_id, "--json")["notes"], "-")
 
     def test_suggest_stdin(self):
         with mock.patch("pathlib.Path.cwd", return_value=self.root):

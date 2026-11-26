@@ -1552,6 +1552,19 @@ class TestEdit(CliTestCase):
         self.run_cli("add", "Task", "-d", "Describe.", "--ac", "One", "--ac", "Two", "-l", "a")
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
+    def test_note_requires_exactly_one_text_source(self):
+        file = self.root / "note.txt"
+        file.write_text("File text", encoding="utf-8")
+        before = self.path.read_bytes()
+        for args, message in (
+            (("1", "Text", "--file", str(file)), "give TEXT or --file, not both"),
+            (("1",), "give TEXT or --file"),
+        ):
+            with self.subTest(args=args):
+                result = self.run_cli("note", *args, exit_code=2)
+                self.assertIn(message, result.output)
+                self.assertEqual(self.path.read_bytes(), before)
+
     def test_planning_claim_refuses_other_actor_writes_until_released(self):
         with patch.dict(os.environ, {"CHITTY_ACTOR": "one"}):
             self.run_cli("edit", "TASK-1", "-s", "planning")
