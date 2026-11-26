@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: planning
+status: todo
 created: 2026-11-24
 ---
 
@@ -39,19 +39,9 @@ Warnings in `chitty run` or `chitty check`; detecting other broken commands; the
 - [ ] A new property test in `tests/test_agent_command_warnings.py`, as the Tests section describes, shows `agent_command_warnings` returns exactly one line per non-blank command without `{prompt}`, each starting with its setting name and ` has no {prompt}`, `agent_command` first and named entries in sorted order. It fails against a stub that returns `[]`.
 - [ ] A new test in `TestInit` in `tests/test_cli.py` shows `chitty init` exits 0 with `warning: agent_command has no {prompt}` on stderr for the fixture's `pi --chitty-{mode} {id}` (this assertion fails today), and without `has no {prompt}` after the command is changed to `pi -p {prompt}`. `make check` passes.
 
-## Plan
-
-Add the pure config warning helper, emit its warnings from init after initialization, and cover helper behavior with a property test plus CLI regression test. Run make check and commit implementation changes.
-
 ## Notes
 
-Suggestion origin: chitty
-
-Triage 2026-11-24, merged from TASK-659 (circuitry): with the old command, 10 circuitry runs since 2026-11-14 09:18 (CIRCUIT-96/97/105/106/107) exited in 1.5-3.6 s, wrote no Pi session, and were recorded only as "<ID> was unchanged" (see `~/.local/share/chitty/usage/circuitry.jsonl`). Two further asks from TASK-659, to split off when planning: (1) when an agent exits within seconds with no commits, the runner error should give exit status, runtime and the last stderr lines (compare TASK-466 and TASK-445); (2) in circuitry, `chitty init` keeps printing "re-run `chitty init` to refresh repository setup" straight after an upgrade commit.
-
-Unable to complete work due to tool/session execution failures.
-
-Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
+Requeued 2026-11-26: the last worker returned it over tool failures, not a ticket defect. Ideas from TASK-659 not in scope here: runner error detail for agents that exit within seconds (compare TASK-466, TASK-445), and the repeated re-run `chitty init` warning after an upgrade.
 
 ## History
 
@@ -69,3 +59,5 @@ Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
 - 2026-11-26T11:37:16Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:37:16Z brisk-bronze-adder planning → to-plan
 - 2026-11-26T11:37:23Z brisk-bronze-adder to-plan → planning
+- 2026-11-26T11:37:29Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
+- 2026-11-26T11:37:29Z brisk-bronze-adder planning → todo
