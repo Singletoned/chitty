@@ -1,6 +1,6 @@
 ---
 title: Order tickets by the configured `priorities` list and accept any priority name in the model
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -44,3 +44,4 @@ Out of scope: refusing unconfigured names on write or in `chitty check`, CLI and
 
 - 2026-11-26T11:40:35Z brisk-bronze-adder → planning
 - 2026-11-26T11:41:17Z brisk-bronze-adder: changed description
+- 2026-11-26T11:42:42Z brisk-bronze-adder planning → cold-read
