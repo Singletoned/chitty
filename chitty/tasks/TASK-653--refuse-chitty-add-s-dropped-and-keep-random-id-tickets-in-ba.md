@@ -1,6 +1,6 @@
 ---
 title: Refuse `chitty add -s dropped`, and keep random-ID tickets in `backlog`
-status: cold-read
+status: planning
 priority: high
 depends_on:
   - TASK-599
@@ -16,7 +16,7 @@ Change, in `Repo.add` in `src/chitty/store.py`: when the requested status is `dr
 
 Random-ID contexts keep their rule that every ticket there is `backlog` (decided with the person, 2026-11-23; contexts are being removed by `TASK-262` and `TASK-267`): the existing check in `Repo._edit_stored` already refuses `-s dropped` there, and the regression test pins that.
 
-Tests: add to the existing `tests/test_status_dropped.py`. For the random-ID cases, add the `BACKLOG` context table and patch `chitty.store._random_number` as `tests/test_backlog_context.py` does. No property: two fixed cases.
+Tests: add to the existing `tests/test_status_dropped.py`. For the random-ID cases, add the `BACKLOG` context table as `tests/test_backlog_context.py` does; the add refusal happens before an ID is drawn, so only the `edit` case needs its `_random_number` patch. The random-ID guard runs early in `_edit_stored`, before `TASK-652`'s post-edit Summary check, so the regression test keeps its message either way. No property: two fixed cases.
 
 Out of scope: `chitty edit` rules for dropping (`TASK-652`), archiving (`TASK-654`).
 
@@ -35,3 +35,5 @@ Out of scope: `chitty edit` rules for dropping (`TASK-652`), archiving (`TASK-65
 - 2026-11-26T19:00:20Z zesty-ginger-newt: replaced notes; changed dependencies, description, acceptance criteria
 - 2026-11-26T19:00:20Z zesty-ginger-newt to-plan → planning
 - 2026-11-26T19:00:29Z zesty-ginger-newt planning → cold-read
+- 2026-11-26T19:05:19Z zesty-ginger-newt: changed description
+- 2026-11-26T19:05:19Z zesty-ginger-newt cold-read → planning
