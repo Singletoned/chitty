@@ -27,7 +27,8 @@ file holds the decisions behind them.
 - Description: `--description-file` is available on `add`, `edit` and `suggest`.
 - `--plan-file` and `--summary-file` are available on `edit`; `--summary`
   writes the optional final handoff section, after Notes.
-- File options read UTF-8 and accept `-` for stdin; only one may use stdin.
+- File options read UTF-8 and accept `-` for stdin; their text-option twins
+  also accept a bare `-` for stdin. Only one option may use stdin.
 - `parent` is a full ticket ID for grouping; shorthand IDs are expanded. It must
   exist and cannot form a cycle. `list --parent ID` shows direct children;
   `show` lists them.

@@ -31,7 +31,7 @@ class TestTextFiles(RepoTestCase):
 
     def compare_option(self, command, option, text):
         results = []
-        for mode in ("inline", "file", "stdin"):
+        for mode in ("inline", "file", "stdin", "bare-stdin"):
             with tempfile.TemporaryDirectory(dir=self.tmp) as directory:
                 root = Path(directory)
                 (root / "chitty.toml").write_text(CONFIG)
@@ -45,14 +45,17 @@ class TestTextFiles(RepoTestCase):
                         args = ["add", "T"]
                         if option != "--description":
                             args += ["-d", "x"]
-                    args += [option if mode == "inline" else option + "-file"]
+                    args += [option if mode in ("inline", "bare-stdin") else option + "-file"]
                     args += [text if mode == "inline" else str(file) if mode == "file" else "-"]
-                    result = self.run_cli(*args, "--json", input=text if mode == "stdin" else None)
+                    result = self.run_cli(
+                        *args, "--json", input=text if mode in ("stdin", "bare-stdin") else None
+                    )
                     task_id = result["id"]
                     shown = self.run_cli("show", task_id, "--json")
                     results.append({field: shown[field] for field in FIELDS})
         self.assertEqual(results[0], results[1])
         self.assertEqual(results[0], results[2])
+        self.assertEqual(results[2], results[3])
 
     def test_suggest_stdin(self):
         with mock.patch("pathlib.Path.cwd", return_value=self.root):
@@ -62,6 +65,91 @@ class TestTextFiles(RepoTestCase):
             items = self.run_cli("inbox", "--json")
             self.assertEqual(len(items), 2)
             self.assertEqual(items[0]["description"], items[1]["description"])
+
+    @settings(max_examples=examples(25), deadline=None)
+    @given(text=TEXT)
+    def test_suggest_bare_stdin(self, text):
+        with tempfile.TemporaryDirectory(dir=self.tmp) as directory:
+            root = Path(directory)
+            (root / "chitty.toml").write_text(CONFIG)
+            with mock.patch("pathlib.Path.cwd", return_value=root):
+                self.run_cli("init")
+                for option in ("--description", "--description-file"):
+                    self.run_cli("suggest", str(root), "T", option, "-", input=text)
+                items = self.run_cli("inbox", "--json")
+                self.assertEqual(items[0]["description"], items[1]["description"])
+
+    def test_bare_stdin_conflicts(self):
+        cases = (
+            ("--plan", "-", "--note", "-"),
+            ("--plan", "-", "--note-file", "-"),
+            ("--note", "-", "--note", "-"),
+        )
+        for options in cases:
+            with self.subTest(options=options):
+                with mock.patch("pathlib.Path.cwd", return_value=self.root):
+                    result = CliRunner().invoke(cli, ["edit", "TASK-1", *options], input="text")
+                self.assertEqual(result.exit_code, 2, result.output)
+                self.assertIn("only one file option can read stdin:", result.output)
+                self.assertIn("--note-file", result.output)
+                if options[0] == "--plan":
+                    self.assertIn("--plan-file", result.output)
+                else:
+                    self.assertEqual(result.output.count("--note-file"), 2)
+
+    def test_bare_stdin_and_file_twin_are_mutually_exclusive(self):
+        with mock.patch("pathlib.Path.cwd", return_value=self.root):
+            for command in (("add", "T"), ("edit", "TASK-1"), ("suggest", ".", "T")):
+                with self.subTest(command=command):
+                    result = CliRunner().invoke(
+                        cli, [*command, "--description", "-", "--description-file", "-"], input="x"
+                    )
+                    self.assertEqual(result.exit_code, 2, result.output)
+                    self.assertIn(
+                        "give --description or --description-file, not both", result.output
+                    )
+
+    @settings(max_examples=examples(15), deadline=None)
+    @given(text=st.text(alphabet=st.characters(exclude_categories=("Cs",)), max_size=100))
+    def test_arbitrary_stdin_matches_file_twin(self, text):
+        cases = (
+            ("add", "--description"),
+            ("add", "--note"),
+            ("edit", "--description"),
+            ("edit", "--plan"),
+            ("edit", "--note"),
+            ("edit", "--set-notes"),
+            ("edit", "--summary"),
+            ("suggest", "--description"),
+        )
+        for command, option in cases:
+            results = []
+            for suffix in ("", "-file"):
+                with tempfile.TemporaryDirectory(dir=self.tmp) as directory:
+                    root = Path(directory)
+                    (root / "chitty.toml").write_text(CONFIG)
+                    with mock.patch("pathlib.Path.cwd", return_value=root):
+                        if command == "edit":
+                            task_id = self.run_cli("add", "T", "-d", "x", "--json")["id"]
+                            args = ["edit", task_id]
+                        elif command == "add":
+                            args = ["add", "T"]
+                            if option == "--note":
+                                args += ["-d", "x"]
+                        else:
+                            self.run_cli("init")
+                            args = ["suggest", str(root), "T"]
+                        result = CliRunner().invoke(cli, [*args, option + suffix, "-"], input=text)
+                        if result.exit_code == 0:
+                            if command == "suggest":
+                                value = self.run_cli("inbox", "--json")[0]["description"]
+                            else:
+                                shown = self.run_cli("show", "TASK-1", "--json")
+                                value = {field: shown[field] for field in FIELDS}
+                        else:
+                            value = result.output
+                        results.append((result.exit_code, value))
+            self.assertEqual(results[0], results[1], (command, option, text))
 
     def test_two_stdin_options(self):
         with mock.patch("pathlib.Path.cwd", return_value=self.root):

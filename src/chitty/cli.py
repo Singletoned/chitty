@@ -255,16 +255,25 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
     return file.read() if file is not None else value
 
 
+def _stdin_text(value: str | None, file: TextIO | None, name: str) -> tuple[str | None, TextIO | None]:
+    if value == "-":
+        if file is not None:
+            raise click.UsageError(f"give --{name} or --{name}-file, not both")
+        return None, sys.stdin
+    return value, file
+
+
 def reads_stdin(name: str) -> bool:
     return name in {"<stdin>", "/dev/stdin", "/dev/fd/0", "/proc/self/fd/0"}
 
 
-def _check_stdin_files(**files: TextIO | None) -> None:
+def _check_stdin_files(*, note_stdin_count: int = 0, **files: TextIO | None) -> None:
     names = [
         f"--{name.replace('_', '-')}"
         for name, file in files.items()
         if file is not None and reads_stdin(file.name)
     ]
+    names.extend(["--note-file"] * note_stdin_count)
     if len(names) > 1:
         raise click.UsageError(f"only one file option can read stdin: {', '.join(names)}")
 
@@ -347,6 +356,7 @@ def suggest(
     PROJECT is a registered name unless it contains `/`, is `.`, or starts with
     `~` or `.`; paths resolve their Chitty configuration before sending.
     """
+    description, description_file = _stdin_text(description, description_file, "description")
     _check_stdin_files(description_file=description_file)
     description = _text(description, description_file, "description")
     click.echo(send_suggestion(project, title, description, create, Path.cwd(), task))
@@ -421,7 +431,11 @@ def add(
     -c names a context in this repository. Use `chitty suggest` to send work
     to another repository.
     """
-    _check_stdin_files(description_file=description_file, note_file=note_file)
+    description, description_file = _stdin_text(description, description_file, "description")
+    _check_stdin_files(
+        description_file=description_file, note_file=note_file, note_stdin_count=notes.count("-")
+    )
+    notes = tuple(sys.stdin.read() if note == "-" else note for note in notes)
     description = _text(description, description_file, "description")
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
@@ -804,13 +818,19 @@ def edit(
     as_json: bool,
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
+    description, description_file = _stdin_text(description, description_file, "description")
+    plan, plan_file = _stdin_text(plan, plan_file, "plan")
+    set_notes, set_notes_file = _stdin_text(set_notes, set_notes_file, "set-notes")
+    summary, summary_file = _stdin_text(summary, summary_file, "summary")
     _check_stdin_files(
+        note_stdin_count=notes.count("-"),
         description_file=description_file,
         plan_file=plan_file,
         note_file=note_file,
         set_notes_file=set_notes_file,
         summary_file=summary_file,
     )
+    notes = tuple(sys.stdin.read() if note == "-" else note for note in notes)
     repo = _repo()
     resolved_id = repo.resolve(task_id)
     if human_edit:
