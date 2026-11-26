@@ -28,6 +28,10 @@ Rerunning a flaky check (TASK-496); timeouts, missing check commands, review tic
 - [ ] Rewrite `test_run_check_failure_on_todo_ticket_records_error_on_branch` in `tests/test_next.py` (rename it to say the run stops) for the new behaviour, using `self.run_cli("run", exit_code=1)`: stderr contains the message text ``main fails the check`` once; the agent did not start; the branch copy of `TASK-1` has `status: todo` and a note containing ``Not started: `main` fails the check`` and the check detail; it has no `Runner error (check)`; `main` is unchanged; and `next_action` with no modes picks `TASK-1` again. Keep its existing assertions on the check arguments, log and worktree status. Rewrite `test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors` (around line 1513) the same way, since a branch with only ticket-file commits has no work. Fails without the change.
 - [ ] Regression tests: a `todo` ticket whose branch already has a work commit, and `doing`/`error` tickets whose check fails, behave as today (their existing tests in `tests/test_next.py` pass unchanged), and `test_todo_check_timeout` in `tests/test_command_timeout.py` passes unchanged. `make check` passes.
 
+## Plan
+
+Rewrite both no-work check failure tests and confirm they fail, then restore the claimed ticket to todo and raise a dedicated run error. Run formatting and checks, commit, and hand off for review.
+
 ## History
 
 - 2026-11-22T13:19:33Z friendly-jade-stoat → todo
@@ -40,3 +44,4 @@ Rerunning a flaky check (TASK-496); timeouts, missing check commands, review tic
 - 2026-11-26T11:21:11Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T11:21:11Z calm-ochre-quail cold-read → todo
 - 2026-11-26T12:47:15Z friendly-white-raven todo → doing
+- 2026-11-26T12:51:32Z friendly-white-raven: wrote the plan
