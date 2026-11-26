@@ -933,6 +933,9 @@ class Repo:
         """Create a task. References in depends_on may be shorthand."""
         self._prepare_write()
         fields = dict(fields)
+        priority = fields.get("priority")
+        if isinstance(priority, str):
+            self._validate_priority(priority)
         if self.config.contexts[context.name].random_ids:
             fields["status"] = "backlog"
         depends_on = fields.get("depends_on")
@@ -1035,7 +1038,14 @@ class Repo:
             raise ChittyError("nothing to change")
         return self._edit_stored(self.find(task_id), edit)
 
+    def _validate_priority(self, priority: str) -> None:
+        if not priority or priority not in self.config.priorities:
+            names = ", ".join(name for name in self.config.priorities if name)
+            raise ChittyError(f"priority {priority!r} is not configured; choose from {names}")
+
     def _edit_stored(self, stored: StoredTask, edit: Edit) -> Change:
+        if edit.priority:
+            self._validate_priority(edit.priority)
         task_id = stored.id
         releasing = edit.status == "to-plan" and any(
             note and note.strip() for note in (edit.note, *edit.notes)

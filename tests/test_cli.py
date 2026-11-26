@@ -1853,7 +1853,12 @@ class TestEdit(CliTestCase):
             ("edit", "1"): "nothing to change",
             ("edit", "1", "--check", "3"): "there are 2",
             ("edit", "1", "--rm-label", "zzz"): "no label 'zzz'",
-            ("edit", "1", "-p", "urgent"): "low, medium, high",
+            (
+                "edit",
+                "1",
+                "-p",
+                "urgent",
+            ): "priority 'urgent' is not configured; choose from high, medium, low",
             ("edit", "1", "-d", ""): "use ###",
             ("edit", "1", "--plan", "x", "--plan-file", "-"): "not both",
             ("edit", "9", "-s", "done"): "no task TASK-9",

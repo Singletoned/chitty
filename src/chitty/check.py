@@ -210,6 +210,9 @@ def check(
                 try:
                     task = parse(path.read_text())
                     tasks[path] = task
+                    priority = task.frontmatter.priority
+                    if priority is not None and priority not in repo.config.priorities:
+                        problems.append(Problem(path, f"priority {priority!r} is not configured"))
                     problems += _markdown_warnings(path, task)
                     if (
                         task.frontmatter.status in {"to-plan", "planning", "todo"}

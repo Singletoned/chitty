@@ -43,7 +43,7 @@ Status = Literal[
     "review",
     "done",
 ]
-Priority = Literal["low", "medium", "high"]
+Priority = str
 
 # Tools declared by `_tool`, registered on each server by `create_server`.
 _TOOLS: list[tuple[str, str, Callable[..., Any]]] = []
@@ -193,7 +193,7 @@ def edit(
     status: Status | None = None,
     add_label: list[str] | None = None,
     rm_label: list[str] | None = None,
-    priority: Priority | Literal[""] | None = None,
+    priority: Priority | None = None,
     owner: str | None = None,
     depends_on: list[str] | None = None,
     rm_depends_on: list[str] | None = None,

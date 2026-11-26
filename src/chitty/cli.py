@@ -40,7 +40,6 @@ from chitty.model import (
     ACCEPTANCE_CRITERIA,
     DEFAULT_LIST_STATUSES,
     FIELD_ORDER,
-    PRIORITIES,
     PRIORITY_GLYPHS,
     QUESTIONS,
     SECTION_ORDER,
@@ -245,12 +244,6 @@ def _report(change: Change, as_json: bool, verb: str) -> None:
         click.echo(f"unchanged {change.task.id}")
 
 
-def _priority(_ctx: click.Context, _param: click.Parameter, value: str | None) -> str | None:
-    if value is not None and value not in (*PRIORITIES, ""):
-        raise click.BadParameter(f"must be one of {', '.join(PRIORITIES)}, or '' to unset")
-    return value
-
-
 def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
     if value is not None and file is not None:
         raise click.UsageError(f"give --{name} or --{name}-file, not both")
@@ -404,7 +397,7 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.option("-s", "--status", type=click.Choice(STATUSES), default="todo", show_default=True)
 @click.option("--ac", "criteria", multiple=True, help="Acceptance criterion (repeatable).")
 @click.option("-l", "--label", "labels", multiple=True, help="Label (repeatable).")
-@click.option("-p", "--priority", type=click.Choice(PRIORITIES))
+@click.option("-p", "--priority")
 @click.option("--owner", help="Free text: human, a name, an agent.")
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
@@ -737,7 +730,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("-s", "--status", type=click.Choice(STATUSES))
 @click.option("--add-label", multiple=True)
 @click.option("--rm-label", multiple=True)
-@click.option("-p", "--priority", callback=_priority, help="low, medium, high; '' unsets.")
+@click.option("-p", "--priority", help="A configured priority; '' unsets.")
 @click.option("--owner", help="'' unsets.")
 @click.option("--depends-on", multiple=True, help="Add a dependency (repeatable).")
 @click.option("--rm-depends-on", multiple=True, help="Remove a dependency (repeatable).")

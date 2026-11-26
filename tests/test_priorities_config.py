@@ -53,6 +53,56 @@ class CustomPriorityTests(RepoTestCase):
         self.addCleanup(os.chdir, previous)
         self.runner = CliRunner()
 
+    def test_write_configured_priorities(self) -> None:
+        self.enterContext(patch.dict(os.environ, {"CHITTY_ACTOR": "test-agent"}))
+        message = "priority 'high' is not configured; choose from now, soon, later"
+        result = self.runner.invoke(cli, ["add", "T", "-d", "x", "-p", "high"])
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn(message, result.output)
+        self.assertEqual(list((self.root / "chitty").rglob("TASK-*.md")), [])
+        result = self.runner.invoke(cli, ["add", "T", "-d", "x", "-p", "now"])
+        self.assertEqual(result.exit_code, 0, result.output)
+        path = next((self.root / "chitty").rglob("TASK-*.md"))
+        self.assertIn("priority: now", path.read_text())
+        result = self.runner.invoke(cli, ["edit", "TASK-1", "-p", "later"])
+        self.assertEqual(result.exit_code, 0, result.output)
+        before = path.read_bytes()
+        result = self.runner.invoke(cli, ["edit", "TASK-1", "-p", "high"])
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn(message, result.output)
+        self.assertEqual(path.read_bytes(), before)
+        result = self.runner.invoke(cli, ["edit", "TASK-1", "-p", ""])
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertNotIn("priority:", path.read_text())
+        result = self.runner.invoke(cli, ["add", "T", "-d", "x", "-p", ""])
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn("priority '' is not configured", result.output)
+
+    def test_check_unconfigured_priority(self) -> None:
+        tasks = self.root / "chitty" / "tasks"
+        tasks.mkdir(parents=True)
+        path = tasks / "TASK-1--ticket.md"
+        path.write_text(
+            "---\ntitle: Ticket\nstatus: todo\npriority: high\ncreated: 2026-01-01\n---\n"
+            "\n## Description\n\nTest.\n"
+        )
+        result = self.runner.invoke(cli, ["check"])
+        self.assertNotEqual(result.exit_code, 0)
+        self.assertIn(f"{path}: priority 'high' is not configured", result.output)
+
+    def test_mcp_configured_priorities(self) -> None:
+        from mcp.server.mcpserver.exceptions import ToolError
+
+        from tests.test_mcp import call
+
+        self.enterContext(patch.dict(os.environ, {"CHITTY_ACTOR": "test-agent"}))
+        task = call("add", title="T", description="x", priority="now")
+        self.assertEqual(task["priority"], "now")
+        with self.assertRaisesRegex(
+            ToolError, "priority 'high' is not configured; choose from now, soon, later"
+        ):
+            call("add", title="T", description="x", priority="high")
+
     def test_empty_priority_is_rejected(self) -> None:
         with self.assertRaisesRegex(
             TaskError, "priority must not be empty; remove the key instead"
