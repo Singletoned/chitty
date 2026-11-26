@@ -1,6 +1,6 @@
 ---
 title: Read stdin for a bare `-` in text options that have a `-file` twin
-status: doing
+status: review
 labels:
   - bug
   - needs-minor
@@ -51,3 +51,4 @@ Bare dashes in supported text options now read stdin, with repeated notes counte
 - 2026-11-26T00:15:38Z zesty-fawn-toad: wrote the plan
 - 2026-11-26T00:17:09Z zesty-fawn-toad: changed notes
 - 2026-11-26T00:24:08Z zesty-fawn-toad: changed summary; ticked acceptance criteria
+- 2026-11-26T00:26:28Z zesty-fawn-toad doing → review
