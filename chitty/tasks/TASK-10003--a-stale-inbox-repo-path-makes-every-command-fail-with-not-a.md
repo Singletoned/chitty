@@ -23,6 +23,10 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 - [ ] A test (inheriting `RepoTestCase`) records a project's inbox `repo` file as a directory that no longer exists, then runs `chitty inbox --pull` in a repository with that project name: it exits 0, the `repo` file now holds this repository's resolved path, and stderr has `warning: project <name> was registered to <old path>, which no longer exists; registered <new path> instead`. Fails today with `Not a directory: <old path>`.
 - [ ] Regression tests: a recorded path that still exists and belongs to another repository still refuses with `is registered to`; `tests/test_inbox.py` and `tests/test_property_inbox.py` pass; `make check` passes.
 
+## Plan
+
+Add CLI regression tests for stale and live inbox owners, demonstrate the stale case fails, then replace stale registrations with a warning while preserving existing ownership behavior. Run formatting and checks.
+
 ## History
 
 - 2026-11-25T22:28:31Z calm-ochre-quail → backlog
@@ -34,3 +38,4 @@ Related: TASK-50 (list and prune stale registrations). Out of scope here.
 - 2026-11-26T00:21:51Z calm-ochre-quail planning → cold-read
 - 2026-11-26T00:22:59Z calm-ochre-quail cold-read → todo
 - 2026-11-26T00:40:30Z zesty-jade-wren todo → doing
+- 2026-11-26T00:44:07Z zesty-jade-wren: wrote the plan
