@@ -41,6 +41,8 @@ Add focused refusal tests and confirm they fail; wrap review gate errors with th
 
 Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/store.py` by accident; this worktree is clean at the committed version, so start from it. No ticket defect was found.
 
+Before the fix, all seven focused refusal tests failed because the unsaved-edit sentence was absent.
+
 ## History
 
 - 2026-11-24T22:21:37Z zesty-coral-newt → backlog
@@ -68,3 +70,4 @@ Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/stor
 - 2026-11-26T11:37:02Z brisk-bronze-adder planning → todo
 - 2026-11-26T11:41:15Z plucky-bronze-quail todo → doing
 - 2026-11-26T11:45:49Z plucky-bronze-quail: wrote the plan
+- 2026-11-26T11:46:52Z plucky-bronze-quail: changed notes
