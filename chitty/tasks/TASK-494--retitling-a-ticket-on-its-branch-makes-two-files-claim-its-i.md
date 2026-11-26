@@ -12,7 +12,10 @@ Seen 2026-11-20: `chitty edit TASK-276 --title ...` in worktree `.worktrees/task
 
 Suggestion origin: chitty
 
+Triage 2026-11-26: not covered by TASK-602 or TASK-10040.
+
 ## History
 
 - 2026-11-21T07:57:57Z nimble-umber-gannet → backlog
 - 2026-11-21T07:57:58Z nimble-umber-gannet: changed notes
+- 2026-11-26T18:02:43Z brisk-bronze-adder: changed notes
