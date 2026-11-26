@@ -30,6 +30,10 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 - [ ] The `chitty add`, `chitty edit` (set, unset, refusal), `chitty show`, `--json` and `chitty check` cases in `tests/test_difficulty.py` pass and fail before the change
 - [ ] The `Edit.apply` property passes; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
 
+## Plan
+
+Add failing CLI and property coverage first, then implement the validated frontmatter field, edit and CLI plumbing, and document it. Format, run checks, and hand off for review.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -61,3 +65,4 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 - 2026-11-26T20:09:28Z zesty-ginger-newt planning → todo
 - 2026-11-26T20:09:55Z zesty-ginger-newt: changed title
 - 2026-11-26T23:47:08Z golden-hazel-vole todo → doing
+- 2026-11-26T23:50:18Z golden-hazel-vole: wrote the plan
