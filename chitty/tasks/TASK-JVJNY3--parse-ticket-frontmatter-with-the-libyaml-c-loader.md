@@ -26,6 +26,10 @@ Out of scope: the rest of `parse` (pydantic validation, sections, history).
 
 Add a loader-selection test and a rendered-ticket property comparing against a string-only SafeLoader, verify selection fails before the change, then select CSafeLoader when available and run formatting and checks.
 
+## Notes
+
+Decided: restrict generated values to printable nonempty single-line text -> exercise renderable inputs, because existing rendering rejects DEL and NEL; reported separately. Loader-selection test fails before the change as expected.
+
 ## History
 
 - 2026-11-26T21:56:05Z youthful-lilac-heron → cold-read
@@ -33,3 +37,4 @@ Add a loader-selection test and a rendered-ticket property comparing against a s
 - 2026-11-26T22:01:16Z youthful-lilac-heron cold-read → todo
 - 2026-11-26T23:15:17Z nimble-violet-crane todo → doing
 - 2026-11-26T23:19:02Z nimble-violet-crane: wrote the plan
+- 2026-11-26T23:19:47Z nimble-violet-crane: changed notes
