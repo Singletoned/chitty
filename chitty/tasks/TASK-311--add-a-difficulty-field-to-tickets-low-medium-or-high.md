@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: todo
+status: doing
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -60,3 +60,4 @@ Out of scope: MCP and `tests/ticket_strategies.py` (next ticket), `TASK-312`, `T
 - 2026-11-26T20:09:23Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T20:09:28Z zesty-ginger-newt planning → todo
 - 2026-11-26T20:09:55Z zesty-ginger-newt: changed title
+- 2026-11-26T23:47:08Z golden-hazel-vole todo → doing
