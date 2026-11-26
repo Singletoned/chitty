@@ -1,6 +1,6 @@
 ---
 title: Move `planning` tickets to `to-plan` when repository setup upgrades
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -53,3 +53,4 @@ Setup upgrades migrate active planning tickets from shared-planning versions to 
 - 2026-11-26T02:38:38Z rosy-dusky-vole: wrote the plan
 - 2026-11-26T02:39:15Z rosy-dusky-vole: changed notes
 - 2026-11-26T02:42:21Z rosy-dusky-vole: changed summary
+- 2026-11-26T02:44:44Z rosy-dusky-vole doing → review
