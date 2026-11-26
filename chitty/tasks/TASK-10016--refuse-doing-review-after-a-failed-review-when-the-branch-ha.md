@@ -1,6 +1,6 @@
 ---
 title: Refuse `doing -> review` after a failed review when the branch has no new code commit
-status: todo
+status: doing
 priority: medium
 created: 2026-11-25
 moved_from: TASK-QD8H6G
@@ -34,3 +34,4 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 - 2026-11-26T00:23:27Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T00:23:27Z calm-ochre-quail cold-read → planning
 - 2026-11-26T00:23:34Z calm-ochre-quail planning → todo
+- 2026-11-26T01:25:59Z rosy-jade-marten todo → doing
