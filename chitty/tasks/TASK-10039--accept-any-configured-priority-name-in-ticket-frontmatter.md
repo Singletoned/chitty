@@ -1,6 +1,6 @@
 ---
 title: Accept any configured priority name in ticket frontmatter
-status: planning
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -18,14 +18,14 @@ Code:
 - `Frontmatter.priority` becomes `str | None` and refuses `""` with `priority must not be empty; remove the key instead`. `PRIORITIES` stays, as the built-in names.
 - `chitty list` (`src/chitty/cli.py`, `_two_columns(PRIORITY_GLYPHS[fm.priority])`) becomes `PRIORITY_GLYPHS.get(fm.priority, "")`. This has to land with the model change, or `chitty list` raises `KeyError` on a custom name.
 
-Docs: the `priority` row in `docs/plan/task-file.md` (today `low|medium|high`) says any configured name.
+Docs: the `priority` row in `docs/plan/task-file.md` (today `low|medium|high`) says any non-empty name, with configured names checked on write and by `chitty check` (TASK-10038). The MCP `Priority` type (`src/chitty/mcp.py`) is also TASK-10038; leave it.
 
 Tests, added to `tests/test_priorities_config.py`, with `RepoTestCase` and a custom config: `CONFIG` from `tests/support.py` with `priorities = ["now", "soon", "", "later"]` inserted before its first `[` table line.
 
-- A hand-written ticket with `priority: ""` makes `chitty.model.parse` raise with the message above.
+- A hand-written ticket with `priority: ""` makes `chitty.model.parse` raise `TaskError` whose message contains the text above (pydantic prefixes it).
 - Hand-written tickets with `later`, no priority, `soon`, `now` and `high` list (`chitty list --json`) as now, soon, none, later, high. In `chitty list`, the `now` line contains none of `⏫`, `➖`, `⏬`, and the `high` line shows `⏫`. `chitty next --mode work` picks a `now` ticket over an older `soon` one.
 
-Both fail on `main` with TASK-10037 landed, because `now` does not parse.
+Record the before-change failures once TASK-632 and TASK-10037 are on `main`: `now` does not parse there. TASK-10037 must land first, because it removes the dict lookups that would raise `KeyError` on a custom name.
 
 Out of scope: write and check validation (TASK-10038), and how custom names display (TASK-633).
 
@@ -39,3 +39,5 @@ Out of scope: write and check validation (TASK-10038), and how custom names disp
 - 2026-11-26T11:45:33Z brisk-bronze-adder → planning
 - 2026-11-26T11:46:52Z brisk-bronze-adder planning → cold-read
 - 2026-11-26T11:47:55Z brisk-bronze-adder cold-read → planning
+- 2026-11-26T11:48:00Z brisk-bronze-adder: changed description
+- 2026-11-26T11:48:00Z brisk-bronze-adder planning → todo
