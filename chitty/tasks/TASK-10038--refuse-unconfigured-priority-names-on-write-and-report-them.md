@@ -1,17 +1,18 @@
 ---
 title: Refuse unconfigured priority names on write and report them in `chitty check`
-status: planning
+status: todo
 labels:
   - needs-minor
 depends_on:
   - TASK-10037
+  - TASK-10039
 parent: TASK-607
 created: 2026-11-26
 ---
 
 ## Description
 
-Part of TASK-607. TASK-632 adds the `priorities` setting (`RepoConfig.priorities` in `src/chitty/config.py`, default `["high", "medium", "", "low"]`, with `""` placing tickets that have no priority). TASK-10037 lets `Frontmatter.priority` hold any non-empty name. This ticket makes writes accept only configured names, and makes `chitty check` report the others.
+Part of TASK-607. TASK-632 adds the `priorities` setting (`RepoConfig.priorities` in `src/chitty/config.py`, default `["high", "medium", "", "low"]`, with `""` placing tickets that have no priority). TASK-10039 lets `Frontmatter.priority` hold any non-empty name. This ticket makes writes accept only configured names, and makes `chitty check` report the others.
 
 Writes (`src/chitty/store.py`, so the CLI and MCP share them): `Repo.add` and `Repo.edit` refuse a priority that is not a non-empty name in `self.config.priorities`. They raise `ChittyError` `priority '<value>' is not configured; choose from <the names, comma-separated, without "">` and write nothing. On `edit`, `""` still unsets.
 
@@ -27,7 +28,7 @@ Tests, in `tests/test_priorities_config.py`, with the custom config it already u
 - `chitty check` reports a hand-written `priority: high` ticket with the message above.
 - The MCP add tool accepts `priority="now"` and fails for `"high"` with the configured-name message, asserted as `tests/test_mcp.py` asserts other tool errors.
 
-Each fails on `main` with TASK-10037 landed (there, `-p` choices are the built-in names, and nothing checks the configuration).
+Record the before-change failures only once TASK-632, TASK-10037 and TASK-10039 are on `main`. Then the `-p` choices are still the built-in names, and nothing checks the configuration. `add -p ""` and `edit -p` with a name are checked by the store; `add -p ""` giving the not-configured message is intended. The MCP change has no existing test to update. `check()` already has `repo.config`.
 
 Out of scope: `src/chitty/import_backlog.py`, which passes priorities through unchanged; `chitty check` then reports them.
 
@@ -41,3 +42,5 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 - 2026-11-26T11:40:59Z brisk-bronze-adder → planning
 - 2026-11-26T11:43:08Z brisk-bronze-adder planning → cold-read
 - 2026-11-26T11:46:06Z brisk-bronze-adder cold-read → planning
+- 2026-11-26T11:46:15Z brisk-bronze-adder: changed dependencies, description
+- 2026-11-26T11:46:15Z brisk-bronze-adder planning → todo
