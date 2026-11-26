@@ -1,6 +1,6 @@
 ---
 title: Tell agents that a mistake made with Chitty is a Chitty defect to suggest
-status: backlog
+status: to-plan
 created: 2026-11-26
 provisional: true
 ---
@@ -20,7 +20,11 @@ Suggest: the general guide (`chitty guide`, shown in every repository) says, in 
 
 Suggestion origin: chitty
 
+Decided (the person, 2026-11-26): one line in the general guide only; no pointer appended to errors for now.
+
 ## History
 
 - 2026-11-26T10:54:50Z calm-ochre-quail → backlog
 - 2026-11-26T10:54:53Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:19Z calm-ochre-quail: changed notes
+- 2026-11-26T11:11:19Z calm-ochre-quail backlog → to-plan
