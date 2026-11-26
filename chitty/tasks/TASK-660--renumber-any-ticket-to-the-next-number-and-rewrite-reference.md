@@ -35,6 +35,10 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 
 Extend the existing provisional renumber planner and execution to accept explicit candidates, route unique IDs through it, and retain duplicate-ID behavior. Add CLI and preflight regression tests, verify they fail before the fix, then run formatting and checks.
 
+## Notes
+
+Before the fix, the unique numbered and provisional CLI cases fail with the no-other-file error; the feature-branch case fails because it reports that error instead of ProvisionalOffMain.
+
 ## History
 
 - 2026-11-24T22:21:23Z zesty-coral-newt → backlog
@@ -49,3 +53,4 @@ Extend the existing provisional renumber planner and execution to accept explici
 - 2026-11-26T11:22:30Z calm-ochre-quail cold-read → todo
 - 2026-11-26T11:55:31Z zesty-zinc-puffin todo → doing
 - 2026-11-26T11:59:52Z zesty-zinc-puffin: wrote the plan
+- 2026-11-26T12:00:46Z zesty-zinc-puffin: changed notes
