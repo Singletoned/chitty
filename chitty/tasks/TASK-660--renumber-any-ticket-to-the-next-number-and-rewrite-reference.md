@@ -1,6 +1,6 @@
 ---
 title: Renumber any ticket to the next number and rewrite references to it
-status: review
+status: done
 labels:
   - bug
 depends_on:
@@ -39,6 +39,10 @@ Extend the existing provisional renumber planner and execution to accept explici
 
 Before the fix, the unique numbered and provisional CLI cases fail with the no-other-file error; the feature-branch case fails because it reports that error instead of ProvisionalOffMain.
 
+Reviewed: Complete diff inspected; checks pass.
+1: pass - make check passes; in a merge-base worktree, PYTHONPATH=<worktree>/src:<worktree> pytest tests/test_renumber.py::TestRenumberUnique failed both numbered and provisional subtests with the old no-other-file error, and the random-context test failed on the old error.
+2: pass - make check passes (1247 tests); the merge-base pytest test_unique_numbered_ticket_on_feature_branch failed because the old no-other-file error replaced the required off-main message. Regression tests pass in make check.
+
 ## Summary
 
 Unique sequential-context tickets now renumber through the existing reference-rewriting planner; shared IDs retain their existing behavior. Verified failing tests before the fix, targeted regression tests, and make check (1243 passed).
@@ -60,3 +64,5 @@ Unique sequential-context tickets now renumber through the existing reference-re
 - 2026-11-26T12:00:46Z zesty-zinc-puffin: changed notes
 - 2026-11-26T12:08:41Z zesty-zinc-puffin: changed summary; ticked acceptance criteria
 - 2026-11-26T12:11:02Z zesty-zinc-puffin doing → review
+- 2026-11-26T12:17:42Z mellow-silver-crane: changed notes
+- 2026-11-26T12:17:42Z mellow-silver-crane review → done
