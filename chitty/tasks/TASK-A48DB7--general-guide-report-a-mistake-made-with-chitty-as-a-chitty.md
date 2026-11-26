@@ -1,6 +1,6 @@
 ---
 title: "General guide: report a mistake made with Chitty as a Chitty defect"
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -30,6 +30,12 @@ Adding a `chitty suggest` pointer to refusal errors.
 
 Add one concise line to `src/chitty/guide.md` after the `chitty --help` line instructing agents to treat any Chitty mistake as a Chitty defect and report it without asking via `chitty suggest chitty`. Update `tests/fixtures/guide-runner-expected.md` to match while leaving `AGENTS.md` untouched. Verify with `make check` via `chitty edit -s review`.
 
+## Notes
+
+Reviewed: diff of `main...task-a48db7` adds one line after "Run `chitty --help` for the command reference." in `src/chitty/guide.md` and the same line in `tests/fixtures/guide-runner-expected.md`; `AGENTS.md` and the managed block are untouched.
+1: pass - the line treats any mistake made with Chitty as a Chitty defect, says to report it without asking, and gives the `chitty suggest chitty` command (34 words, shorter than the draft).
+Limit: `chitty suggest chitty` works only where the Chitty repo has registered its inbox; with an empty `XDG_DATA_HOME` it exits 1 with "unknown project 'chitty'; use --create". The person accepted this on 2026-11-26, because Chitty's users are currently on that machine.
+
 ## Summary
 
 Added one concise line (34 words, down from 39 in the ticket draft) to `src/chitty/guide.md` after `Run `chitty --help` for the command reference.`:
@@ -53,3 +59,5 @@ Branch `task-a48db7` (worktree `.worktrees/task-a48db7`). `make check` passed vi
 - 2026-11-26T18:17:42Z calm-russet-badger todo → doing
 - 2026-11-26T18:34:17Z calm-russet-badger: changed owner, summary
 - 2026-11-26T18:34:17Z calm-russet-badger doing → review
+- 2026-11-26T20:07:51Z intrepid-russet-falcon: changed notes
+- 2026-11-26T20:07:51Z intrepid-russet-falcon review → done
