@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: doing
+status: review
 created: 2026-11-24
 ---
 
@@ -75,3 +75,4 @@ Init warns on nonblank agent commands without the prompt placeholder, without ch
 - 2026-11-26T13:32:14Z tidy-umber-newt: wrote the plan
 - 2026-11-26T13:32:54Z tidy-umber-newt: changed notes
 - 2026-11-26T13:36:36Z tidy-umber-newt: changed summary; ticked acceptance criteria
+- 2026-11-26T13:40:26Z tidy-umber-newt doing → review
