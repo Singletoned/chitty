@@ -30,10 +30,12 @@ guide or prompt text says what it cuts to make room, or why they should grow.
   - Rewrite descriptions cleanly so the ticket holds current truth only, and
     clear resolved notes with `--set-notes ''` before `todo` (Git keeps the
     history).
-- Keep a new ticket in `backlog` until you work on it. Move it to `-s planning`
-  while writing, `-s cold-read` for its cold read, back to `-s planning` to
-  settle findings, then `-s todo`. Change status in the same edit as the text
-  it depends on. Use `parent` to group flat IDs.
+- Take `to-plan` tickets before `backlog`. Claim one with `-s planning` in the
+  main checkout, then plan it on a `plan/` branch, changing its text only when
+  you have finished. Use `-s cold-read` for its cold read, `-s planning` again
+  to settle findings, then `-s todo`, and land the branch. Leave a ticket
+  another planner holds alone. Change status in the same edit as the text it
+  depends on. Use `parent` to group flat IDs.
 - Cold-read every ticket. If a change is too small to justify a ticket and cold
   read, do it directly (e.g. on a `hotfix/` branch) rather than ticketing it.
 - Plan one ticket at a time. Check every claim about code, commands, tests, or
@@ -62,8 +64,8 @@ guide or prompt text says what it cuts to make room, or why they should grow.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
   session; make that a separate `-c human` ticket that depends on this one.
 - Check tickets mentioned by `chitty edit -s todo`. If a ticket relies on a
-  contract an unfinished ticket is building, keep it in `planning` with a note
-  naming that ticket and re-check once it lands (`depends_on` alone is enough
-  for plain ordering).
+  contract an unfinished ticket is building, return it to `to-plan` with a
+  note naming that ticket and re-check once it lands (`depends_on` alone is
+  enough for plain ordering).
 - Skip cold-reading a ticket given to you to work on or review. Run
   `chitty archive` with no ID before preparing a merge request.
