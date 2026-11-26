@@ -38,6 +38,10 @@ Add failing tests for the new status, rejected direct planning returns and mixed
 
 Before implementation, the new direct-return property, mixed-history escalation and to-plan interface tests each failed as expected (pytest: 3 failed).
 
+## Summary
+
+Added to-plan as the default-listed waiting status, routed returns and escalation through it while counting historical planning returns, and updated warnings, retro, labels and interface tests. The three new tests failed before implementation; make check passes (1229 tests).
+
 ## History
 
 - 2026-11-25T23:05:55Z golden-coral-stoat → backlog
@@ -52,3 +56,4 @@ Before implementation, the new direct-return property, mixed-history escalation 
 - 2026-11-26T01:53:54Z daring-ginger-ibis todo → doing
 - 2026-11-26T01:57:55Z daring-ginger-ibis: wrote the plan
 - 2026-11-26T01:58:30Z daring-ginger-ibis: changed notes
+- 2026-11-26T02:08:17Z daring-ginger-ibis: changed summary
