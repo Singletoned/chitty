@@ -30,6 +30,10 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - [ ] The `tests/test_statuses_planning.py` cases for a `to-plan` ticket pass, and fail before the change
 - [ ] `make check` passes
 
+## Plan
+
+Add failing tests for the new status, rejected direct planning returns and mixed historical escalation; then update status definitions, return validation and reporting, warnings, retro and specified documentation. Repoint existing return tests, run formatting and checks, and hand off for review.
+
 ## History
 
 - 2026-11-25T23:05:55Z golden-coral-stoat → backlog
@@ -42,3 +46,4 @@ Tests: re-point the existing return tests (`tests/test_return_to_planning.py`, `
 - 2026-11-25T23:12:19Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-B7CQGM
 - 2026-11-26T01:53:54Z daring-ginger-ibis todo → doing
+- 2026-11-26T01:57:55Z daring-ginger-ibis: wrote the plan
