@@ -39,6 +39,10 @@ Warnings in `chitty run` or `chitty check`; detecting other broken commands; the
 - [ ] A new property test in `tests/test_agent_command_warnings.py`, as the Tests section describes, shows `agent_command_warnings` returns exactly one line per non-blank command without `{prompt}`, each starting with its setting name and ` has no {prompt}`, `agent_command` first and named entries in sorted order. It fails against a stub that returns `[]`.
 - [ ] A new test in `TestInit` in `tests/test_cli.py` shows `chitty init` exits 0 with `warning: agent_command has no {prompt}` on stderr for the fixture's `pi --chitty-{mode} {id}` (this assertion fails today), and without `has no {prompt}` after the command is changed to `pi -p {prompt}`. `make check` passes.
 
+## Plan
+
+Add a pure, sorted warning builder in config and emit its results after init; first add property and CLI tests and demonstrate failure, then implement, format, and run make check.
+
 ## Notes
 
 Requeued 2026-11-26: the last worker returned it over tool failures, not a ticket defect. Ideas from TASK-659 not in scope here: runner error detail for agents that exit within seconds (compare TASK-466, TASK-445), and the repeated re-run `chitty init` warning after an upgrade.
@@ -62,3 +66,4 @@ Requeued 2026-11-26: the last worker returned it over tool failures, not a ticke
 - 2026-11-26T11:37:29Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
 - 2026-11-26T11:37:29Z brisk-bronze-adder planning → todo
 - 2026-11-26T13:27:58Z tidy-umber-newt todo → doing
+- 2026-11-26T13:32:14Z tidy-umber-newt: wrote the plan
