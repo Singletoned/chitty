@@ -100,9 +100,10 @@ class TestRunClaimsOnBranch(CliTestCase):
         self.git("add", "chitty.toml")
         self.git("commit", "--quiet", "-m", f"fail {phase}")
         main = self.git("rev-parse", "main").strip()
-        self.run_cli("run")
+        self.run_cli("run", exit_code=1 if phase == "check" else 0)
         self.assertEqual(self.git("rev-parse", "main").strip(), main)
-        self.assertIn("status: error", self.ticket(self.root / ".worktrees/task-1").read_text())
+        status = "todo" if phase == "check" else "error"
+        self.assertIn(f"status: {status}", self.ticket(self.root / ".worktrees/task-1").read_text())
         self.assertFalse((self.logs / "agent").exists())
 
     def test_setup_failure_leaves_main_unchanged(self):

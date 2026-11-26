@@ -71,6 +71,10 @@ class LandingCheckFailed(ChittyError):
     """The landing check ran and exited unsuccessfully."""
 
 
+class MainCheckFailed(ChittyError):
+    """The check failed before a new ticket had any work."""
+
+
 # Used by the work runner when its rebase integration lands.
 def _rebase_work_worktree(
     worktree: Path, task_id: TaskId, main_branch: str, *, stop_on_conflict: bool
@@ -1531,7 +1535,16 @@ def _run_check(
         and selected_status == "todo"
         and not _branch_has_work(branch_repo.root, branch_repo.config.main_branch)
     ):
-        detail += "; the branch has no work yet, so `main` fails this check"
+        branch_repo.edit(
+            action.id,
+            Edit(
+                status="todo",
+                note=f"Not started: `main` fails the check: {detail}",
+                skip_verdicts=True,
+                skip_current_version=True,
+            ),
+        )
+        raise MainCheckFailed(f"main fails the check ({detail}); fix `main`, then restart `chitty run`")
     return _handle_check_failure(
         branch_repo, action, detail, exited=True, selected_status=selected_status
     )

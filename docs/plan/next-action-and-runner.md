@@ -146,10 +146,10 @@ rebase like any other file; conflicts go to an agent, not a ticket merge.
   note pointing to the full output in `.chitty/check.log`, leaves the status
   unchanged, and starts the agent; an `error` ticket's agent is the repair agent.
   A `todo` ticket whose branch changes files outside `chitty/` is treated the
-  same way. On a `todo` ticket without work outside `chitty/`, or when the
-  `check` command is not found, the ticket moves to `error` with a note (for a
-  failed check, pointing to `.chitty/check.log`; for a missing command, naming
-  it) and no agent starts.
+  same way. If a `todo` ticket has no work outside `chitty/` and no uncommitted
+  changes, a non-zero check restores it to `todo` with a note pointing to
+  `.chitty/check.log`, reports that `main` fails, and stops the run. A missing
+  check command moves the ticket to `error` with a note naming it; no agent starts.
 - Entering `review`, or `review → done`, needs a clean worktree; `blocked` does
   not. `chitty check` reports dirty files on a branch in review.
 - Reviewers record a verdict only; they never merge or remove branches or

@@ -1325,7 +1325,7 @@ class TestNext(CliTestCase):
             "error",
         )
 
-    def test_run_check_failure_on_todo_ticket_records_error_on_branch(self):
+    def test_run_check_failure_on_todo_ticket_stops_run(self):
         config = self.root / "chitty.toml"
         checker = self.root / "check.py"
         checker.write_text(
@@ -1352,10 +1352,9 @@ class TestNext(CliTestCase):
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
         main_before = self.git("rev-parse", "main").strip()
-        result = self.run_cli("run")
+        result = self.run_cli("run", exit_code=1)
 
-        self.assertIn("todo → error", result.stdout)
-        self.assertEqual(result.stdout.count("TASK-1"), 1)
+        self.assertEqual(result.stderr.count("main fails the check"), 1)
         checked = (self.root / ".worktrees/task-1/check-args").read_text()
         self.assertIn("['quoted argument']", checked)
         self.assertIn("status: doing", checked)
@@ -1363,13 +1362,10 @@ class TestNext(CliTestCase):
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
-        self.assertEqual(task.frontmatter.status, "error")
-        self.assertEqual(str(next_action(repo, modes=("errors",)).id), "TASK-1")
+        self.assertEqual(task.frontmatter.status, "todo")
+        self.assertEqual(str(next_action(repo).id), "TASK-1")
         detail = "check exited with status 1; output in `.chitty/check.log`"
-        self.assertNotIn("check line", task.section("Notes") or "")
-        self.assertIn(detail, task.section("Notes") or "")
-        explanation = "the branch has no work yet, so `main` fails this check"
-        self.assertIn(explanation, task.section("Notes") or "")
+        self.assertIn(detail, result.stderr)
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
         relative_ticket_path = str(ticket_path.relative_to(worktree))
@@ -1381,10 +1377,10 @@ class TestNext(CliTestCase):
             "status: doing", self.git("show", f"{branch_commits[0]}:{relative_ticket_path}")
         )
         branch_ticket = self.git("show", f"task-1:{relative_ticket_path}")
-        self.assertIn("status: error", branch_ticket)
-        self.assertIn("Runner error (check)", branch_ticket)
+        self.assertIn("status: todo", branch_ticket)
+        self.assertNotIn("Runner error (check)", branch_ticket)
         self.assertIn(detail, branch_ticket)
-        self.assertIn(explanation, branch_ticket)
+        self.assertIn("Not started: `main` fails the check", branch_ticket)
         self.assertNotIn("check line", branch_ticket)
         log_path = worktree / ".chitty/check.log"
         log = log_path.read_text()
@@ -1447,12 +1443,11 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
-        result = self.run_cli("run")
+        self.run_cli("run", exit_code=1)
 
-        self.assertIn("todo → error", result.stdout)
-        repo = Repo.open(self.root)
+        repo = Repo.open(self.root / ".worktrees/task-1")
         task = repo.find(repo.resolve("TASK-1")).task
-        self.assertEqual(task.frontmatter.status, "error")
+        self.assertEqual(task.frontmatter.status, "todo")
         notes = task.section("Notes") or ""
         self.assertNotIn("FAIL: test_something", notes)
         self.assertNotIn("# not a heading", notes)
@@ -1510,9 +1505,12 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
         self.assertIn("Check failed before this session", seen.read_text())
 
-    def test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors(self):
+    def test_run_check_failure_on_todo_ticket_with_only_ticket_commits_stops_run(self):
         self.write_failing_checker()
         self.commit_ticket("Todo", "todo")
+        self.run_cli("init")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "initialize")
         self.git("switch", "-c", "task-1")
         ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
         ticket.write_text(
@@ -1523,10 +1521,21 @@ class TestNext(CliTestCase):
         self.git("switch", "main")
         marker = self.tmp / "agent-started"
         self.install_fake_pi(f"from pathlib import Path\nPath({str(marker)!r}).write_text('yes')\n")
-        result = self.run_cli("run")
-        self.assertIn("todo → error", result.stdout)
-        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
+        main_before = self.git("rev-parse", "main").strip()
+        result = self.run_cli("run", exit_code=1)
+        self.assertEqual(result.stderr.count("main fails the check"), 1, result.stderr)
+        detail = "check exited with status 1; output in `.chitty/check.log`"
+        self.assertIn(detail, result.stderr)
         self.assertFalse(marker.exists())
+        self.assertEqual(self.git("rev-parse", "main").strip(), main_before)
+        repo = Repo.open(self.root)
+        self.assertEqual(repo.find(repo.resolve("TASK-1")).task.frontmatter.status, "todo")
+        self.assertEqual(str(next_action(repo).id), "TASK-1")
+        branch_ticket = self.git("show", f"task-1:{ticket.relative_to(self.root)}")
+        self.assertIn("status: todo", branch_ticket)
+        self.assertIn("Not started: `main` fails the check", branch_ticket)
+        self.assertIn(detail, branch_ticket)
+        self.assertNotIn("Runner error (check)", branch_ticket)
 
     def test_passing_check_writes_the_log_and_ignores_it_once(self):
         self.check_project("true")
