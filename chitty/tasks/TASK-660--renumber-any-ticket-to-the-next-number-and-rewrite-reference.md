@@ -1,6 +1,6 @@
 ---
 title: Renumber any ticket to the next number and rewrite references to it
-status: cold-read
+status: todo
 labels:
   - bug
 depends_on:
@@ -16,9 +16,11 @@ In echonomicon on 2026-11-24, after a plan branch landed, `chitty renumber chitt
 
 ### Change
 
-`Repo.renumber(path)` (`src/chitty/store.py`) keeps today's behaviour when other files share the ticket's ID. When no other file does, it renumbers that one ticket the way `renumber_provisional` renumbers provisional ones: on `main` (or outside Git) only, the same `ProvisionalOffMain` refusal otherwise; the next number from `plan_renumbering`; references to the old ID rewritten in every writable ticket; `moved_from` recorded and `provisional` cleared; one commit. Do it by letting `_plan_provisional_renumbering` take the candidate IDs (today: every provisional ticket in a sequential context; here: the one ticket), and by letting `plan_renumbering` accept numbered candidates as well as provisional ones (drop its "is not provisional" refusal; still refuse duplicates). A random-ID context refuses with a clear error, since its numbers are not sequential.
+`Repo.renumber(path)` (`src/chitty/store.py`) keeps today's behaviour when other files share the ticket's ID. When no other file does, it renumbers that one ticket by reusing the body of `renumber_provisional` with the ticket as the only candidate: references to the old ID rewritten in every writable ticket, `moved_from` recorded, `provisional` cleared, one commit with the message `chitty: renumber <new ID> <title>`. It returns that change with `()` as the references, since none are left to check.
 
-Update the `renumber` help in `src/chitty/cli.py` to say a ticket with a unique ID is renumbered with its references rewritten.
+- `_plan_provisional_renumbering` takes a required `candidates` argument: `None` for today's selection (every provisional ticket in a sequential context), or a tuple of IDs. Update its existing callers in the tests to pass `None`. It refuses with ``ProvisionalOffMain`` off `main` before anything else, as today, and refuses with a clear error when a given candidate is in a random-ID context.
+- `plan_renumbering` (`src/chitty/renumbering.py`) accepts numbered candidates as well as provisional ones: drop its "is not provisional" refusal and the matching assertion in `tests/test_property_renumbering.py`, keeping the duplicate refusal.
+- Update the `renumber` help in `src/chitty/cli.py` to say a ticket with a unique ID is renumbered and its references rewritten.
 
 ### Out of scope
 
@@ -26,8 +28,8 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_renumber.py` (no Git, so numbers are sequential as on `main`), a new test adds a ticket `Target` and a ticket `Uses` with `--depends-on` naming `Target` and a Description mentioning `Target`'s ID. `chitty renumber <Target path>` gives `Target` the next number, records `moved_from` with the old ID, and rewrites the old ID to the new one in `Uses`'s `depends_on` and Description; `chitty check` reports no new problems for those two files. The same works for a ticket made provisional (`provisional: true` written into its file directly), and clears `provisional`. Replace the `TASK-3 is used by no other file` case in `test_refuses_without_changing_anything`. Fails without the change.
-- [ ] In a Git repository on a branch other than `main`, `chitty renumber <path>` of a ticket whose ID is used by no other file exits 1 with the `ProvisionalOffMain` message and changes nothing. Regression tests: `test_renumbers_only_that_file_and_lists_references` and the other renumber and provisional-renumbering tests pass. `make check` passes.
+- [ ] In a new `CliTestCase` subclass in `tests/test_renumber.py` (no Git, so numbers are sequential as on `main`), a test adds a ticket `Target` and a ticket `Uses` with `--depends-on` naming `Target` and a Description mentioning `Target`'s ID. `chitty renumber <Target path>` gives `Target` the next number, records `moved_from` with the old ID, and rewrites the old ID to the new one in `Uses`'s `depends_on` and Description; `chitty check` then exits 0. The same works for a ticket made provisional (`provisional: true` written into its file directly), and clears `provisional`. In `TestRenumber`, drop the `TASK-3 is used by no other file` case from `test_refuses_without_changing_anything` and update `test_help` for the new help text. Fails without the change.
+- [ ] In `tests/test_provisional_preflight_errors.py`, using the Git fixture helpers of `TestProvisionalPreflight` (`init_git`, `file`, `commit`), a test on a feature branch runs `chitty renumber <path>` for a numbered ticket with a unique ID: it exits 1 with the `ProvisionalOffMain` message and the files are unchanged. Regression tests: `test_renumbers_only_that_file_and_lists_references`, and the provisional-renumbering tests after passing the candidates argument, pass. `make check` passes.
 
 ## History
 
@@ -39,3 +41,5 @@ Accepting an ID instead of a path; choosing the new number; renumbering on landi
 - 2026-11-26T11:20:40Z calm-ochre-quail: replaced notes; changed dependencies, description, acceptance criteria
 - 2026-11-26T11:20:40Z calm-ochre-quail to-plan → cold-read
 - 2026-11-26T11:20:52Z calm-ochre-quail: changed acceptance criteria
+- 2026-11-26T11:22:30Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-26T11:22:30Z calm-ochre-quail cold-read → todo
