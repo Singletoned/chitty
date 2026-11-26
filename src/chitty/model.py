@@ -13,7 +13,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 from itertools import combinations
-from typing import Any, Final, Literal
+from typing import Any, Final, Literal, cast
 
 import yaml
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
@@ -156,7 +156,12 @@ def section_name(text: str) -> SectionName:
     raise TaskError(f"unknown section: {text}")
 
 
-class _StringLoader(yaml.SafeLoader):
+_BaseStringLoader = cast(
+    type[yaml.SafeLoader], yaml.CSafeLoader if yaml.__with_libyaml__ else yaml.SafeLoader
+)
+
+
+class _StringLoader(_BaseStringLoader):
     """Resolves every plain scalar as a string: `no` is "no", not False."""
 
 

@@ -2,7 +2,24 @@ import textwrap
 import unittest
 from datetime import UTC, date, datetime
 
+import yaml
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
+from chitty import model
 from chitty.model import TaskError, new_task, parse, render_scalar
+from tests import examples
+
+
+class ReferenceStringLoader(yaml.SafeLoader):
+    pass
+
+
+ReferenceStringLoader.yaml_implicit_resolvers = {}
+
+SINGLE_LINE = st.text(alphabet=st.characters().filter(str.isprintable), min_size=1).filter(
+    str.strip
+)
 
 
 def doc(text: str) -> str:
@@ -45,6 +62,24 @@ SAMPLE = doc(
     First note.
     """
 )
+
+
+class TestFrontmatterLoaders(unittest.TestCase):
+    def test_uses_libyaml_when_available(self):
+        loader = yaml.CSafeLoader if yaml.__with_libyaml__ else yaml.SafeLoader
+        self.assertTrue(issubclass(model._StringLoader, loader))
+
+    @settings(max_examples=examples(100), deadline=None)
+    @given(SINGLE_LINE, SINGLE_LINE, st.lists(SINGLE_LINE, max_size=5))
+    def test_rendered_frontmatter_matches_safe_loader(self, title, owner, labels):
+        task = new_task(
+            title, date(2026, 1, 1), "Description", [], {"owner": owner, "labels": labels}
+        )
+        frontmatter = task.render().split("---\n", 2)[1]
+        self.assertEqual(
+            yaml.load(frontmatter, Loader=model._StringLoader),
+            yaml.load(frontmatter, Loader=ReferenceStringLoader),
+        )
 
 
 class TestParse(unittest.TestCase):

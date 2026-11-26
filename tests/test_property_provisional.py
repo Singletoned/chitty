@@ -60,11 +60,16 @@ class TestProvisionalProperties(unittest.TestCase):
         )
         self.assertEqual("provisional: true" in shown, provisional)
 
-    @given(text=st.text().filter(lambda value: value != "true"))
+    @given(
+        text=st.text(alphabet=st.characters().filter(str.isprintable)).filter(
+            lambda value: value != "true"
+        )
+    )
     def test_only_true_is_accepted(self, text):
         task = base_task()
         malformed = task.render().replace(
-            "created: 2026-01-01\n", f"created: 2026-01-01\nprovisional: {json.dumps(text)}\n"
+            "created: 2026-01-01\n",
+            f"created: 2026-01-01\nprovisional: {json.dumps(text, ensure_ascii=False)}\n",
         )
         with self.assertRaises(TaskError) as caught:
             parse(malformed)
