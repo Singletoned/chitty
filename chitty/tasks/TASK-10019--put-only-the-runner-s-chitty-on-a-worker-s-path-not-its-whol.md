@@ -33,6 +33,10 @@ Add integration coverage for work and review agent PATH resolution, verify it fa
 
 Regression test failed before the fix for both work and review: the resolved chitty was not a symbolic link.
 
+## Summary
+
+Work and review agents receive a temporary PATH directory containing only a symlink to the runner chitty; inherited PATH remains unchanged. Both modes are covered, including cleanup. The new test failed for both modes before the fix; make check passes.
+
 ## History
 
 - 2026-11-25T22:28:25Z calm-ochre-quail → backlog
@@ -50,3 +54,4 @@ Regression test failed before the fix for both work and review: the resolved chi
 - 2026-11-25T23:56:37Z calm-umber-adder todo → doing
 - 2026-11-26T00:00:41Z calm-umber-adder: wrote the plan
 - 2026-11-26T00:01:24Z calm-umber-adder: changed notes
+- 2026-11-26T00:08:17Z calm-umber-adder: changed summary
