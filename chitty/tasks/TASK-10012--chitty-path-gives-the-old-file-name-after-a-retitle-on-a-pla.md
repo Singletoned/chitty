@@ -1,6 +1,6 @@
 ---
 title: "`chitty path` gives the old file name after a retitle on a `plan/` branch"
-status: backlog
+status: planning
 labels:
   - bug
 depends_on:
@@ -31,3 +31,4 @@ Triage 2026-11-26: the replanned TASK-602 no longer touches `chitty path`; this 
 - 2026-11-25T22:35:12Z calm-ochre-quail: renumbered from TASK-N8MC9A
 - 2026-11-25T23:06:31Z calm-ochre-quail: changed notes
 - 2026-11-26T18:02:38Z brisk-bronze-adder: changed notes
+- 2026-11-26T18:08:00Z brisk-bronze-adder backlog → planning
