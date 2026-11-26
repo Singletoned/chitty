@@ -37,6 +37,10 @@ Before the fix the CLI regression produced TASK-10000 instead of TASK-3; the fix
 
 The example-count enforcement test assumed the helper is always named examples; updated it to recognize imports aliased from tests, as required by this ticket.
 
+## Summary
+
+Renumbering starts after real used IDs and skips numbers mentioned in ticket text. Added property and CLI regression coverage; the CLI test failed with TASK-10000 before the fix. make check passes.
+
 ## History
 
 - 2026-11-26T10:54:41Z calm-ochre-quail → backlog
@@ -52,3 +56,4 @@ The example-count enforcement test assumed the helper is always named examples; 
 - 2026-11-26T11:28:09Z golden-fawn-dormouse: wrote the plan
 - 2026-11-26T11:28:48Z golden-fawn-dormouse: changed notes
 - 2026-11-26T11:33:31Z golden-fawn-dormouse: changed notes
+- 2026-11-26T11:36:18Z golden-fawn-dormouse: changed summary
