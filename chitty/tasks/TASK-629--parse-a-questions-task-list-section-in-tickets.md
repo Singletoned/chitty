@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: review
+status: done
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -53,6 +53,10 @@ Add focused failing parser tests, then introduce the Questions section and immut
 Split 2026-11-26 after four stalled worker runs: answers, the formatter sample and the renumbering test moved to TASK-10035.
 
 Before implementation, all seven tests in `tests/test_questions_section.py` failed: the item, uppercase and continuation tests raised `line 11: unknown section 'Questions'`; the three refusal tests received that same error instead of their expected exact messages; the unknown-section test found `Questions` missing from the allowed names.
+
+Reviewed: parser and tests meet the ticket requirements.
+1: pass - `make check` passes all seven question tests. In a temporary merge-base worktree, `PYTHONPATH=src /Users/singletoned/src/singletoned/chitty/.venv/bin/python -m pytest tests/test_questions_section.py -q` produced seven failures: item, uppercase and continuation raised `line 11: unknown section 'Questions'`; empty, nested and other-line assertions received that error instead of their expected messages; unknown-section asserted `Questions` was not found in the allowed list.
+2: pass - `make check` passed: 1262 tests and 680 subtests, ruff and pyright clean.
 
 ## Summary
 
@@ -123,3 +127,5 @@ Implemented question item parsing, continuations and exact validation errors whi
 - 2026-11-26T13:07:31Z lively-dusky-quail: changed notes
 - 2026-11-26T13:11:14Z lively-dusky-quail: changed summary
 - 2026-11-26T13:14:22Z lively-dusky-quail doing → review
+- 2026-11-26T13:20:57Z mellow-dusky-raven: changed notes
+- 2026-11-26T13:20:57Z mellow-dusky-raven review → done
