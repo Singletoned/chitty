@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-24
@@ -62,3 +62,4 @@ Requeued 2026-11-26: the last worker returned it after emptying `src/chitty/stor
 - 2026-11-26T11:36:56Z brisk-bronze-adder to-plan → planning
 - 2026-11-26T11:37:02Z brisk-bronze-adder: replaced notes; changed owner; wrote the plan
 - 2026-11-26T11:37:02Z brisk-bronze-adder planning → todo
+- 2026-11-26T11:41:15Z plucky-bronze-quail todo → doing
