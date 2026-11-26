@@ -17,7 +17,7 @@ To be planned, probably as more than one ticket:
 - `next` and `run`: keep choosing from `main` and `task-<n>` branches only, so a ticket moved to `todo` on an unlanded `plan/` branch is not picked up (TASK-340 relies on that). Confirm when planning.
 - The marker's form, `--json`, and tests including a branch behind `main`.
 
-Needs TASK-604, the once-per-command index of tickets changed on other branches.
+Needs a once-per-command index of the tickets each other branch changed since it split from `HEAD` (one `git diff -z --no-renames --name-only HEAD...<ref>` per ref; 17 refs took 0.19 s in total on 2026-11-23). Plan it as its own ticket, building on the per-branch diffs of TASK-604.
 
 ## History
 
@@ -25,3 +25,4 @@ Needs TASK-604, the once-per-command index of tickets changed on other branches.
 - 2026-11-23T08:22:38Z plucky-umber-wren todo → backlog
 - 2026-11-23T08:47:34Z plucky-umber-wren: changed title, dependencies, description
 - 2026-11-26T18:02:03Z brisk-bronze-adder: changed title, dependencies, description
+- 2026-11-26T21:58:17Z youthful-lilac-heron: changed description
