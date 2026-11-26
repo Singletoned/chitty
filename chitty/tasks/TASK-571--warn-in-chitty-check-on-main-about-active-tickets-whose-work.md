@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: to-plan
+status: planning
 depends_on:
   - TASK-358
   - TASK-572
@@ -28,10 +28,6 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 - [ ] No warning when the only trailer commits are a commit of `TASK-1`'s own ticket file, or a `chitty: ` commit of `src/x.py`; nor for the `src/x.py` commit after `chitty archive TASK-1`; nor after `TASK-1` is moved to `done` (through `review`, with `--override-review-independence` as other CLI tests do); nor in a linked worktree on branch `task-1`
 - [ ] `make check` passes
 
-## Notes
-
-Released a planning claim idle since 2026-11-23 to re-plan it now that its dependencies are done.
-
 ## History
 
 - 2026-11-22T10:00:56Z friendly-jade-stoat → todo
@@ -42,3 +38,5 @@ Released a planning claim idle since 2026-11-23 to re-plan it now that its depen
 - 2026-11-23T18:41:31Z witty-yellow-vole: changed dependencies, description
 - 2026-11-26T18:58:14Z zesty-ginger-newt: changed notes
 - 2026-11-26T18:58:14Z zesty-ginger-newt planning → to-plan
+- 2026-11-26T18:58:32Z zesty-ginger-newt: replaced notes
+- 2026-11-26T18:58:32Z zesty-ginger-newt to-plan → planning
