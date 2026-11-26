@@ -25,3 +25,4 @@ Merged into TASK-500, which now covers both the stale extra and the symlinked ve
 - 2026-11-26T18:06:09Z calm-ochre-quail: changed notes
 - 2026-11-26T18:07:25Z calm-ochre-quail: changed labels, notes
 - 2026-11-26T18:16:33Z calm-ochre-quail: changed notes
+- 2026-11-26T18:16:50Z calm-ochre-quail backlog → archived
