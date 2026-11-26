@@ -1,9 +1,9 @@
 ---
 title: "Cold-read guide: read a ticket as if its `depends_on` tickets have landed"
-status: review
+status: doing
 labels:
   - untestable
-owner: human
+owner: untestable
 created: 2026-11-24
 ---
 
@@ -29,6 +29,11 @@ Changing `chitty guide cold-read` to print the dependencies' text, and the plann
 
 Suggestion origin: chitty
 
+Review failed (work): `src/chitty/roles/cold-read.md` can say the same thing in 18 words instead of 29 (2 wrapped lines instead of 3), without repeating "Read the ticket" from two lines above or "ticket" three times, while keeping every requirement (every `depends_on` ticket treated as landed according to its own text, contradictions with them reported, absence from `main` not reported, general wording). Use:
+
+- Assume `depends_on` tickets have landed as their text describes; report
+  contradictions with them, not their absence from `main`.
+
 ## Summary
 
 Added one bullet to `src/chitty/roles/cold-read.md`: read the ticket as if every ticket in its `depends_on` has landed as its own text describes, and report contradictions with them rather than their absence from `main`. About 30 words added, nothing cut.
@@ -44,3 +49,5 @@ Branch `task-661` (worktree `.worktrees/task-661`). `make check` passed (1196 te
 - 2026-11-25T23:45:26Z tidy-silver-puffin todo → doing
 - 2026-11-26T10:55:22Z tidy-silver-puffin: changed owner, summary
 - 2026-11-26T10:55:22Z tidy-silver-puffin doing → review
+- 2026-11-26T11:29:09Z human: changed owner, notes
+- 2026-11-26T11:29:09Z human review → doing
