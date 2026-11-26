@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: review
+status: done
 created: 2026-11-24
 ---
 
@@ -35,8 +35,8 @@ Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording; TEXT tha
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin), each on a fresh ticket, give equal Notes in `chitty show --json`, and those Notes split into the same words as the stored form of the text: `notes.split() == escape_literal_asterisks(text).split()` (`chitty.markdown`; Chitty escapes `*` and strips trailing whitespace, so exact equality does not hold). A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
-- [ ] A new test in `tests/test_cli.py` shows `chitty note 1 Text --file <path>` exits with status 2 and output containing `give TEXT or --file, not both`, and `chitty note 1` exits with status 2 and output containing `give TEXT or --file`; both leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
+- [x] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin), each on a fresh ticket, give equal Notes in `chitty show --json`, and those Notes split into the same words as the stored form of the text: `notes.split() == escape_literal_asterisks(text).split()` (`chitty.markdown`; Chitty escapes `*` and strips trailing whitespace, so exact equality does not hold). A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
+- [x] A new test in `tests/test_cli.py` shows `chitty note 1 Text --file <path>` exits with status 2 and output containing `give TEXT or --file, not both`, and `chitty note 1` exits with status 2 and output containing `give TEXT or --file`; both leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
 
 ## Plan
 
@@ -47,6 +47,10 @@ Verify the existing CLI change against the ticket; add property and usage tests,
 Requeued 2026-11-26: the last worker returned it with no ticket defect. Commit `21e82d38` on this branch has an untested start on `cli.py`; check it against the Description and write the tests.
 
 Temporarily restored the pre-change note command: the property failed on the unrecognized file option and both usage-error cases failed on their messages. Restored the implementation; make check passed.
+
+Reviewed: complete diff inspected; verification passed.
+1: pass - make check passed, including the property and literal dash test. In a temporary merge-base worktree with the branch tests applied, pytest tests/test_property_text_files.py::TestTextFiles::test_note_text_file_and_stdin failed with No such option '--file'.
+2: pass - make check passed (1273 tests), including test_note_appends_a_note and both usage cases. In the temporary merge-base worktree, pytest tests/test_cli.py::TestEdit::test_note_requires_exactly_one_text_source failed both subtests: No such option '--file' and Missing argument 'TEXT'.
 
 ## Summary
 
@@ -77,3 +81,5 @@ Verified the existing note file-input implementation and added property, literal
 - 2026-11-26T13:45:45Z kind-fawn-wren: wrote the plan
 - 2026-11-26T13:50:50Z kind-fawn-wren: changed notes, summary
 - 2026-11-26T13:53:17Z kind-fawn-wren doing → review
+- 2026-11-26T14:01:29Z youthful-ebony-quail: changed notes; ticked acceptance criteria
+- 2026-11-26T14:01:29Z youthful-ebony-quail review → done
