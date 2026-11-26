@@ -34,6 +34,10 @@ Out of scope: custom priority names and their display (TASK-10039), and write va
 - [ ] The default-config ordering test and the property in `tests/test_priorities_config.py` pass; the ordering test fails before the change (record it in a note); the three existing tests named in the Description are updated
 - [ ] `docs/plan/next-action-and-runner.md` describes the configured order; `make check` passes
 
+## Plan
+
+Add a CLI regression test and verify it fails; implement shared configurable ranking for list and selection, add independent permutation properties, update existing expectations and documentation, then format and run checks.
+
 ## History
 
 - 2026-11-26T11:40:35Z brisk-bronze-adder → planning
@@ -43,3 +47,4 @@ Out of scope: custom priority names and their display (TASK-10039), and write va
 - 2026-11-26T11:45:48Z brisk-bronze-adder: changed title, labels, description, acceptance criteria
 - 2026-11-26T11:45:48Z brisk-bronze-adder planning → todo
 - 2026-11-26T14:07:07Z witty-white-kestrel todo → doing
+- 2026-11-26T14:11:14Z witty-white-kestrel: wrote the plan
