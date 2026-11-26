@@ -45,6 +45,10 @@ Add CLI, check and MCP regression tests and record their pre-fix failures; valid
 
 Before the fix, the three new priority tests failed: CLI accepted high, check returned success for high, and MCP rejected now as a literal validation error.
 
+## Summary
+
+Store writes validate configured priority names; CLI and MCP accept custom names, and check reports unconfigured values. Added regression tests; make check passes.
+
 ## History
 
 - 2026-11-26T11:40:59Z brisk-bronze-adder → planning
@@ -55,3 +59,4 @@ Before the fix, the three new priority tests failed: CLI accepted high, check re
 - 2026-11-26T15:01:18Z intrepid-teal-yellowhammer todo → doing
 - 2026-11-26T15:05:33Z intrepid-teal-yellowhammer: wrote the plan
 - 2026-11-26T15:06:08Z intrepid-teal-yellowhammer: changed notes
+- 2026-11-26T15:10:35Z intrepid-teal-yellowhammer: changed summary
