@@ -1406,6 +1406,8 @@ class TestNext(CliTestCase):
         self.commit_ticket("Todo", "todo")
         self.git("worktree", "add", "-b", "task-1", ".worktrees/task-1", "main")
         (self.root / ".worktrees/task-1/left.py").write_text("unfinished = True\n")
+        marker = self.tmp / "agent-started"
+        self.install_fake_pi(f"from pathlib import Path\nPath({str(marker)!r}).write_text('yes')\n")
 
         self.run_cli("run")
 
@@ -1416,6 +1418,7 @@ class TestNext(CliTestCase):
         self.assertIn("uncommitted changes", notes)
         self.assertIn("`left.py`", notes)
         self.assertNotIn("no work yet", notes)
+        self.assertFalse(marker.exists())
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
