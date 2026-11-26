@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: to-plan
+status: planning
 created: 2026-11-24
 ---
 
@@ -68,3 +68,4 @@ Released 2026-11-26: the worker claim from 2026-11-24/25 is stale.
 - 2026-11-24T23:40:37Z zesty-quartz-ibis doing → planning
 - 2026-11-26T11:37:16Z brisk-bronze-adder: changed notes
 - 2026-11-26T11:37:16Z brisk-bronze-adder planning → to-plan
+- 2026-11-26T11:37:23Z brisk-bronze-adder to-plan → planning
