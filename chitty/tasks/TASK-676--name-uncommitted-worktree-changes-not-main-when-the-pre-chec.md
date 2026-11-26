@@ -23,6 +23,10 @@ Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_rec
 - [ ] `test_run_check_failure_names_uncommitted_worktree_changes` passes, and fails before the change to `src/chitty/run.py`. Regression test: `test_run_check_failure_on_todo_ticket_records_error_on_branch` (its checker writes `check-args` during the check, so it still gets the `no work yet` clause)
 - [ ] `make check` passes
 
+## Plan
+
+Add the requested reused-worktree regression test and verify it fails before the fix. Snapshot uncommitted paths before the check, report them on nonzero exit instead of blaming main, then run formatting and checks.
+
 ## History
 
 - 2026-11-24T22:21:39Z zesty-coral-newt → backlog
@@ -35,3 +39,4 @@ Test, in `tests/test_next.py` next to `test_run_check_failure_on_todo_ticket_rec
 - 2026-11-25T22:35:54Z golden-coral-stoat: changed description
 - 2026-11-25T22:35:54Z golden-coral-stoat planning → todo
 - 2026-11-26T01:16:50Z able-umber-wren todo → doing
+- 2026-11-26T01:19:27Z able-umber-wren: wrote the plan
