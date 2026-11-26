@@ -1,6 +1,6 @@
 ---
 title: Ticket guard refuses when branch and main copies are identical
-status: planning
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -32,3 +32,4 @@ Out of scope: listing tickets whose copies really differ (TASK-472).
 - 2026-11-24T22:40:44Z zesty-coral-newt: changed labels
 - 2026-11-26T00:23:04Z calm-ochre-quail: replaced notes; changed priority, description, acceptance criteria
 - 2026-11-26T00:23:04Z calm-ochre-quail backlog → planning
+- 2026-11-26T00:23:11Z calm-ochre-quail planning → cold-read
