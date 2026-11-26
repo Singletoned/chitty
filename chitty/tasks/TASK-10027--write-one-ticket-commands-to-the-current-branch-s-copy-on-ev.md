@@ -46,6 +46,8 @@ Reviewed: Branch-local single-ticket changes meet the criteria.
 2: pass - make check passes; test_mcp_one_ticket_commands_on_hotfix passes. The same baseline test fails at MCP edit with latest committed version on branch main.
 3: pass - make check: 1200 passed, 632 subtests passed, including the existing planning worktree tests.
 
+Superseded in part, 2026-11-26: TASK-602 renames `_reject_planning_conflicts` to `_planning_conflict_warnings`, and TASK-10040 treats a ticket branch's own ticket like a `plan/` branch.
+
 ## Summary
 
 CLI and MCP single-ticket edits, notes and archives now use the current non-main, non-ticket branch copy; MCP show reads it too. Real-Git regression tests cover plan and hotfix branches, isolation, and archive boundaries. make check passes; the new CLI and MCP tests failed before the fix.
@@ -76,3 +78,4 @@ CLI and MCP single-ticket edits, notes and archives now use the current non-main
 - 2026-11-25T23:36:41Z eager-russet-quail doing → review
 - 2026-11-25T23:44:09Z plucky-dusky-falcon: changed notes
 - 2026-11-25T23:44:09Z plucky-dusky-falcon review → done
+- 2026-11-26T18:04:06Z brisk-bronze-adder: changed notes
