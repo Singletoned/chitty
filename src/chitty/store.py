@@ -64,6 +64,7 @@ from chitty.selection import (
     choose,
     dependency_marker,
     mode_statuses,
+    priority_rank,
 )
 from chitty.selection import skip_reason as pure_skip_reason
 from chitty.ticket_source import WORKING_TREE, SourceConflict, ticket_source
@@ -78,7 +79,6 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
 PLANNING_RETURN_LIMIT = 3
-PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 ROLE_NAMES = ("work", "review", "repair", "plan", "cold-read", "setup", "rebase")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
@@ -2367,7 +2367,9 @@ def init_repo(
         raise
 
 
-def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[StoredTask]:
+def ordered(
+    tasks: Sequence[StoredTask], statuses: Sequence[str], *, priorities: Sequence[str]
+) -> list[StoredTask]:
     """Order tasks by status, bug label, and priority, preserving source order for ties."""
     status_order = {status: index for index, status in enumerate(statuses)}
     return sorted(
@@ -2375,7 +2377,7 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
         key=lambda stored: (
             status_order[stored.task.frontmatter.status],
             "bug" not in stored.task.frontmatter.labels,
-            PRIORITY_ORDER[stored.task.frontmatter.priority],
+            priority_rank(stored.task.frontmatter.priority, priorities),
         ),
     )
 
@@ -2599,7 +2601,9 @@ def next_action(
         order = ("error",)
     else:
         order = tuple(status for status in configured_order if status != "error")
-    selected = choose(tuple(facts), modes=modes, owner=owner, order=order)
+    selected = choose(
+        tuple(facts), modes=modes, owner=owner, order=order, priorities=repo.config.priorities
+    )
     if selected is None:
         raise NoNextTicket(
             "no error ticket"

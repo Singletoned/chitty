@@ -5,7 +5,9 @@
 - Picks one active ticket across all contexts, ordered by:
   - status, from `job_order` (default `review`, `doing`, `todo`); statuses left
     out are never picked;
-  - priority: high, then medium or unset, then low;
+  - bug-labelled tickets first;
+  - priority, from `priorities` (default `high`, `medium`, unset, `low`);
+    unlisted names come last;
   - ID.
 - Skips:
   - human-context tickets and tickets owned by `human`;

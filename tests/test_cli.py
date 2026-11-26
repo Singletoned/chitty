@@ -1124,18 +1124,18 @@ class TestAddShowList(CliTestCase):
             listed.stdout.splitlines(),
             [
                 "TASK-3  📋 todo   ⏫  High",
-                "TASK-1  📋 todo       Unset",
                 "TASK-4  📋 todo   ➖  Medium",
+                "TASK-1  📋 todo       Unset",
                 "TASK-2  📋 todo   ⏬  Low",
                 "TASK-5  🔨 doing  ⏫  Doing high",
             ],
         )
         tasks = self.json("list")
         self.assertEqual(
-            [task["id"] for task in tasks], ["TASK-3", "TASK-1", "TASK-4", "TASK-2", "TASK-5"]
+            [task["id"] for task in tasks], ["TASK-3", "TASK-4", "TASK-1", "TASK-2", "TASK-5"]
         )
         self.assertEqual(
-            [task["priority"] for task in tasks], ["high", None, "medium", "low", "high"]
+            [task["priority"] for task in tasks], ["high", "medium", None, "low", "high"]
         )
 
     def test_list_puts_bug_tickets_first_within_each_status(self):

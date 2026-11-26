@@ -1,12 +1,91 @@
+import json
+import os
 import string
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
+from click.testing import CliRunner
 from hypothesis import given, settings
 from hypothesis import strategies as st
 from pydantic import ValidationError
 
+from chitty.cli import cli
 from chitty.config import RepoConfig
+from chitty.ids import TaskId
+from chitty.model import parse
+from chitty.selection import TicketFacts, choose, priority_rank
+from chitty.store import StoredTask, ordered
 from tests import examples
+from tests.support import RepoTestCase
+
+
+class PriorityOrderingCliTests(RepoTestCase):
+    def test_default_priority_order(self) -> None:
+        previous = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, previous)
+        self.enterContext(patch.dict(os.environ, {"CHITTY_ACTOR": "test-agent"}))
+        runner = CliRunner()
+        for priority in ("low", None, "medium", "high"):
+            args = ["add", str(priority), "-d", "x"]
+            if priority is not None:
+                args.extend(("-p", priority))
+            result = runner.invoke(cli, args, catch_exceptions=False)
+            self.assertEqual(result.exit_code, 0, result.output)
+        result = runner.invoke(cli, ["list", "--json"], catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(
+            [task["priority"] for task in json.loads(result.stdout)],
+            ["high", "medium", None, "low"],
+        )
+
+
+class PriorityOrderingProperties(unittest.TestCase):
+    @settings(max_examples=examples(50))
+    @given(
+        priorities=st.permutations(["high", "medium", "low", ""]),
+        status=st.sampled_from(("todo", "doing", "review")),
+        values=st.lists(st.sampled_from(("high", "medium", "low", None)), min_size=1, max_size=8),
+    )
+    def test_ordering(self, priorities, status, values) -> None:
+        tasks = []
+        facts = []
+        for number, value in enumerate(values, 1):
+            field = f"priority: {value}\n" if value is not None else ""
+            task = parse(
+                f"---\ntitle: Test\nstatus: {status}\n{field}created: 2026-01-01\n---\n"
+                "\n## Description\n\nTest.\n"
+            )
+            tasks.append(
+                StoredTask(TaskId("TASK", number), "tasks", Path(str(number)), False, task)
+            )
+            facts.append(TicketFacts(f"TASK-{number}", "tasks", status, value, None, False, False))
+
+        def rank(value):
+            return priorities.index("" if value is None else value)
+
+        result = ordered(tasks, statuses=(status,), priorities=priorities)
+        self.assertEqual(
+            result, sorted(tasks, key=lambda task: rank(task.task.frontmatter.priority))
+        )
+        selected = choose(tuple(facts), priorities=priorities)
+        self.assertIsNotNone(selected)
+        assert selected is not None
+        self.assertEqual(rank(selected.priority), min(map(rank, values)))
+
+    @settings(max_examples=examples(50))
+    @given(
+        names=st.lists(st.text(min_size=1, max_size=10), unique=True, max_size=8),
+        name=st.one_of(st.none(), st.text(max_size=10)),
+        position=st.integers(min_value=0, max_value=8),
+    )
+    def test_rank(self, names, name, position) -> None:
+        priorities = list(names)
+        priorities.insert(position, "")
+        value = "" if name is None else name
+        expected = next((i for i, item in enumerate(priorities) if item == value), len(priorities))
+        self.assertEqual(priority_rank(name, priorities), expected)
 
 
 class PrioritiesConfigTests(unittest.TestCase):

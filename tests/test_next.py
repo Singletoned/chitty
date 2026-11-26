@@ -97,9 +97,9 @@ class TestNext(CliTestCase):
                 ("work", "TASK-2"),
             ),
             (
-                "unset priority ties medium and uses identifier",
+                "medium priority before unset",
                 (("Unset", {}), ("Medium", {"priority": "medium"})),
-                ("work", "TASK-1"),
+                ("work", "TASK-2"),
             ),
         )
         for name, tasks, expected in cases:

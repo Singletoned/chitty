@@ -29,7 +29,8 @@ STATUSES = (
 )
 PRIORITIES = ("high", "medium", None, "low")
 TEST_STATUS_RANK = {status: i for i, status in enumerate(("review", "doing", "todo"))}
-TEST_PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
+CONFIG_PRIORITIES = ("high", "medium", "", "low")
+TEST_PRIORITY_RANK = {"high": 0, "medium": 1, None: 2, "low": 3}
 
 
 @st.composite
@@ -106,7 +107,9 @@ class TestPropertyNext(unittest.TestCase):
             (DependencyFact("TASK-901", "broken", "missing"),),
         )
         ready = TicketFacts("TASK-3", "work", "todo", "low", None, False, False)
-        self.assertEqual(choose((ready, blocked, broken), order=PICK_ORDER), ready)
+        self.assertEqual(
+            choose((ready, blocked, broken), order=PICK_ORDER, priorities=CONFIG_PRIORITIES), ready
+        )
 
     @settings(max_examples=examples(300))
     @given(
@@ -118,7 +121,13 @@ class TestPropertyNext(unittest.TestCase):
     def test_choice_obeys_filters_and_independent_order(self, facts, mode, owner, order):
         # Shuffle so source ordering cannot accidentally satisfy ranking.
         random.Random(len(facts) * 173 + sum(map(len, (f.id for f in facts)))).shuffle(facts)
-        selected = choose(tuple(facts), modes=(mode,) if mode else (), owner=owner, order=order)
+        selected = choose(
+            tuple(facts),
+            modes=(mode,) if mode else (),
+            owner=owner,
+            order=order,
+            priorities=CONFIG_PRIORITIES,
+        )
         expected = sorted(
             (fact for fact in facts if independently_choosable(fact, mode, owner)),
             key=lambda f: (
@@ -177,7 +186,8 @@ class TestPropertyNext(unittest.TestCase):
         for fact in facts:
             if fact.status in {"review", "doing", "todo"} and not fact.archived:
                 self.assertEqual(
-                    skip_reason(fact) is None, choose((fact,), order=PICK_ORDER) == fact
+                    skip_reason(fact) is None,
+                    choose((fact,), order=PICK_ORDER, priorities=CONFIG_PRIORITIES) == fact,
                 )
             if fact.status in {"done", "backlog", "blocked"}:
                 self.assertIsNone(skip_reason(fact))

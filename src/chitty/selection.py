@@ -1,6 +1,6 @@
 """Pure ticket eligibility and ordering rules for next-ticket selection."""
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Literal
 
@@ -44,7 +44,12 @@ def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
     return {status for mode in modes for status in MODE_STATUSES[mode]}
 
 
-PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
+def priority_rank(priority: str | None, priorities: Sequence[str]) -> int:
+    """Return the configured position, placing unlisted names last."""
+    name = "" if priority is None else priority
+    return priorities.index(name) if name in priorities else len(priorities)
+
+
 UNTESTABLE_OWNER = "untestable"
 CONFLICT_GLYPH = "🔀"
 DEPENDENCY_GLYPH = "🔗"
@@ -122,6 +127,7 @@ def dependency_marker(fact: TicketFacts) -> str | None:
 def choose(
     facts: tuple[TicketFacts, ...],
     *,
+    priorities: Sequence[str],
     modes: tuple[Literal["work", "review", "errors"], ...] = (),
     owner: str | None = None,
     order: tuple[str, ...] = STATUSES,
@@ -144,7 +150,7 @@ def choose(
         key=lambda fact: (
             order.index(fact.status),
             "bug" not in fact.labels,
-            PRIORITY_RANK[fact.priority],
+            priority_rank(fact.priority, priorities),
             _id_key(fact.id),
         ),
         default=None,

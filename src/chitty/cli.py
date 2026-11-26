@@ -506,7 +506,7 @@ def list_(
         for task in repo.tasks(context, "active")
         if matches(task, selected_statuses, labels, owner, search, parent)
     ]
-    tasks = ordered(tasks, selected_statuses)
+    tasks = ordered(tasks, selected_statuses, priorities=repo.config.priorities)
     if not tasks:
         click.echo(
             f"no tasks: contexts={','.join(context.name for context in selected)}; "
