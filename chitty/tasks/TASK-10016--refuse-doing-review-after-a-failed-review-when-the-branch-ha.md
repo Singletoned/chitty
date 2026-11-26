@@ -1,6 +1,6 @@
 ---
 title: Refuse `doing -> review` after a failed review when the branch has no new code commit
-status: review
+status: done
 priority: medium
 created: 2026-11-25
 moved_from: TASK-QD8H6G
@@ -18,9 +18,9 @@ Out of scope: tickets that skip the work review (`untestable`), which never go `
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test of a pure `has_fix_since(failed_at, commits)` in `src/chitty/store.py` (`commits` a list of `(authored_at, subject)`): it is true exactly when some commit is authored strictly later than `failed_at` and its subject does not start with `chitty: `. Fails today (the name does not exist; stub it so the test fails on its assertion).
-- [ ] A real-Git test on branch `task-1`: after `review -> doing` with a `Review failed (work):` note and only Chitty bookkeeping commits since, `chitty edit TASK-1 -s review` exits 1 with `cannot move TASK-1 to review: no commit since the failed review at <time>; commit the fix first` and changes nothing. It still refuses after `main` gains a commit and `task-1` is rebased onto it (the rebased code commits are older fixes). After one new code commit it succeeds. Fails today: the first move succeeds.
-- [ ] Regression tests: a first move to `review` (no earlier failed review) works as today; existing review and status tests pass; `make check` passes.
+- [x] A Hypothesis property test of a pure `has_fix_since(failed_at, commits)` in `src/chitty/store.py` (`commits` a list of `(authored_at, subject)`): it is true exactly when some commit is authored strictly later than `failed_at` and its subject does not start with `chitty: `. Fails today (the name does not exist; stub it so the test fails on its assertion).
+- [x] A real-Git test on branch `task-1`: after `review -> doing` with a `Review failed (work):` note and only Chitty bookkeeping commits since, `chitty edit TASK-1 -s review` exits 1 with `cannot move TASK-1 to review: no commit since the failed review at <time>; commit the fix first` and changes nothing. It still refuses after `main` gains a commit and `task-1` is rebased onto it (the rebased code commits are older fixes). After one new code commit it succeeds. Fails today: the first move succeeds.
+- [x] Regression tests: a first move to `review` (no earlier failed review) works as today; existing review and status tests pass; `make check` passes.
 
 ## Plan
 
@@ -31,6 +31,11 @@ Use the latest timed transition into doing and Git author timestamps to reject a
 Confirmed both new tests fail before the fix: the stub property assertion and the first CLI refusal (which instead succeeded).
 
 Decided: commits to inspect -> main..HEAD, because a new main commit after review is not a fix on the ticket branch and must not bypass the rebase regression.
+
+Reviewed: implementation and complete diff checked.
+1: pass - property test passes in make check; on merge base with a False stub, pytest test_exactly_later_non_bookkeeping failed with False != True for failed_at=0, commits=[(1, '')].
+2: pass - real-Git test passes in make check, including rebase and new fix; on merge base pytest test_failed_review_requires_new_commit_even_after_rebase failed because the first edit returned 0 rather than 1.
+3: pass - first review is exercised by the real-Git test; make check passed (1226 tests, 652 subtests).
 
 ## Summary
 
@@ -54,3 +59,5 @@ Reject repeat review on the ticket branch unless a non-bookkeeping branch commit
 - 2026-11-26T01:31:02Z rosy-jade-marten: changed notes
 - 2026-11-26T01:37:52Z rosy-jade-marten: changed summary
 - 2026-11-26T01:40:14Z rosy-jade-marten doing → review
+- 2026-11-26T01:47:01Z rosy-khaki-toad: changed notes; ticked acceptance criteria
+- 2026-11-26T01:47:01Z rosy-khaki-toad review → done
