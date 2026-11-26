@@ -59,7 +59,8 @@ Strict: unknown keys are an error.
 
 - Statuses: `backlog` (needs refining), `to-plan` (waiting for a planner),
   `planning` (a planner has it) and `cold-read` (being written), `todo`, `doing`, `error` (recoverable automation failure),
-  `blocked` (needs a human or external prerequisite), `review`, `done`.
+  `blocked` (needs a human or external prerequisite), `review`, `done`,
+  `dropped` (will not be done).
 - An owner reserves `todo` and `doing` tickets for that agent: see
   [Next action and runner](next-action-and-runner.md). `chitty run --ticket ID`
   ignores non-human owners.

@@ -33,8 +33,9 @@ STATUSES = (
     "error",
     "review",
     "done",
+    "dropped",
 )
-# What `list` shows without a status filter: every active status but backlog and done.
+# What `list` shows without a status filter: active statuses except backlog.
 DEFAULT_LIST_STATUSES = (
     "to-plan",
     "planning",
@@ -56,6 +57,7 @@ STATUS_GLYPHS = {
     "error": "💥",
     "review": "👀",
     "done": "✅",
+    "dropped": "🚫",
 }
 STATUS_LABELS = {
     "backlog": "bklog",
@@ -68,6 +70,7 @@ STATUS_LABELS = {
     "error": "error",
     "review": "revw",
     "done": "done",
+    "dropped": "drop",
 }
 PRIORITIES = ("low", "medium", "high")
 PRIORITY_GLYPHS = {"high": "⏫", "medium": "➖", "low": "⏬", None: ""}
@@ -185,6 +188,7 @@ class Frontmatter(BaseModel):
         "error",
         "review",
         "done",
+        "dropped",
     ]
     labels: list[str] = []
     priority: Literal["low", "medium", "high"] | None = None
