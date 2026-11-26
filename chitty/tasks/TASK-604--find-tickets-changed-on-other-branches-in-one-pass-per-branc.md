@@ -1,6 +1,6 @@
 ---
 title: Find tickets changed on other branches in one pass per branch
-status: backlog
+status: planning
 depends_on:
   - TASK-598
 created: 2026-11-23
@@ -16,3 +16,4 @@ To be planned: a cached `Repo` index, built once per command and cleared in `_in
 
 - 2026-11-23T08:47:11Z plucky-umber-wren → backlog
 - 2026-11-26T18:02:07Z brisk-bronze-adder: changed description
+- 2026-11-26T21:55:45Z youthful-lilac-heron backlog → planning
