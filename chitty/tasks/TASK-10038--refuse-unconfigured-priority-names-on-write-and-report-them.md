@@ -1,6 +1,6 @@
 ---
 title: Refuse unconfigured priority names on write and report them in `chitty check`
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -39,3 +39,4 @@ Out of scope: `src/chitty/import_backlog.py`, which passes priorities through un
 ## History
 
 - 2026-11-26T11:40:59Z brisk-bronze-adder → planning
+- 2026-11-26T11:43:08Z brisk-bronze-adder planning → cold-read
