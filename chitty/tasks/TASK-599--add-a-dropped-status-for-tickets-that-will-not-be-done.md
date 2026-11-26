@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -116,3 +116,4 @@ Narrowed 2026-11-26 after four stalled runs: the `chitty summary` test was cut (
 - 2026-11-26T12:03:37Z brisk-bronze-adder cold-read → planning
 - 2026-11-26T12:03:45Z brisk-bronze-adder: changed description
 - 2026-11-26T12:03:45Z brisk-bronze-adder planning → todo
+- 2026-11-26T12:28:23Z zesty-indigo-vole todo → doing
