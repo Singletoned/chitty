@@ -933,7 +933,7 @@ class TestNext(CliTestCase):
             "import json, os, pathlib, shutil, subprocess, sys\n"
             f"report = pathlib.Path({str(report)!r})\n"
             "report.write_text(json.dumps({\n"
-            "    'chitty': shutil.which('chitty'),\n"
+            "    'chitty': os.path.realpath(shutil.which('chitty')),\n"
             "    'usage_file': os.environ.get('CHITTY_USAGE_FILE'),\n"
             "}))\n"
             "task = next(pathlib.Path('chitty/tasks').glob('TASK-1--*.md'))\n"
@@ -956,7 +956,7 @@ class TestNext(CliTestCase):
                     os.environ[key] = value
         self.assertEqual(result.stdout, "TASK-1: doing → done\n")
         environment = json.loads(report.read_text())
-        self.assertEqual(environment["chitty"], str(runner_chitty))
+        self.assertEqual(environment["chitty"], str(runner_chitty.resolve()))
         self.assertIsNone(environment["usage_file"])
 
     def test_run_inherits_stdin(self):

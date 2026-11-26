@@ -1,3 +1,6 @@
+import json
+import os
+import sys
 from pathlib import Path
 
 from tests.test_run_continue import TestRunContinue
@@ -37,6 +40,41 @@ class TestRunRepairMode(TestRunContinue):
         self.write_fake("text = text.replace('status: review', 'status: doing')")
         self.run_cli("run", "--ticket", ticket)
         self.assertEqual(self.invocations_seen()[0], ["review", ticket])
+
+    def test_agent_path_isolates_runner_executable(self):
+        original_path = os.environ["PATH"]
+        runner_bin = Path(sys.executable).parent
+        os.environ["PATH"] = os.pathsep.join(
+            part for part in original_path.split(os.pathsep) if Path(part) != runner_bin
+        )
+        self.addCleanup(os.environ.__setitem__, "PATH", original_path)
+        for name in ("pytest", "python"):
+            executable = self.bindir / name
+            executable.write_text("#!/bin/sh\nexit 0\n")
+            executable.chmod(0o755)
+        for mode in ("work", "review"):
+            with self.subTest(mode=mode):
+                status = "todo" if mode == "work" else "review"
+                ticket = self.json("add", mode, "-d", "Description.", "-s", status)["id"]
+                if mode == "review":
+                    self.git("branch", ticket.lower())
+                output = self.tmp / f"{mode}.json"
+                self.write_fake(
+                    "import json, os, shutil\n"
+                    "names = ('chitty', 'pytest', 'python')\n"
+                    "paths = {name: shutil.which(name) for name in names}\n"
+                    "paths['islink'] = os.path.islink(paths['chitty'])\n"
+                    "paths['realpath'] = os.path.realpath(paths['chitty'])\n"
+                    f"Path({str(output)!r}).write_text(json.dumps(paths))\n"
+                    f"text = text.replace('status: {status}', 'status: blocked')"
+                )
+                self.run_cli("run", "--ticket", ticket)
+                paths = json.loads(output.read_text())
+                self.assertTrue(paths["islink"])
+                self.assertEqual(paths["realpath"], str((runner_bin / "chitty").resolve()))
+                for name in ("pytest", "python"):
+                    self.assertEqual(Path(paths[name]).parent, self.bindir)
+                self.assertFalse(Path(paths["chitty"]).exists())
 
     def test_prompt_command_uses_repair_guide(self):
         ticket = self.json("add", "Repair prompt", "-d", "Description.", "-s", "todo")["id"]

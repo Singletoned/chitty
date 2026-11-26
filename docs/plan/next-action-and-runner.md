@@ -64,6 +64,8 @@
   worktree, claims a `todo` ticket on its branch, then runs `setup` there before
   starting the agent.
 - The agent uses the `chitty` beside the runner's Python, not the branch's.
+  A temporary directory containing only a symlink to that executable precedes
+  the inherited `PATH`; other commands use the inherited `PATH` unchanged.
   `pi` and `claude` come from `PATH`. The branch's `chitty.toml` is untouched.
 
 ### Agent command

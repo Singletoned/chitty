@@ -8,6 +8,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 import tomllib
 from collections.abc import Sequence
@@ -465,10 +466,21 @@ def _run_ticket(
     except OSError as error:
         raise ChittyError(f"cannot create agent log {path}: {error}") from error
     try:
-        with log:
-            return _run_ticket_with_log(main_repo, project, action, arguments, agent, context, log)
+        with log, tempfile.TemporaryDirectory(prefix="chitty-agent-") as bin_dir:
+            return _run_ticket_with_log(
+                main_repo, project, action, arguments, agent, context, log, Path(bin_dir)
+            )
     finally:
         print(f"log: {display_path(path, main_repo.root)}", file=sys.stderr)
+
+
+def _agent_path(environment: dict[str, str], bin_dir: Path) -> None:
+    """Expose only the runner's Chitty executable to the agent."""
+    executable = Path(sys.executable).parent / "chitty"
+    if not executable.is_file():
+        raise ChittyError(f"runner chitty executable not found: {executable}")
+    (bin_dir / "chitty").symlink_to(executable.absolute())
+    environment["PATH"] = os.pathsep.join((str(bin_dir), environment.get("PATH", "")))
 
 
 def _run_ticket_with_log(
@@ -479,6 +491,7 @@ def _run_ticket_with_log(
     agent: str | None,
     context: dict[str, Any],
     log: BinaryIO,
+    bin_dir: Path,
 ) -> RunResult:
     """Prepare the locked ticket's worktree and run its agent."""
     main_root = main_repo.root
@@ -574,12 +587,7 @@ def _run_ticket_with_log(
         # The run's own actor never worked on the ticket, so it may fail it.
         context["phase"] = "review preparation"
         try:
-            runner_chitty = Path(sys.executable).parent / "chitty"
-            if not runner_chitty.is_file():
-                raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-            agent_environment["PATH"] = os.pathsep.join(
-                (str(runner_chitty.parent), agent_environment.get("PATH", ""))
-            )
+            _agent_path(agent_environment, bin_dir)
         except ChittyError as error:
             failed = _record_ticket_error(work_repo, action, "review preparation", error)
             return RunResult(action, selected_status, failed.new_status)
@@ -624,13 +632,8 @@ def _run_ticket_with_log(
     print(f"Check passed; {action.mode} agent is working on {action.id}...", file=sys.stderr)
     try:
         if action.mode != "review":
-            runner_chitty = Path(sys.executable).parent / "chitty"
-            if not runner_chitty.is_file():
-                raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
             agent_environment = command_environment()
-            agent_environment["PATH"] = os.pathsep.join(
-                (str(runner_chitty.parent), agent_environment.get("PATH", ""))
-            )
+            _agent_path(agent_environment, bin_dir)
         head = run_git(worktree, "rev-parse", "HEAD").strip()
         try:
             new_status = _agent_sessions(
