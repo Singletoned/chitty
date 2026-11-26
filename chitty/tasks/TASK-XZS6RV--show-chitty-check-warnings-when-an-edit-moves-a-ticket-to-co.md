@@ -37,6 +37,10 @@ Add failing CLI and MCP coverage for checked status moves, then propagate check 
 
 Before the fix, both new tests fail: checked moves omit warnings and accept a missing dependency.
 
+## Summary
+
+Checked moves to cold-read or todo now refuse errors and surface warnings in CLI and MCP; updated planning guidance and regression coverage. make check passed. Both new tests failed before the fix.
+
 ## History
 
 - 2026-11-26T10:54:53Z calm-ochre-quail → backlog
@@ -51,3 +55,4 @@ Before the fix, both new tests fail: checked moves omit warnings and accept a mi
 - 2026-11-26T15:26:07Z rosy-pearl-toad todo → doing
 - 2026-11-26T15:30:03Z rosy-pearl-toad: wrote the plan
 - 2026-11-26T15:30:45Z rosy-pearl-toad: changed notes
+- 2026-11-26T15:39:40Z rosy-pearl-toad: changed summary
