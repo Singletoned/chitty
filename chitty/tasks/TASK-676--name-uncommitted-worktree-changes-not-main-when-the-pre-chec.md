@@ -1,6 +1,6 @@
 ---
 title: Name uncommitted worktree changes, not `main`, when the pre-check fails
-status: review
+status: done
 priority: high
 created: 2026-11-24
 ---
@@ -31,6 +31,10 @@ Add the requested reused-worktree regression test and verify it fails before the
 
 Before the fix, the new regression test failed: the note blamed main and omitted the uncommitted path.
 
+Reviewed: The pre-check snapshots paths before running the checker and reports them on failure.
+1: pass - Both focused tests pass with `uv run pytest tests/test_next.py -q -k 'test_run_check_failure_names_uncommitted_worktree_changes or test_run_check_failure_on_todo_ticket_records_error_on_branch'`. Applying the new test at the merge base and running it with `PYTHONPATH=src` fails: `uncommitted changes` is absent and the note blames main.
+2: pass - `make check`: 1212 passed, 640 subtests passed; ruff and pyright passed.
+
 ## Summary
 
 Snapshot uncommitted paths before the pre-check and name them on failure instead of blaming main. The new regression failed before the fix; both focused tests and make check pass.
@@ -51,3 +55,5 @@ Snapshot uncommitted paths before the pre-check and name them on failure instead
 - 2026-11-26T01:19:45Z able-umber-wren: changed notes
 - 2026-11-26T01:22:22Z able-umber-wren: changed summary
 - 2026-11-26T01:24:43Z able-umber-wren doing → review
+- 2026-11-26T01:31:35Z eager-yellow-wren: changed notes
+- 2026-11-26T01:31:35Z eager-yellow-wren review → done
