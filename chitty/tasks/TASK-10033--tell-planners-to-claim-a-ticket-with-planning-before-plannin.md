@@ -1,9 +1,9 @@
 ---
 title: Tell planners to claim a ticket with `planning` before planning it on a branch
-status: review
+status: doing
 labels:
   - untestable
-owner: human
+owner: untestable
 depends_on:
   - TASK-10032
 parent: TASK-10026
@@ -23,6 +23,16 @@ and, in the bullet that starts "Check tickets mentioned by `chitty edit -s todo`
 
 This replaces two sentences with about one more line; it removes "Keep a new ticket in `backlog` until you work on it", which the new first sentence covers.
 
+## Notes
+
+Review failed (work): The new bullet in `src/chitty/roles/plan.md` can be 12 words and 1 wrapped line shorter (5 lines instead of 6, matching the ticket's "about one more line") while keeping every requirement; the second edit ("return it to `to-plan` with a note") is fine. Use:
+
+- Take `to-plan` tickets before `backlog`: claim one with `-s planning` in the
+  main checkout, plan on a `plan/` branch, and edit its text only when finished.
+  Use `-s cold-read`, `-s planning` to settle findings, then `-s todo` and land.
+  Leave other planners' tickets alone. Change status in the same edit as the
+  text it depends on. Use `parent` to group flat IDs.
+
 ## Summary
 
 In `src/chitty/roles/plan.md`, replaced the "Keep a new ticket in `backlog` until you work on it" bullet with the ticket's wording: take `to-plan` before `backlog`, claim with `-s planning` in the main checkout, plan on a `plan/` branch changing text only when finished, cold-read and settle, `-s todo`, land the branch, and leave other planners' tickets alone. In the "Check tickets mentioned by `chitty edit -s todo`" bullet, "keep it in `planning` with a note" is now "return it to `to-plan` with a note". The guide grows by two wrapped lines.
@@ -37,3 +47,5 @@ In `src/chitty/roles/plan.md`, replaced the "Keep a new ticket in `backlog` unti
 - 2026-11-26T10:55:28Z tidy-silver-puffin todo → doing
 - 2026-11-26T11:06:56Z tidy-silver-puffin: changed owner, summary
 - 2026-11-26T11:06:56Z tidy-silver-puffin doing → review
+- 2026-11-26T11:29:38Z human: changed owner, notes
+- 2026-11-26T11:29:38Z human review → doing
