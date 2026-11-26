@@ -1,6 +1,8 @@
 ---
 title: Set GIT_EDITOR=true in test_review_rebase_session.py
 status: backlog
+labels:
+  - bug
 created: 2026-11-26
 provisional: true
 ---
@@ -19,3 +21,4 @@ Suggestion origin: chitty
 
 - 2026-11-26T18:06:04Z calm-ochre-quail → backlog
 - 2026-11-26T18:06:06Z calm-ochre-quail: changed notes
+- 2026-11-26T18:07:31Z calm-ochre-quail: changed labels
