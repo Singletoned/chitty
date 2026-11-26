@@ -21,6 +21,10 @@ No property test: one external process failure, covered by an example.
 - [ ] A test calls `git.worktree_for_branch` on a temporary directory that is not a Git repository and expects `ChittyError` naming `git worktree list`. Fails today: it returns `None`.
 - [ ] Regression tests: the tests that reach the callers (`src/chitty/run.py` lines near 345, 495, 508 and 1263; `src/chitty/store.py` near 799 and 1594) pass; `make check` passes.
 
+## Plan
+
+Inspect all callers, add a failing non-repository example, propagate the Git error, then run formatting and checks.
+
 ## History
 
 - 2026-11-25T22:28:20Z calm-ochre-quail → backlog
@@ -32,3 +36,4 @@ No property test: one external process failure, covered by an example.
 - 2026-11-25T23:33:07Z calm-ochre-quail planning → cold-read
 - 2026-11-25T23:34:16Z calm-ochre-quail cold-read → todo
 - 2026-11-26T00:51:53Z youthful-amber-falcon todo → doing
+- 2026-11-26T00:56:02Z youthful-amber-falcon: wrote the plan
