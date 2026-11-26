@@ -1,6 +1,6 @@
 ---
 title: Parse ticket frontmatter with the libyaml C loader
-status: review
+status: done
 priority: high
 created: 2026-11-26
 provisional: true
@@ -18,9 +18,9 @@ Out of scope: the rest of `parse` (pydantic validation, sections, history).
 
 ## Acceptance Criteria
 
-- [ ] Regression test: a Hypothesis property in `tests/test_model.py` builds tickets with `model.new_task` from drawn `st.text()` title, owner and labels, renders them with `Task.render()`, and asserts that `yaml.load` of the rendered frontmatter gives the same value with `model._StringLoader` as with a reference `yaml.SafeLoader` subclass that has `yaml_implicit_resolvers = {}` (defined in the test). Use `examples(100)` from `tests/__init__.py`
-- [ ] A test asserts `issubclass(model._StringLoader, yaml.CSafeLoader if yaml.__with_libyaml__ else yaml.SafeLoader)`, with no skip; it fails before the change
-- [ ] `make check` passes
+- [x] Regression test: a Hypothesis property in `tests/test_model.py` builds tickets with `model.new_task` from drawn `st.text()` title, owner and labels, renders them with `Task.render()`, and asserts that `yaml.load` of the rendered frontmatter gives the same value with `model._StringLoader` as with a reference `yaml.SafeLoader` subclass that has `yaml_implicit_resolvers = {}` (defined in the test). Use `examples(100)` from `tests/__init__.py`
+- [x] A test asserts `issubclass(model._StringLoader, yaml.CSafeLoader if yaml.__with_libyaml__ else yaml.SafeLoader)`, with no skip; it fails before the change
+- [x] `make check` passes
 
 ## Plan
 
@@ -31,6 +31,11 @@ Add a loader-selection test and a rendered-ticket property comparing against a s
 Decided: restrict generated values to printable nonempty single-line text -> exercise renderable inputs, because existing rendering rejects DEL and NEL; reported separately. Loader-selection test fails before the change as expected.
 
 Decided: generate literal Unicode in the existing provisional-field property -> avoid JSON surrogate escape pairs, because libyaml rejects those malformed YAML escapes while the test targets field validation. The prior check exposed this accepted loader difference.
+
+Reviewed: Loader selection and rendered-ticket equivalence verified.
+1: pass - Regression property in tests/test_model.py compares both loaders; make check passes. Printable single-line inputs are a sensible restriction given the reported existing rendering limitations.
+2: pass - test_uses_libyaml_when_available passes in make check; in a merge-base worktree with the branch test and PYTHONPATH pointing to its src, pytest reports AssertionError: False is not true.
+3: pass - make check: 1298 passed, 684 subtests passed.
 
 ## Summary
 
@@ -47,3 +52,5 @@ Uses the libyaml safe loader when available, retaining string-only resolution an
 - 2026-11-26T23:23:59Z nimble-violet-crane: changed notes
 - 2026-11-26T23:28:20Z nimble-violet-crane: changed summary
 - 2026-11-26T23:30:56Z nimble-violet-crane doing → review
+- 2026-11-26T23:38:10Z daring-violet-raven: changed notes; ticked acceptance criteria
+- 2026-11-26T23:38:10Z daring-violet-raven review → done
