@@ -1,6 +1,6 @@
 ---
 title: Show `chitty check` warnings when an edit moves a ticket to `cold-read` or `todo`
-status: cold-read
+status: todo
 created: 2026-11-26
 provisional: true
 ---
@@ -15,7 +15,7 @@ Today `Repo._commit` (`src/chitty/store.py`) already runs `check.fix` on the wri
 
 ### Change
 
-- In `Repo._commit`, also run that validation when the change moves a ticket into `cold-read` or `todo` (`change.previous_status` differs from the new status, which is one of those two). For such a move, put the warnings (problems that are not errors) on the result as a new `Change` field `warnings: tuple[str, ...]`, each `str(problem)`, in the order `fix` returns them. Other writes keep `warnings` empty.
+- In `Repo._commit`, a change is a checked move when `change.previous_status is not None` (only `_edit_stored` sets it; `add`, `archive`, `move` and `renumber` leave it `None`) and differs from the new status, which is `cold-read` or `todo`. For a checked move, take the problems for the written task files from the existing `fix` call when it runs (`autoformat` or `autocommit` set), and otherwise from `check(self, self.contexts(), task_paths, include_worktree_state=False)`, which has no side effects; refuse on errors with the same message as today. Put the warnings (problems that are not errors) on the result as a new `Change` field `warnings: tuple[str, ...]`, each `str(problem)`, in the order returned. Other writes keep `warnings` empty.
 - In `src/chitty/check.py`, include `cold-read` in the statuses that get the acceptance-criteria and specification-length warnings, so a planner sees them before a reader starts.
 - `edit` in `src/chitty/cli.py` prints each warning on its own line after the `updated ...` line (not with `--json`). `edit` in `src/chitty/mcp.py` adds `"warnings": [...]` to its result when there are any.
 - In `src/chitty/roles/plan.md`, replace "and run `chitty check` on the ticket file before starting a reader" with "; moving a ticket to `cold-read` or `todo` shows its `chitty check` warnings". The guide gets a few words shorter.
@@ -26,8 +26,8 @@ Running the configured repository check; warnings for other statuses or other co
 
 ## Acceptance Criteria
 
-- [ ] In a new `tests/test_edit_warnings.py` (`RepoTestCase`, default config with `autocommit = false`), a ticket with 6 acceptance criteria is moved with `chitty edit <ID> -s cold-read`, then `-s planning`, then `-s todo`, through the CLI runner. The `cold-read` and `todo` moves exit 0 and print a line containing `warning: 6 acceptance criteria`; the `planning` move does not. Through `mcp.edit(id, status="todo")` on the same ticket after moving it back to `planning`, the result has `warnings` containing that message, and an edit that does not move the ticket into `cold-read` or `todo` has no `warnings` key. Fails without the change.
-- [ ] A ticket whose `depends_on` names a missing ticket is refused by `chitty edit <ID> -s todo` with `autocommit = false`, the output names the problem, and the file still has its old status. Fails without the change. Regression tests: `TestTicketSizeWarnings.test_limits` passes with its expected warning statuses updated to include `cold-read`. `make check` passes.
+- [ ] In a new `tests/test_edit_warnings.py` (`RepoTestCase`, default config with `autocommit = false`), a ticket in `planning` with 6 acceptance criteria is moved with `chitty edit <ID> -s cold-read`, then `-s planning`, then `-s todo`, through the CLI runner. The `cold-read` and `todo` moves exit 0 and print a line containing `warning: 6 acceptance criteria`; the `planning` move does not, and `chitty add` of a 6-criterion ticket with `-s todo` prints no warning. Through `mcp.edit(id, status="todo")` on the same ticket after moving it back to `planning`, the result has `warnings` containing that message, and an edit that does not move the ticket into `cold-read` or `todo` has no `warnings` key. Fails without the change.
+- [ ] A `planning` ticket whose `depends_on` names a missing ticket (written into the file directly, as `test_limits` writes History, since `chitty add` and `chitty edit --depends-on` refuse it) is refused by `chitty edit <ID> -s todo` with `autocommit = false`; the output names the problem, and the file still has `status: planning`. Fails without the change. Regression tests: `TestTicketSizeWarnings.test_limits` passes with its expected warning statuses updated to include `cold-read`. `make check` passes.
 
 ## History
 
@@ -37,3 +37,5 @@ Running the configured repository check; warnings for other statuses or other co
 - 2026-11-26T11:11:16Z calm-ochre-quail backlog → to-plan
 - 2026-11-26T11:15:34Z calm-ochre-quail: replaced notes; changed title, description, acceptance criteria
 - 2026-11-26T11:15:34Z calm-ochre-quail to-plan → cold-read
+- 2026-11-26T11:17:06Z calm-ochre-quail: changed description, acceptance criteria
+- 2026-11-26T11:17:06Z calm-ochre-quail cold-read → todo
