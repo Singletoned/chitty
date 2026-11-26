@@ -1,6 +1,6 @@
 ---
 title: Refuse writes to a ticket another actor is planning
-status: todo
+status: doing
 depends_on:
   - TASK-10029
 parent: TASK-10026
@@ -41,3 +41,4 @@ Tests:
 - 2026-11-25T23:12:17Z golden-coral-stoat: changed description
 - 2026-11-25T23:12:30Z golden-coral-stoat backlog → todo
 - 2026-11-25T23:12:53Z golden-coral-stoat: renumbered from TASK-SYR88D
+- 2026-11-26T02:18:50Z sunny-umber-jay todo → doing
