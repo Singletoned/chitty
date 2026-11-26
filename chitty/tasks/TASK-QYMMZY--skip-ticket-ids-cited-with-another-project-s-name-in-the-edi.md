@@ -1,6 +1,6 @@
 ---
 title: Skip ticket IDs cited with another project's name in the `edit -s todo` listing
-status: doing
+status: review
 labels:
   - bug
 depends_on:
@@ -66,3 +66,4 @@ Foreign-qualified citations are omitted from promotion listings using the local 
 - 2026-11-26T12:17:15Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:22:10Z vivid-indigo-gannet: changed notes
 - 2026-11-26T12:24:45Z vivid-indigo-gannet: changed summary
+- 2026-11-26T12:27:09Z vivid-indigo-gannet doing → review
