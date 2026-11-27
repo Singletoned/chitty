@@ -31,8 +31,8 @@ Numbering (sibling ticket); the setting itself (TASK-10048).
 
 ## Acceptance Criteria
 
-- [ ] In a new `tests/test_old_prefixes.py`, a bare `CliTestCase` copies the Git setup from `LandingTestCase.setUp` (`tests/test_landing.py`) without inheriting it. With tickets `TASK-1` and `TASK-2` committed on `main`, then the `tasks` context changed in `chitty.toml` to `prefix = "TK"` and `old_prefixes = ["TASK"]` and committed: (a) an edit of `TASK-2` committed on branch `task-2` (in a worktree) is what `chitty show TASK-2` on `main` reads, as for a current-prefix ticket; (b) a `planning` ticket created by the test's own actor, whose Description mentions `TASK-1`, moved with `chitty edit <ID> -s todo`, lists `TASK-1` as a referenced ticket. Fails without the change. Regression tests: `chitty show TASK-1` and `chitty edit <ID> --depends-on TASK-1` work.
-- [ ] In `tests/test_run_removes_merged_branches.py`, extend `test_removes_done_and_unknown_branches` (or add a sibling using its setup): after switching to `prefix = "TK"` with `old_prefixes = ["TASK"]` committed on `main`, a merged `task-<n>` branch for a done old-prefix ticket is removed like one using the current prefix. Fails without the change. `make check` passes.
+- [x] In a new `tests/test_old_prefixes.py`, a bare `CliTestCase` copies the Git setup from `LandingTestCase.setUp` (`tests/test_landing.py`) without inheriting it. With tickets `TASK-1` and `TASK-2` committed on `main`, then the `tasks` context changed in `chitty.toml` to `prefix = "TK"` and `old_prefixes = ["TASK"]` and committed: (a) an edit of `TASK-2` committed on branch `task-2` (in a worktree) is what `chitty show TASK-2` on `main` reads, as for a current-prefix ticket; (b) a `planning` ticket created by the test's own actor, whose Description mentions `TASK-1`, moved with `chitty edit <ID> -s todo`, lists `TASK-1` as a referenced ticket. Fails without the change. Regression tests: `chitty show TASK-1` and `chitty edit <ID> --depends-on TASK-1` work.
+- [x] In `tests/test_run_removes_merged_branches.py`, extend `test_removes_done_and_unknown_branches` (or add a sibling using its setup): after switching to `prefix = "TK"` with `old_prefixes = ["TASK"]` committed on `main`, a merged `task-<n>` branch for a done old-prefix ticket is removed like one using the current prefix. Fails without the change. `make check` passes.
 
 ## Plan
 
@@ -41,6 +41,10 @@ Add focused CLI and cleanup regressions first and confirm failures, then use Con
 ## Notes
 
 Before the fix, the three focused tests failed: old branch content was ignored, the referenced ticket was omitted, and cleanup retained the merged old-prefix branch.
+
+## Summary
+
+Recognized current and old context prefixes in ticket branch reads, references, context fallback and merged-branch cleanup. Focused regressions failed before the fix and pass after it; make check passes.
 
 ## History
 
@@ -51,3 +55,4 @@ Before the fix, the three focused tests failed: old branch content was ignored, 
 - 2026-11-27T01:21:14Z nimble-pearl-quail todo → doing
 - 2026-11-27T01:25:00Z nimble-pearl-quail: wrote the plan
 - 2026-11-27T01:25:34Z nimble-pearl-quail: changed notes
+- 2026-11-27T01:33:06Z nimble-pearl-quail: changed summary; ticked acceptance criteria
