@@ -96,6 +96,53 @@ def squash_plan(
     return SquashPlan(tuple(keep), tuple(squashed)) if len(squashed) >= 2 else None
 
 
+def squash_bookkeeping(
+    root: Path, main_branch: str, branch: str, task_id: TaskId,
+    ticket_directories: Sequence[PurePosixPath],
+) -> int:
+    """Squash bookkeeping commits, preserving the branch tree or rolling back."""
+    main_tip = _git(root, "rev-parse", main_branch).strip()
+    if _git(root, "merge-base", main_branch, "HEAD").strip() != main_tip:
+        raise ChittyError(f"rebase {branch} onto {main_branch} before squashing")
+    if _git(root, "rev-list", "--merges", f"{main_branch}..HEAD").strip():
+        raise ChittyError(f"cannot squash bookkeeping with merge commits on {branch}")
+    commits = branch_commits(root, main_branch)
+    records: list[BranchCommit] = []
+    for commit in commits:
+        paths = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", commit.sha)
+        records.append(BranchCommit(commit.sha, commit.message.splitlines()[0], tuple(
+            PurePosixPath(path) for path in paths.split("\0") if path
+        )))
+    plan = squash_plan(records, ticket_directories)
+    if plan is None:
+        return 0
+    old_tip = _git(root, "rev-parse", "HEAD").strip()
+    directories = [str(d) for d in ticket_directories if any(
+        _git(root, "--literal-pathspecs", "ls-tree", "-r", "--name-only", ref, "--", str(d))
+        for ref in (old_tip, main_tip)
+    )]
+    step = "reset"
+    try:
+        _git(root, "reset", "--hard", main_tip)
+        step = "cherry-pick"
+        for sha in plan.keep:
+            _git(root, "cherry-pick", sha)
+        step = "restore"
+        _git(root, "--literal-pathspecs", "restore", f"--source={old_tip}", "--staged", "--worktree", "--", *directories)
+        step = "commit"
+        count = len(plan.squashed)
+        _git(root, "commit", "--allow-empty", "-m", f"chitty: land {task_id}", "-m", f"Squashed {count} Chitty bookkeeping commits.", "-m", f"Task: {task_id}")
+        step = "verify tree"
+        if _git(root, "rev-parse", "HEAD^{tree}") != _git(root, "rev-parse", f"{old_tip}^{{tree}}"):
+            raise ChittyError("rewritten tree differs from original")
+    except Exception as error:
+        if (_git_path(root, "--git-dir") / "CHERRY_PICK_HEAD").exists():
+            _git(root, "cherry-pick", "--abort")
+        _git(root, "reset", "--hard", old_tip)
+        raise ChittyError(f"bookkeeping squash failed during {step}: {error}") from error
+    return count
+
+
 @dataclass(frozen=True)
 class Commit:
     """A Git commit's object ID and full message."""
