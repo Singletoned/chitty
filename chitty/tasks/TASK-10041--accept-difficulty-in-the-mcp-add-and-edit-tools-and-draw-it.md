@@ -26,6 +26,10 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 - [ ] In `tests/test_mcp.py`: the add tool with `difficulty="medium"` writes it, the edit tool with `difficulty=""` removes it, and the edit tool with `difficulty="hard"` raises `ToolError` matching `difficulty` with the file byte-identical; each fails before the change
 - [ ] The new `tests/test_ticket_strategies.py` case finds a drawn text containing `"\ndifficulty: "`, and fails before the change; `make check` passes
 
+## Plan
+
+Add failing MCP and strategy tests first, then expose difficulty on both MCP tools and draw it independently in ticket strategies. Run formatting and checks, commit, and hand off for review.
+
 ## History
 
 - 2026-11-26T20:08:38Z zesty-ginger-newt → planning
@@ -35,3 +39,4 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 - 2026-11-26T20:10:20Z zesty-ginger-newt planning → todo
 - 2026-11-26T20:10:34Z zesty-ginger-newt: renumbered from TASK-KEGB2N
 - 2026-11-27T00:23:23Z jolly-violet-urchin todo → doing
+- 2026-11-27T00:26:44Z jolly-violet-urchin: wrote the plan
