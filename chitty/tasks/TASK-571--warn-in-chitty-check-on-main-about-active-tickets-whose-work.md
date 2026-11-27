@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: review
+status: done
 depends_on:
   - TASK-358
   - TASK-572
@@ -35,6 +35,10 @@ Add real-Git CLI coverage for landed work and exclusions, verify the warning tes
 
 Before the fix, the new CLI suite produced the expected missing-warning failure: one failed, four regression tests passed.
 
+Reviewed:
+1: pass - The CLI warning test passes in make check; at the merge base, the same test fails with the expected warning not found in empty output.
+2: pass - Four separate CLI regression tests pass; make check passed (1307 tests).
+
 ## Summary
 
 Wired landed-work warnings into checks on main, excluding archived and duplicate tickets and skipping Git history during writes. Added five real-Git CLI tests; the warning test failed before the fix and all passed afterward. make check passed.
@@ -61,3 +65,5 @@ Wired landed-work warnings into checks on main, excluding archived and duplicate
 - 2026-11-27T00:02:20Z mellow-pearl-badger: changed notes
 - 2026-11-27T00:06:15Z mellow-pearl-badger: changed summary; ticked acceptance criteria
 - 2026-11-27T00:08:20Z mellow-pearl-badger doing → review
+- 2026-11-27T00:14:01Z plucky-pearl-kestrel: changed notes
+- 2026-11-27T00:14:01Z plucky-pearl-kestrel review → done
