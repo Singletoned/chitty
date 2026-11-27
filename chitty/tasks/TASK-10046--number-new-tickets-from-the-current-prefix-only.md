@@ -29,6 +29,10 @@ Reading old-prefix tickets (sibling ticket). The filter applies to random-ID con
 
 Add CLI regressions for allocation and provisional renumbering after a prefix change, verify both fail, then filter used file numbers by the current prefix and run formatting and checks.
 
+## Notes
+
+Before the fix, both new CLI regression tests failed: allocation and provisional renumbering each produced TK-4 instead of TK-1.
+
 ## History
 
 - 2026-11-26T17:52:22Z calm-ochre-quail → cold-read
@@ -37,3 +41,4 @@ Add CLI regressions for allocation and provisional renumbering after a prefix ch
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GNSWY6
 - 2026-11-27T00:34:16Z jolly-white-puffin todo → doing
 - 2026-11-27T00:37:32Z jolly-white-puffin: wrote the plan
+- 2026-11-27T00:37:56Z jolly-white-puffin: changed notes
