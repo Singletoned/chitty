@@ -338,7 +338,9 @@ def _remove_merged_branches(main_repo: Repo) -> None:
     root = main_repo.root
     # A missing worktree directory leaves stale metadata; prune before looking up branches.
     git.prune_worktrees(root)
-    prefixes = tuple(f"{context.prefix.lower()}-" for context in main_repo.config.contexts.values())
+    prefixes = tuple(
+        f"{prefix.lower()}-" for context in main_repo.contexts() for prefix in context.prefixes
+    )
     main_tip = main_repo.config.main_branch
     for branch in git.local_branches(root):
         if not branch.startswith(prefixes) or not ID_RE.fullmatch(branch):

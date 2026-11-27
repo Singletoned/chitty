@@ -35,6 +35,22 @@ class TestRunRemovesMergedBranches(LandingTestCase):
             self.assertIn(f"removed merged branch {branch}", result.stderr)
         self.assertFalse(self.worktree.exists())
 
+    def test_removes_merged_old_prefix_branch(self):
+        self.git("worktree", "remove", str(self.worktree))
+        self.git("branch", "-D", self.branch)
+        task = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        task.write_text(task.read_text().replace("status: todo", "status: done"))
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace('prefix = "TASK"', 'prefix = "TK"\nold_prefixes = ["TASK"]')
+        )
+        self.git("add", str(task), "chitty.toml")
+        self.git("commit", "--quiet", "-m", "finish and change prefix")
+        self.git("branch", "task-1")
+        result = self.run_cleanup()
+        self.assertFalse(self.exists("task-1"))
+        self.assertIn("removed merged branch task-1", result.stderr)
+
     def test_removes_archived_tickets_in_non_done_statuses(self):
         branches = []
         for status in STATUSES:

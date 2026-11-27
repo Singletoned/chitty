@@ -101,6 +101,10 @@ class Context:
     old_prefixes: tuple[str, ...] = ()
 
     @property
+    def prefixes(self) -> tuple[str, ...]:
+        return (self.prefix, *self.old_prefixes)
+
+    @property
     def archive_directory(self) -> Path:
         return self.directory / ARCHIVE_DIR
 
@@ -358,7 +362,7 @@ class Repo:
                 if context.name == name:
                     return context
         for context in self.contexts():
-            if context.prefix == task_id.prefix:
+            if task_id.prefix in context.prefixes:
                 return context
         raise ChittyError(f"{task_id}: no context in {self.root} has prefix {task_id.prefix!r}")
 
@@ -718,7 +722,7 @@ class Repo:
         main_tip = self._main_tip()
         if main_tip is not None:
             refs[main_ref] = main_tip
-        prefixes = {context.prefix for context in self.contexts()}
+        prefixes = {prefix for context in self.contexts() for prefix in context.prefixes}
         for ref, tip in self._branch_tips().items():
             if ref.startswith("refs/heads/"):
                 name = ref.removeprefix("refs/heads/")
@@ -791,7 +795,7 @@ class Repo:
     def referenced_tasks(
         self, stored: StoredTask
     ) -> list[tuple[TaskId, StoredTask | ChittyError | None]]:
-        prefixes = [context.prefix for context in self.contexts()]
+        prefixes = [prefix for context in self.contexts() for prefix in context.prefixes]
         text = "\n".join(
             [
                 stored.task.section(DESCRIPTION) or "",
