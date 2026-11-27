@@ -1,6 +1,6 @@
 ---
 title: Add an `old_prefixes` setting to contexts
-status: todo
+status: doing
 labels:
   - needs-minor
 parent: TASK-10053
@@ -37,3 +37,4 @@ Reading or numbering old-prefix tickets (the sibling tickets).
 - 2026-11-26T17:53:12Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:53:12Z calm-ochre-quail cold-read → todo
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-MQ87S9
+- 2026-11-27T00:45:58Z able-silver-kestrel todo → doing
