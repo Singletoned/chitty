@@ -1,6 +1,6 @@
 ---
 title: Accept `difficulty` in the MCP add and edit tools, and draw it in ticket strategies
-status: todo
+status: doing
 depends_on:
   - TASK-311
 parent: TASK-308
@@ -34,3 +34,4 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 - 2026-11-26T20:10:17Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T20:10:20Z zesty-ginger-newt planning → todo
 - 2026-11-26T20:10:34Z zesty-ginger-newt: renumbered from TASK-KEGB2N
+- 2026-11-27T00:23:23Z jolly-violet-urchin todo → doing
