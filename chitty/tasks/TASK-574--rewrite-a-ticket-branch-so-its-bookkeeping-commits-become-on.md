@@ -33,6 +33,10 @@ Out of scope: calling it from landing (`TASK-573`).
 
 Build and validate the branch plan before rewriting; cherry-pick implementation commits, restore ticket directories, commit and verify the tree, rolling back on failure. Cover generated real Git histories and failure examples, then run checks.
 
+## Summary
+
+Implemented bookkeeping branch rewrite with tree verification and rollback, plus real Git property and failure tests. make check passed.
+
 ## History
 
 - 2026-11-22T10:13:55Z friendly-jade-stoat → todo
@@ -55,3 +59,4 @@ Build and validate the branch plan before rewriting; cherry-pick implementation 
 - 2026-11-26T20:07:44Z zesty-ginger-newt planning → todo
 - 2026-11-27T00:09:34Z able-white-gannet todo → doing
 - 2026-11-27T00:13:02Z able-white-gannet: wrote the plan
+- 2026-11-27T00:20:06Z able-white-gannet: changed summary
