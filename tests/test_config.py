@@ -9,6 +9,9 @@ from hypothesis import strategies as st
 from chitty import config as config_module
 from chitty.config import CHITTY_VERSION, find_root, load_repo_config, load_user_contexts
 from chitty.errors import ChittyError
+from chitty.ids import PREFIX_RE
+from chitty.store import Repo
+from tests import examples
 from tests.support import CONFIG, RepoTestCase
 
 PYPROJECT_CONFIG = CONFIG.replace("[contexts.", "[tool.chitty.contexts.")
@@ -215,6 +218,38 @@ class TestRepoConfig(RepoTestCase):
         config_path.write_text(text + 'contexts = "not a table"\n')
         with self.assertRaisesRegex(ChittyError, "contexts"):
             load_repo_config(self.root)
+
+    @settings(max_examples=examples(150))
+    @given(
+        st.sampled_from(["A", "B", "C", "bad"]),
+        st.lists(st.sampled_from(["A", "B", "C", "bad"]), max_size=3),
+        st.sampled_from(["A", "B", "C", "bad"]),
+        st.lists(st.sampled_from(["A", "B", "C", "bad"]), max_size=3),
+    )
+    def test_context_prefixes_are_valid_and_unique(self, first, first_old, second, second_old):
+        text = CONFIG.replace(
+            'prefix = "TASK"', f'prefix = "{first}"\nold_prefixes = {first_old!r}'
+        )
+        text = text.replace(
+            'prefix = "HUMAN"', f'prefix = "{second}"\nold_prefixes = {second_old!r}'
+        )
+        (self.root / "chitty.toml").write_text(text)
+        prefixes = [first, *first_old, second, *second_old]
+        invalid = {p for p in prefixes if not PREFIX_RE.fullmatch(p)}
+        duplicates = {p for p in prefixes if prefixes.count(p) > 1}
+        if invalid or duplicates:
+            with self.assertRaises(ChittyError) as raised:
+                load_repo_config(self.root)
+            self.assertTrue(any(p in str(raised.exception) for p in invalid or duplicates))
+        else:
+            load_repo_config(self.root)
+
+    def test_context_old_prefixes(self):
+        path = self.root / "chitty.toml"
+        path.write_text(CONFIG.replace('prefix = "TASK"', 'prefix = "TK"\nold_prefixes = ["TASK"]'))
+        repo = Repo.open(self.root)
+        self.assertEqual(repo.context("tasks").old_prefixes, ("TASK",))
+        self.assertEqual(repo.context("human").old_prefixes, ())
 
     def test_rejections(self):
         cases = {

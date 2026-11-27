@@ -78,6 +78,7 @@ class ContextConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
 
     prefix: str
+    old_prefixes: list[str] = []
     review: bool | None = None
     # Number new tickets randomly instead of sequentially, so tickets raised on
     # different branches cannot collide: only `main` hands out sequential IDs.
@@ -89,6 +90,13 @@ class ContextConfig(BaseModel):
         if not PREFIX_RE.fullmatch(value):
             raise ValueError(f"{value!r} must be upper-case letters only, e.g. TASK")
         return value
+
+    @field_validator("old_prefixes")
+    @classmethod
+    def _old_prefixes(cls, values: list[str]) -> list[str]:
+        for value in values:
+            cls._prefix(value)
+        return values
 
 
 class RepoConfig(BaseModel):
@@ -227,10 +235,10 @@ class RepoConfig(BaseModel):
                 raise ValueError(f"context name {name!r} is not allowed")
         if self.default_context not in self.contexts:
             raise ValueError(f"default_context {self.default_context!r} is not in [contexts]")
-        prefixes = [c.prefix for c in self.contexts.values()]
+        prefixes = [p for c in self.contexts.values() for p in (c.prefix, *c.old_prefixes)]
         duplicates = sorted({p for p in prefixes if prefixes.count(p) > 1})
         if duplicates:
-            raise ValueError(f"prefix {duplicates[0]!r} is used by more than one context")
+            raise ValueError(f"prefix {duplicates[0]!r} is used by more than one context or repeated")
         return self
 
 

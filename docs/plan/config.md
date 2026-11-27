@@ -65,6 +65,10 @@ failure routing; a check failure may still allow an unfinished work session.
 ## Contexts
 
 - Directory `chitty/<name>/`; not configurable.
+- To restart numbering under a new prefix, on `main` set the context's `prefix`
+  to the new prefix and add the old prefix to `old_prefixes` (a list of strings).
+  All current and old prefixes must be unique across contexts. Old-prefix ticket
+  lookup and numbering are not yet implemented.
 - A context's `review` overrides the repository's; unset inherits it.
 - `chitty init` gives new `human` contexts `review = false`.
 - `chitty init` adds a `backlog` context after the last context table. It

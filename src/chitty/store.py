@@ -98,6 +98,7 @@ class Context:
     name: str
     prefix: str
     directory: Path
+    old_prefixes: tuple[str, ...] = ()
 
     @property
     def archive_directory(self) -> Path:
@@ -331,7 +332,7 @@ class Repo:
         if config is None:
             known = ", ".join(self.config.contexts)
             raise ChittyError(f"no context {name!r} in {self.root} (known: {known})")
-        return Context(name, config.prefix, self.root / BACKLOG_DIR / name)
+        return Context(name, config.prefix, self.root / BACKLOG_DIR / name, tuple(config.old_prefixes))
 
     @property
     def default_context(self) -> Context:
