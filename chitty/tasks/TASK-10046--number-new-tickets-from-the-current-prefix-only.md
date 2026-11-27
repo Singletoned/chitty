@@ -1,6 +1,6 @@
 ---
 title: Number new tickets from the current prefix only
-status: todo
+status: doing
 parent: TASK-10053
 created: 2026-11-26
 moved_from: TASK-GNSWY6
@@ -31,3 +31,4 @@ Reading old-prefix tickets (sibling ticket). The filter applies to random-ID con
 - 2026-11-26T17:54:10Z calm-ochre-quail: changed dependencies, description, acceptance criteria
 - 2026-11-26T17:54:10Z calm-ochre-quail cold-read → todo
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GNSWY6
+- 2026-11-27T00:34:16Z jolly-white-puffin todo → doing
