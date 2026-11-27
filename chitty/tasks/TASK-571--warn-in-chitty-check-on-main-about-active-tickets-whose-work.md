@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` on `main` about active tickets whose work is on `main` but are not done
-status: doing
+status: review
 depends_on:
   - TASK-358
   - TASK-572
@@ -60,3 +60,4 @@ Wired landed-work warnings into checks on main, excluding archived and duplicate
 - 2026-11-27T00:01:47Z mellow-pearl-badger: wrote the plan
 - 2026-11-27T00:02:20Z mellow-pearl-badger: changed notes
 - 2026-11-27T00:06:15Z mellow-pearl-badger: changed summary; ticked acceptance criteria
+- 2026-11-27T00:08:20Z mellow-pearl-badger doing → review
