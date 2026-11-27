@@ -1,6 +1,6 @@
 ---
 title: Read tickets with a context's old prefixes on branches, in references and in branch cleanup
-status: review
+status: done
 depends_on:
   - TASK-10048
 parent: TASK-10053
@@ -42,6 +42,10 @@ Add focused CLI and cleanup regressions first and confirm failures, then use Con
 
 Before the fix, the three focused tests failed: old branch content was ignored, the referenced ticket was omitted, and cleanup retained the merged old-prefix branch.
 
+Reviewed: implementation and complete diff checked; make check passed (1322 tests).
+1: pass - tests/test_old_prefixes.py covers branch reads, references, show and dependencies. Applying the test diff to merge base 387f8ebf1 and running pytest on TestOldPrefixes failed both new tests: main description was read and TASK-1 was absent from references.
+2: pass - test_removes_merged_old_prefix_branch passes in make check; on merge base with the test diff, pytest failed because task-1 still existed. make check passed.
+
 ## Summary
 
 Recognized current and old context prefixes in ticket branch reads, references, context fallback and merged-branch cleanup. Focused regressions failed before the fix and pass after it; make check passes.
@@ -57,3 +61,5 @@ Recognized current and old context prefixes in ticket branch reads, references, 
 - 2026-11-27T01:25:34Z nimble-pearl-quail: changed notes
 - 2026-11-27T01:33:06Z nimble-pearl-quail: changed summary; ticked acceptance criteria
 - 2026-11-27T01:39:13Z nimble-pearl-quail doing → review
+- 2026-11-27T01:50:53Z daring-teal-lapwing: changed notes
+- 2026-11-27T01:50:53Z daring-teal-lapwing review → done
