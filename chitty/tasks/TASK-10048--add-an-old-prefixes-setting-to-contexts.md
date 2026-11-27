@@ -35,6 +35,10 @@ Reading or numbering old-prefix tickets (the sibling tickets).
 
 Add property and context propagation tests, verify they fail, then implement validation and propagation, document configuration, and run formatting and checks.
 
+## Notes
+
+Decided: unknown old_prefixes keys are warned and ignored rather than rejected today; proceed with the requested behavior because both new tests fail on the unfixed code. The property exposes ignored duplicates and invalid values; the context test raises AttributeError.
+
 ## History
 
 - 2026-11-26T17:52:02Z calm-ochre-quail → cold-read
@@ -43,3 +47,4 @@ Add property and context propagation tests, verify they fail, then implement val
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-MQ87S9
 - 2026-11-27T00:45:58Z able-silver-kestrel todo → doing
 - 2026-11-27T00:49:23Z able-silver-kestrel: wrote the plan
+- 2026-11-27T00:49:54Z able-silver-kestrel: changed notes
