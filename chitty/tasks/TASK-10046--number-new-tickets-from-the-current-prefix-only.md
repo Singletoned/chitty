@@ -25,6 +25,10 @@ Reading old-prefix tickets (sibling ticket). The filter applies to random-ID con
 - [ ] In `tests/test_old_prefixes.py` (create it or add to it; no Git is needed), with tickets `TASK-1` to `TASK-3` and the `tasks` context then changed in `chitty.toml` to `prefix = "TK"` (no `old_prefixes` needed): `chitty add New -d Text.` creates `TK-1`, and a second add creates `TK-2`. Fails without the change (today `TK-4`).
 - [ ] In `tests/test_renumber_provisional.py`, outside Git with the same setup and one provisional ticket file `TK-AAAAAA--alpha.md` (`provisional: true`, as `TestRenumberOutsideGit.setUp` writes `TASK-AAAAAA`), bare `chitty renumber` gives it `TK-1`. Fails without the change. Regression tests: the existing numbering and renumbering tests pass. `make check` passes.
 
+## Plan
+
+Add CLI regressions for allocation and provisional renumbering after a prefix change, verify both fail, then filter used file numbers by the current prefix and run formatting and checks.
+
 ## History
 
 - 2026-11-26T17:52:22Z calm-ochre-quail → cold-read
@@ -32,3 +36,4 @@ Reading old-prefix tickets (sibling ticket). The filter applies to random-ID con
 - 2026-11-26T17:54:10Z calm-ochre-quail cold-read → todo
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GNSWY6
 - 2026-11-27T00:34:16Z jolly-white-puffin todo → doing
+- 2026-11-27T00:37:32Z jolly-white-puffin: wrote the plan
