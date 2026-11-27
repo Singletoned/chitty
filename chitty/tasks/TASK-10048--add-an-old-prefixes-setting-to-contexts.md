@@ -39,6 +39,10 @@ Add property and context propagation tests, verify they fail, then implement val
 
 Decided: unknown old_prefixes keys are warned and ignored rather than rejected today; proceed with the requested behavior because both new tests fail on the unfixed code. The property exposes ignored duplicates and invalid values; the context test raises AttributeError.
 
+## Summary
+
+Added validation and context propagation for old prefixes, with property and propagation tests and configuration guidance. Both tests failed before implementation; make check passes.
+
 ## History
 
 - 2026-11-26T17:52:02Z calm-ochre-quail → cold-read
@@ -48,3 +52,4 @@ Decided: unknown old_prefixes keys are warned and ignored rather than rejected t
 - 2026-11-27T00:45:58Z able-silver-kestrel todo → doing
 - 2026-11-27T00:49:23Z able-silver-kestrel: wrote the plan
 - 2026-11-27T00:49:54Z able-silver-kestrel: changed notes
+- 2026-11-27T00:53:28Z able-silver-kestrel: changed summary
