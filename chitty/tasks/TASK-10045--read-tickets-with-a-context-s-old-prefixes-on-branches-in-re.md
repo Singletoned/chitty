@@ -38,6 +38,10 @@ Numbering (sibling ticket); the setting itself (TASK-10048).
 
 Add focused CLI and cleanup regressions first and confirm failures, then use Context.prefixes for old and current IDs in the four matching paths. Format, run checks and hand off for review.
 
+## Notes
+
+Before the fix, the three focused tests failed: old branch content was ignored, the referenced ticket was omitted, and cleanup retained the merged old-prefix branch.
+
 ## History
 
 - 2026-11-26T17:52:20Z calm-ochre-quail → cold-read
@@ -46,3 +50,4 @@ Add focused CLI and cleanup regressions first and confirm failures, then use Con
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GK7GSE
 - 2026-11-27T01:21:14Z nimble-pearl-quail todo → doing
 - 2026-11-27T01:25:00Z nimble-pearl-quail: wrote the plan
+- 2026-11-27T01:25:34Z nimble-pearl-quail: changed notes
