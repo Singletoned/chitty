@@ -1,6 +1,6 @@
 ---
 title: Accept `difficulty` in the MCP add and edit tools, and draw it in ticket strategies
-status: review
+status: done
 depends_on:
   - TASK-311
 parent: TASK-308
@@ -30,6 +30,12 @@ Out of scope: the field, CLI and docs (`TASK-311`).
 
 Add failing MCP and strategy tests first, then expose difficulty on both MCP tools and draw it independently in ticket strategies. Run formatting and checks, commit, and hand off for review.
 
+## Notes
+
+Reviewed: implementation and complete diff checked.
+1: pass - make check passes; on the merge base with the three new MCP tests applied, pytest failed all three: missing difficulty, nothing to change, and error text lacking difficulty, respectively.
+2: pass - make check passed (1315 tests); on the merge base with the new strategy test applied, pytest failed with NoSuchExample for difficulty.
+
 ## Summary
 
 MCP add and edit now accept validated difficulty; ticket strategies draw difficulty independently. All four focused tests failed before the fix and pass in make check (1311 passed).
@@ -46,3 +52,5 @@ MCP add and edit now accept validated difficulty; ticket strategies draw difficu
 - 2026-11-27T00:26:44Z jolly-violet-urchin: wrote the plan
 - 2026-11-27T00:29:51Z jolly-violet-urchin: changed summary; ticked acceptance criteria
 - 2026-11-27T00:32:04Z jolly-violet-urchin doing → review
+- 2026-11-27T00:42:04Z jolly-lilac-eel: changed notes
+- 2026-11-27T00:42:04Z jolly-lilac-eel review → done
