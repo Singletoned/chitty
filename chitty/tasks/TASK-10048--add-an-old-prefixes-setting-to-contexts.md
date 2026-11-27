@@ -1,6 +1,6 @@
 ---
 title: Add an `old_prefixes` setting to contexts
-status: review
+status: done
 labels:
   - needs-minor
 parent: TASK-10053
@@ -28,8 +28,8 @@ Reading or numbering old-prefix tickets (the sibling tickets).
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_config.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) writes a `chitty.toml` (the `test_rejections` pattern: write it, then `load_repo_config(self.root)`) with two contexts whose `prefix` and `old_prefixes` are drawn from a small set of prefixes, sometimes with an entry that breaks `PREFIX_RE`. Loading is refused, with a message containing the offending prefix, exactly when some entry breaks the rule or some prefix appears more than once across both contexts' `prefix` and `old_prefixes`; otherwise it loads. Fails without the change, because `old_prefixes` is an unknown key today.
-- [ ] With `old_prefixes = ["TASK"]` on the `tasks` context and `prefix = "TK"`, `Repo.context("tasks").old_prefixes` returns `("TASK",)`. Fails without the change. `make check` passes.
+- [x] In `tests/test_config.py`, a Hypothesis property test (`@settings(max_examples=examples(N))`) writes a `chitty.toml` (the `test_rejections` pattern: write it, then `load_repo_config(self.root)`) with two contexts whose `prefix` and `old_prefixes` are drawn from a small set of prefixes, sometimes with an entry that breaks `PREFIX_RE`. Loading is refused, with a message containing the offending prefix, exactly when some entry breaks the rule or some prefix appears more than once across both contexts' `prefix` and `old_prefixes`; otherwise it loads. Fails without the change, because `old_prefixes` is an unknown key today.
+- [x] With `old_prefixes = ["TASK"]` on the `tasks` context and `prefix = "TK"`, `Repo.context("tasks").old_prefixes` returns `("TASK",)`. Fails without the change. `make check` passes.
 
 ## Plan
 
@@ -38,6 +38,10 @@ Add property and context propagation tests, verify they fail, then implement val
 ## Notes
 
 Decided: unknown old_prefixes keys are warned and ignored rather than rejected today; proceed with the requested behavior because both new tests fail on the unfixed code. The property exposes ignored duplicates and invalid values; the context test raises AttributeError.
+
+Reviewed: implementation and complete diff meet the ticket requirements.
+1: pass - make check passes; applying the test diff to the merge base and running pytest tests/test_config.py::TestRepoConfig::test_context_prefixes_are_valid_and_unique with PYTHONPATH pointing to the baseline src failed with ChittyError not raised for duplicate old prefix A.
+2: pass - make check passes; the same baseline pytest run for tests/test_config.py::TestRepoConfig::test_context_old_prefixes failed with AttributeError: Context has no attribute old_prefixes.
 
 ## Summary
 
@@ -54,3 +58,5 @@ Added validation and context propagation for old prefixes, with property and pro
 - 2026-11-27T00:49:54Z able-silver-kestrel: changed notes
 - 2026-11-27T00:53:28Z able-silver-kestrel: changed summary
 - 2026-11-27T00:57:00Z able-silver-kestrel doing → review
+- 2026-11-27T01:02:24Z eager-indigo-heron: changed notes; ticked acceptance criteria
+- 2026-11-27T01:02:24Z eager-indigo-heron review → done
