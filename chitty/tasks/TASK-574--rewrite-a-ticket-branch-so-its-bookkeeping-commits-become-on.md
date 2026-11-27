@@ -29,6 +29,10 @@ Out of scope: calling it from landing (`TASK-573`).
 - [ ] The real-Git property passes: `HEAD`'s tree equals the old tip's; with two or more bookkeeping commits the branch is the implementation commits in order (subject, author name, author date, `src/` tree) then one `chitty: land TASK-1` commit with the stated body and trailer, changing only `chitty/tasks/`, returning the bookkeeping count; otherwise `HEAD` is unchanged and it returns 0
 - [ ] The not-rebased, mixed-commit and restore-failure examples pass as stated; `make check` passes
 
+## Plan
+
+Build and validate the branch plan before rewriting; cherry-pick implementation commits, restore ticket directories, commit and verify the tree, rolling back on failure. Cover generated real Git histories and failure examples, then run checks.
+
 ## History
 
 - 2026-11-22T10:13:55Z friendly-jade-stoat → todo
@@ -50,3 +54,4 @@ Out of scope: calling it from landing (`TASK-573`).
 - 2026-11-26T20:07:42Z zesty-ginger-newt to-plan → planning
 - 2026-11-26T20:07:44Z zesty-ginger-newt planning → todo
 - 2026-11-27T00:09:34Z able-white-gannet todo → doing
+- 2026-11-27T00:13:02Z able-white-gannet: wrote the plan
