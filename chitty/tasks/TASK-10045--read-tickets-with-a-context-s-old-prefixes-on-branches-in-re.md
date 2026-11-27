@@ -1,6 +1,6 @@
 ---
 title: Read tickets with a context's old prefixes on branches, in references and in branch cleanup
-status: todo
+status: doing
 depends_on:
   - TASK-10048
 parent: TASK-10053
@@ -40,3 +40,4 @@ Numbering (sibling ticket); the setting itself (TASK-10048).
 - 2026-11-26T17:53:36Z calm-ochre-quail: changed description, acceptance criteria
 - 2026-11-26T17:53:36Z calm-ochre-quail cold-read → todo
 - 2026-11-26T20:30:10Z intrepid-russet-falcon: renumbered from TASK-GK7GSE
+- 2026-11-27T01:21:14Z nimble-pearl-quail todo → doing
