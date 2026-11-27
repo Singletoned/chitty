@@ -20,7 +20,7 @@ from chitty.model import (
     Task,
     parse,
 )
-from chitty.store import Context, Repo, scan
+from chitty.store import ARCHIVE_DIR, Context, Repo, scan
 
 
 def unfinished_landed(
@@ -205,6 +205,28 @@ def fix(
     )
 
 
+def _unfinished_landed_warnings(
+    repo: Repo, tasks: Mapping[Path, Task], by_id: Mapping[TaskId, list[Path]]
+) -> list[Problem]:
+    statuses = {
+        task_id: tasks[paths[0]].frontmatter.status
+        for task_id, paths in by_id.items()
+        if len(paths) == 1 and paths[0] in tasks and paths[0].parent.name != ARCHIVE_DIR
+    }
+    directories = [
+        PurePosixPath(directory.relative_to(repo.root).as_posix())
+        for context in repo.discovered_contexts()
+        for directory in (context.directory, context.archive_directory)
+    ]
+    main = repo.config.main_branch
+    landed = unfinished_landed(git.trailer_commits(repo.root, main), statuses, directories)
+    return [
+        Problem(by_id[task_id][0], f"commit {sha[:10]} on {main} has work for "
+                f"{task_id}, which is {statuses[task_id]}", "warning")
+        for task_id, sha in landed.items()
+    ]
+
+
 def check(
     repo: Repo,
     contexts: Sequence[Context],
@@ -286,6 +308,8 @@ def check(
         and (repo.root / ".git").exists()
         and (branch := git.current_branch(repo.root))
     ):
+        if branch == repo.config.main_branch:
+            problems.extend(_unfinished_landed_warnings(repo, tasks, by_id))
         reviewed = [
             path
             for path, task in tasks.items()

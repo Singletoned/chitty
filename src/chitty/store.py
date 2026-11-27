@@ -1654,7 +1654,8 @@ class Repo:
                 if any(path.resolve().is_relative_to(directory) for directory in directories)
             ]
             # The task file is temporarily dirty until its autocommit below;
-            # validate content here, but leave worktree cleanliness to `chitty check`.
+            # validate content here, but leave worktree cleanliness and the Git history
+            # scan to `chitty check`.
             if task_paths:
                 if self.config.autoformat or self.config.autocommit:
                     _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
