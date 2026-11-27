@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: review
+status: done
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -37,6 +37,10 @@ Add failing CLI and property coverage first, then implement the validated frontm
 ## Notes
 
 Before implementation, tests/test_difficulty.py failed all four tests: the CLI did not recognize the option, check rejected the unknown key, and Edit lacked the field. After implementation all four pass; make check passed.
+
+Reviewed: Complete diff inspected.
+1: pass - make check passed; in a merge-base worktree with the new tests, PYTHONPATH=src:. python -m pytest -q tests/test_difficulty.py failed the CLI tests with No such option and unknown frontmatter key, as expected.
+2: pass - make check passed (1302 tests); the property failed at merge-base with Edit.__init__ unexpected keyword argument difficulty; the documentation row is present.
 
 ## Summary
 
@@ -76,3 +80,5 @@ Added validated optional difficulty frontmatter, add/edit CLI options, history r
 - 2026-11-26T23:50:18Z golden-hazel-vole: wrote the plan
 - 2026-11-26T23:54:55Z golden-hazel-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-26T23:56:58Z golden-hazel-vole doing → review
+- 2026-11-27T00:02:49Z kind-teal-ibis: changed notes
+- 2026-11-27T00:02:49Z kind-teal-ibis review → done
