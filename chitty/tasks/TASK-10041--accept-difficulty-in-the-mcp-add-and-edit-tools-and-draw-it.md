@@ -1,6 +1,6 @@
 ---
 title: Accept `difficulty` in the MCP add and edit tools, and draw it in ticket strategies
-status: doing
+status: review
 depends_on:
   - TASK-311
 parent: TASK-308
@@ -45,3 +45,4 @@ MCP add and edit now accept validated difficulty; ticket strategies draw difficu
 - 2026-11-27T00:23:23Z jolly-violet-urchin todo → doing
 - 2026-11-27T00:26:44Z jolly-violet-urchin: wrote the plan
 - 2026-11-27T00:29:51Z jolly-violet-urchin: changed summary; ticked acceptance criteria
+- 2026-11-27T00:32:04Z jolly-violet-urchin doing → review
