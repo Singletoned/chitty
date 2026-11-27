@@ -1,6 +1,6 @@
 ---
 title: Add an `old_prefixes` setting to contexts
-status: doing
+status: review
 labels:
   - needs-minor
 parent: TASK-10053
@@ -53,3 +53,4 @@ Added validation and context propagation for old prefixes, with property and pro
 - 2026-11-27T00:49:23Z able-silver-kestrel: wrote the plan
 - 2026-11-27T00:49:54Z able-silver-kestrel: changed notes
 - 2026-11-27T00:53:28Z able-silver-kestrel: changed summary
+- 2026-11-27T00:57:00Z able-silver-kestrel doing → review
