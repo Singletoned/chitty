@@ -1,6 +1,6 @@
 ---
 title: Number new tickets from the current prefix only
-status: doing
+status: review
 parent: TASK-10053
 created: 2026-11-26
 moved_from: TASK-GNSWY6
@@ -47,3 +47,4 @@ Number allocation and provisional renumbering now ignore files with old prefixes
 - 2026-11-27T00:37:32Z jolly-white-puffin: wrote the plan
 - 2026-11-27T00:37:56Z jolly-white-puffin: changed notes
 - 2026-11-27T00:41:36Z jolly-white-puffin: changed summary; ticked acceptance criteria
+- 2026-11-27T00:44:46Z jolly-white-puffin doing → review
