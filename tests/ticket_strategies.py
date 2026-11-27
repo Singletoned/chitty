@@ -6,7 +6,7 @@ import string
 from hypothesis import strategies as st
 
 from chitty.ids import TaskId
-from chitty.model import PRIORITIES, STATUSES
+from chitty.model import DIFFICULTIES, PRIORITIES, STATUSES
 
 
 def ticket_texts(ids: list[TaskId]):
@@ -45,6 +45,8 @@ def _ticket_texts(draw, ids: list[TaskId]):
     ]
     if draw(st.booleans()):
         fields.append(f"priority: {draw(st.sampled_from(PRIORITIES))}")
+    if draw(st.booleans()):
+        fields.append(f"difficulty: {draw(st.sampled_from(DIFFICULTIES))}")
     if draw(st.booleans()):
         labels = draw(st.lists(prose, min_size=1, max_size=2, unique=True))
         fields.append(f"labels: {json.dumps(labels)}")

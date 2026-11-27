@@ -96,6 +96,28 @@ class TestMcp(CliTestCase):
         self.assertEqual(call("check"), self.json("check"))
         self.assertEqual(call("fix"), self.json("fix"))
 
+    def test_add_difficulty(self):
+        call("add", title="Difficulty", description="x", difficulty="medium")
+        path = self.root / "chitty/tasks/TASK-1--difficulty.md"
+        self.assertIn("difficulty: medium", path.read_text())
+
+    def test_edit_unsets_difficulty(self):
+        call("add", title="Difficulty", description="x")
+        path = self.root / "chitty/tasks/TASK-1--difficulty.md"
+        path.write_text(
+            path.read_text().replace("status: todo", "status: todo\ndifficulty: medium")
+        )
+        call("edit", id="1", difficulty="")
+        self.assertNotIn("difficulty:", path.read_text())
+
+    def test_edit_rejects_invalid_difficulty_without_writing(self):
+        call("add", title="Difficulty", description="x")
+        path = self.root / "chitty/tasks/TASK-1--difficulty.md"
+        before = path.read_bytes()
+        with self.assertRaisesRegex(ToolError, "difficulty"):
+            call("edit", id="1", difficulty="hard")
+        self.assertEqual(path.read_bytes(), before)
+
     def test_edit_replaces_text_in_description(self):
         call("add", title="Description", description="Keep this phrase; retain that phrase.")
         edited = call(

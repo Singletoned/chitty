@@ -44,6 +44,7 @@ Status = Literal[
     "done",
 ]
 Priority = str
+Difficulty = Literal["low", "medium", "high"]
 
 # Tools declared by `_tool`, registered on each server by `create_server`.
 _TOOLS: list[tuple[str, str, Callable[..., Any]]] = []
@@ -124,6 +125,7 @@ def add(
     ac: list[str] | None = None,
     label: list[str] | None = None,
     priority: Priority | None = None,
+    difficulty: Difficulty | None = None,
     owner: str | None = None,
     depends_on: list[str] | None = None,
     parent: str | None = None,
@@ -135,6 +137,7 @@ def add(
         "status": status,
         "labels": list(dict.fromkeys(label or [])),
         "priority": priority,
+        "difficulty": difficulty,
         "owner": owner,
         "depends_on": depends_on or [],
         "parent": parent,
@@ -185,7 +188,7 @@ def show(id: str) -> dict[str, Any]:
     "edit",
     "Change a task. Write `plan` and set status doing before coding; tick criteria with "
     "`check` (numbers from show) as you meet them; record surprises with `note`. "
-    "Criterion numbers refer to the list before this edit. '' unsets priority/owner/plan.",
+    "Criterion numbers refer to the list before this edit. '' unsets priority/difficulty/owner/plan.",
 )
 def edit(
     id: str,
@@ -194,6 +197,7 @@ def edit(
     add_label: list[str] | None = None,
     rm_label: list[str] | None = None,
     priority: Priority | None = None,
+    difficulty: Difficulty | Literal[""] | None = None,
     owner: str | None = None,
     depends_on: list[str] | None = None,
     rm_depends_on: list[str] | None = None,
@@ -218,6 +222,7 @@ def edit(
         add_labels=add_label or (),
         rm_labels=rm_label or (),
         priority=priority,
+        difficulty=difficulty,
         owner=owner,
         depends_on=depends_on or (),
         rm_depends_on=rm_depends_on or (),

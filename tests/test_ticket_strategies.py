@@ -29,6 +29,9 @@ class TestTicketStrategies(unittest.TestCase):
     def test_continuation(self):
         self.check_find(lambda text: re.search(r"(?m)^- \[[ xX]\] .+\n  Text ", text) is not None)
 
+    def test_difficulty_present(self):
+        self.check_find(lambda text: "\ndifficulty: " in text)
+
     def test_plan_present(self):
         self.check_find(lambda text: "\n## Plan\n" in text)
 
