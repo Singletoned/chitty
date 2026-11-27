@@ -1,6 +1,6 @@
 ---
 title: Read tickets with a context's old prefixes on branches, in references and in branch cleanup
-status: doing
+status: review
 depends_on:
   - TASK-10048
 parent: TASK-10053
@@ -56,3 +56,4 @@ Recognized current and old context prefixes in ticket branch reads, references, 
 - 2026-11-27T01:25:00Z nimble-pearl-quail: wrote the plan
 - 2026-11-27T01:25:34Z nimble-pearl-quail: changed notes
 - 2026-11-27T01:33:06Z nimble-pearl-quail: changed summary; ticked acceptance criteria
+- 2026-11-27T01:39:13Z nimble-pearl-quail doing → review
