@@ -24,8 +24,8 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTe
 
 ## Acceptance Criteria
 
-- [ ] On `main`, with `TASK-1` `todo` and a commit of `src/x.py` whose message ends `Task: TASK-1`, `chitty check` exits 0 and prints the warning naming `TASK-1` and `todo`; this fails before the change
-- [ ] Regression tests, each its own test: no warning when the only trailer commit touches only `TASK-1`'s ticket file; nor for a `chitty: ` commit of `src/x.py`; nor after `chitty archive TASK-1`; nor when `chitty check` runs in a linked worktree on branch `task-1`. `make check` passes
+- [x] On `main`, with `TASK-1` `todo` and a commit of `src/x.py` whose message ends `Task: TASK-1`, `chitty check` exits 0 and prints the warning naming `TASK-1` and `todo`; this fails before the change
+- [x] Regression tests, each its own test: no warning when the only trailer commit touches only `TASK-1`'s ticket file; nor for a `chitty: ` commit of `src/x.py`; nor after `chitty archive TASK-1`; nor when `chitty check` runs in a linked worktree on branch `task-1`. `make check` passes
 
 ## Plan
 
@@ -34,6 +34,10 @@ Add real-Git CLI coverage for landed work and exclusions, verify the warning tes
 ## Notes
 
 Before the fix, the new CLI suite produced the expected missing-warning failure: one failed, four regression tests passed.
+
+## Summary
+
+Wired landed-work warnings into checks on main, excluding archived and duplicate tickets and skipping Git history during writes. Added five real-Git CLI tests; the warning test failed before the fix and all passed afterward. make check passed.
 
 ## History
 
@@ -55,3 +59,4 @@ Before the fix, the new CLI suite produced the expected missing-warning failure:
 - 2026-11-26T23:58:11Z mellow-pearl-badger todo → doing
 - 2026-11-27T00:01:47Z mellow-pearl-badger: wrote the plan
 - 2026-11-27T00:02:20Z mellow-pearl-badger: changed notes
+- 2026-11-27T00:06:15Z mellow-pearl-badger: changed summary; ticked acceptance criteria
