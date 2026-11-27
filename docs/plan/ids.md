@@ -6,7 +6,7 @@
   type: a ticket's type can change but its ID cannot, so type is a label. New
   repositories get `TASK`; custom prefixes keep working.
 - `n` is unpadded: one above the highest number in the ticket files of the
-  main checkout, active or archived, committed or not (with
+  main checkout with the current prefix, active or archived, committed or not (with
   `archive = "delete"`, also numbers deleted on any branch). Only `main`
   hands out sequential numbers; elsewhere new tickets get provisional IDs.
 - `random_ids = true` draws `n` from 10000000 to 99999999 instead

@@ -303,6 +303,21 @@ class TestCliProvisionalRenumbering(CliTestCase):
         self.assertEqual(len(result.stdout.splitlines()), 2)
         self.assertTrue(all(line.startswith("renumbered ") for line in result.stdout.splitlines()))
 
+    def test_outside_git_after_prefix_change(self):
+        for _ in range(3):
+            self.run_cli("add", "Old", "-d", "Text.")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace('prefix = "TASK"', 'prefix = "TK"'))
+        provisional = self.root / "chitty/tasks/TK-AAAAAA--alpha.md"
+        provisional.write_text(
+            "---\ntitle: Alpha\nstatus: todo\ncreated: 2026-01-01\n"
+            "provisional: true\n---\n\n## Description\n\nFixture.\n"
+        )
+        result = self.run_cli("renumber")
+        self.assertIn("TK-AAAAAA -> TK-1 ", result.stdout)
+        self.assertTrue((provisional.parent / "TK-1--alpha.md").is_file())
+        self.assertFalse((self.root / ".git").exists())
+
     def test_off_main(self):
         self.fixture()
         (self.root / "advance").write_text("advance")

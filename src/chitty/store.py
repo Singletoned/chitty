@@ -1373,7 +1373,8 @@ class Repo:
             number
             for archived in (False, True)
             for p in self._files(context, archived)
-            if isinstance(number := ids.parse_filename(p.name)[0].number, int)
+            if (task_id := ids.parse_filename(p.name)[0]).prefix == context.prefix
+            if isinstance(number := task_id.number, int)
         }
         if self.config.archive == "delete":
             numbers.update(self._deleted_numbers(context))
