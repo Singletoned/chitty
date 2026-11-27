@@ -27,6 +27,10 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTe
 - [ ] On `main`, with `TASK-1` `todo` and a commit of `src/x.py` whose message ends `Task: TASK-1`, `chitty check` exits 0 and prints the warning naming `TASK-1` and `todo`; this fails before the change
 - [ ] Regression tests, each its own test: no warning when the only trailer commit touches only `TASK-1`'s ticket file; nor for a `chitty: ` commit of `src/x.py`; nor after `chitty archive TASK-1`; nor when `chitty check` runs in a linked worktree on branch `task-1`. `make check` passes
 
+## Plan
+
+Add real-Git CLI coverage for landed work and exclusions, verify the warning test fails before implementation, then connect the existing history rule to check on main only and document the write-time scan gate. Run formatting and checks, commit, and hand off for review.
+
 ## History
 
 - 2026-11-22T10:00:56Z friendly-jade-stoat → todo
@@ -45,3 +49,4 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTe
 - 2026-11-26T19:02:35Z zesty-ginger-newt cold-read → planning
 - 2026-11-26T19:02:52Z zesty-ginger-newt planning → todo
 - 2026-11-26T23:58:11Z mellow-pearl-badger todo → doing
+- 2026-11-27T00:01:47Z mellow-pearl-badger: wrote the plan
