@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: doing
+status: review
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -60,3 +60,4 @@ Implemented bookkeeping branch rewrite with tree verification and rollback, plus
 - 2026-11-27T00:09:34Z able-white-gannet todo → doing
 - 2026-11-27T00:13:02Z able-white-gannet: wrote the plan
 - 2026-11-27T00:20:06Z able-white-gannet: changed summary
+- 2026-11-27T00:22:09Z able-white-gannet doing → review
