@@ -31,6 +31,10 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, `CliTe
 
 Add real-Git CLI coverage for landed work and exclusions, verify the warning test fails before implementation, then connect the existing history rule to check on main only and document the write-time scan gate. Run formatting and checks, commit, and hand off for review.
 
+## Notes
+
+Before the fix, the new CLI suite produced the expected missing-warning failure: one failed, four regression tests passed.
+
 ## History
 
 - 2026-11-22T10:00:56Z friendly-jade-stoat → todo
@@ -50,3 +54,4 @@ Add real-Git CLI coverage for landed work and exclusions, verify the warning tes
 - 2026-11-26T19:02:52Z zesty-ginger-newt planning → todo
 - 2026-11-26T23:58:11Z mellow-pearl-badger todo → doing
 - 2026-11-27T00:01:47Z mellow-pearl-badger: wrote the plan
+- 2026-11-27T00:02:20Z mellow-pearl-badger: changed notes
