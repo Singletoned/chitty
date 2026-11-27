@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: review
+status: done
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -26,12 +26,18 @@ Out of scope: calling it from landing (`TASK-573`).
 
 ## Acceptance Criteria
 
-- [ ] The real-Git property passes: `HEAD`'s tree equals the old tip's; with two or more bookkeeping commits the branch is the implementation commits in order (subject, author name, author date, `src/` tree) then one `chitty: land TASK-1` commit with the stated body and trailer, changing only `chitty/tasks/`, returning the bookkeeping count; otherwise `HEAD` is unchanged and it returns 0
-- [ ] The not-rebased, mixed-commit and restore-failure examples pass as stated; `make check` passes
+- [x] The real-Git property passes: `HEAD`'s tree equals the old tip's; with two or more bookkeeping commits the branch is the implementation commits in order (subject, author name, author date, `src/` tree) then one `chitty: land TASK-1` commit with the stated body and trailer, changing only `chitty/tasks/`, returning the bookkeeping count; otherwise `HEAD` is unchanged and it returns 0
+- [x] The not-rebased, mixed-commit and restore-failure examples pass as stated; `make check` passes
 
 ## Plan
 
 Build and validate the branch plan before rewriting; cherry-pick implementation commits, restore ticket directories, commit and verify the tree, rolling back on failure. Cover generated real Git histories and failure examples, then run checks.
+
+## Notes
+
+Reviewed: implementation and full branch diff checked.
+1: pass - make check passes; test_histories fails against a merge-base return-0 stub (expected bookkeeping count differs).
+2: pass - make check: 1311 passed; merge-base return-0 stub makes test_not_rebased and test_restore_failure_rolls_back fail with ChittyError not raised; removing mixed-path refusal makes test_mixed_commit fail at cherry-pick.
 
 ## Summary
 
@@ -61,3 +67,5 @@ Implemented bookkeeping branch rewrite with tree verification and rollback, plus
 - 2026-11-27T00:13:02Z able-white-gannet: wrote the plan
 - 2026-11-27T00:20:06Z able-white-gannet: changed summary
 - 2026-11-27T00:22:09Z able-white-gannet doing → review
+- 2026-11-27T00:32:09Z lively-navy-stoat: changed notes; ticked acceptance criteria
+- 2026-11-27T00:32:09Z lively-navy-stoat review → done
