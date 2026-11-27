@@ -1,6 +1,6 @@
 ---
 title: Number new tickets from the current prefix only
-status: review
+status: done
 parent: TASK-10053
 created: 2026-11-26
 moved_from: TASK-GNSWY6
@@ -33,6 +33,10 @@ Add CLI regressions for allocation and provisional renumbering after a prefix ch
 
 Before the fix, both new CLI regression tests failed: allocation and provisional renumbering each produced TK-4 instead of TK-1.
 
+Reviewed: Verified the full diff and both criteria.
+1: pass - make check passes; running tests/test_old_prefixes.py::TestOldPrefixes::test_new_tickets_start_at_one_after_prefix_change against merge-base code with the branch tests and PYTHONPATH pointing at its src fails with TK-4 instead of TK-1.
+2: pass - make check passes, including existing numbering and renumbering tests; running tests/test_renumber_provisional.py::TestCliProvisionalRenumbering::test_outside_git_after_prefix_change against merge-base code with the branch tests and PYTHONPATH pointing at its src fails with TK-4 instead of TK-1.
+
 ## Summary
 
 Number allocation and provisional renumbering now ignore files with old prefixes. Both CLI regressions failed with TK-4 before the fix and pass afterward; make check passed.
@@ -48,3 +52,5 @@ Number allocation and provisional renumbering now ignore files with old prefixes
 - 2026-11-27T00:37:56Z jolly-white-puffin: changed notes
 - 2026-11-27T00:41:36Z jolly-white-puffin: changed summary; ticked acceptance criteria
 - 2026-11-27T00:44:46Z jolly-white-puffin doing → review
+- 2026-11-27T00:53:14Z sunny-ginger-ibis: changed notes
+- 2026-11-27T00:53:14Z sunny-ginger-ibis review → done
